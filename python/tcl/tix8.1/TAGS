@@ -1,0 +1,1140 @@
+
+Balloon.tcl,873
+proc tixBalIgnoreWhenGrabbed560,11660
+proc tixBalloon:Activate325,6911
+proc tixBalloon:ClearStatus478,9914
+proc tixBalloon:ClientDestroy304,6371
+proc tixBalloon:ConstructWidget61,1255
+proc tixBalloon:Deactivate377,7710
+proc tixBalloon:Destructor89,1959
+proc tixBalloon:GrabBad168,3867
+proc tixBalloon:InitWidgetRec49,1059
+proc tixBalloon:PopDown448,9303
+proc tixBalloon:PopUp388,7900
+proc tixBalloon:SetStatus460,9558
+proc tixBalloon:SwitchToClient280,6034
+proc tixBalloon:Verify356,7363
+proc tixBalloon:XXButton251,5449
+proc tixBalloon:XXButtonUp265,5664
+proc tixBalloon:XXMotion187,4189
+proc tixBalloon:bind501,10436
+proc tixBalloon:config-state106,2317
+proc tixBalloon:post530,11004
+proc tixBalloon:unbind540,11166
+proc tixBalloon_XXButton139,3338
+proc tixBalloon_XXButtonUp147,3480
+proc tixBalloon_XXMotion131,3196
+proc tixIsDescendant158,3666
+
+BtnBox.tcl,287
+proc tixButtonBox:InitWidgetRec44,818
+proc tixButtonBox:add83,1708
+proc tixButtonBox:button103,2154
+proc tixButtonBox:buttons107,2251
+proc tixButtonBox:config-padx55,1121
+proc tixButtonBox:config-pady63,1256
+proc tixButtonBox:config-state71,1391
+proc tixButtonBox:invoke113,2373
+
+CObjView.tcl,430
+proc tixCObjView:ConstructWidget58,1418
+proc tixCObjView:GeometryInfo124,2968
+proc tixCObjView:GetScrollRegion147,3442
+proc tixCObjView:PlaceWindow136,3226
+proc tixCObjView:SetBindings81,1830
+proc tixCObjView:SetScrollBars221,4709
+proc tixCObjView:UserScroll237,5087
+proc tixCObjView:XScroll316,6584
+proc tixCObjView:YScroll340,6975
+proc tixCObjView:adjustscrollregion110,2617
+proc tixCObjView:config-takefocus100,2343
+
+ChkList.tcl,331
+proc tixCheckList:BrowseCmd226,4679
+proc tixCheckList:Command216,4511
+proc tixCheckList:GetSel73,1739
+proc tixCheckList:HandleCheck189,4015
+proc tixCheckList:InitWidgetRec55,1397
+proc tixCheckList:Select166,3584
+proc tixCheckList:getselection95,2121
+proc tixCheckList:getstatus109,2468
+proc tixCheckList:setstatus137,3014
+
+ComboBox.tcl,3041
+proc tixComboBox:ArrowDown400,10885
+proc tixComboBox:ArrowUp420,11148
+proc tixComboBox:BlinkEntry843,18622
+proc tixComboBox:Cancel826,18260
+proc tixComboBox:CheckListboxSelection1124,23802
+proc tixComboBox:ClearListboxSelection810,17974
+proc tixComboBox:ConstructEntryFrame133,3606
+proc tixComboBox:ConstructFramedWidget114,3152
+proc tixComboBox:ConstructListFrame201,5472
+proc tixComboBox:ConstructListShell183,4922
+proc tixComboBox:CrossBtn1185,25217
+proc tixComboBox:Destructor1357,28838
+proc tixComboBox:EntDirKey601,14000
+proc tixComboBox:EntKeyPress673,14983
+proc tixComboBox:EntReturnKey624,14297
+proc tixComboBox:EntTab648,14645
+proc tixComboBox:EntryAlignEnd1351,28753
+proc tixComboBox:EscKey571,13584
+proc tixComboBox:GoState1096,23139
+proc tixComboBox:GoState-0895,19757
+proc tixComboBox:GoState-1899,19810
+proc tixComboBox:GoState-10974,20924
+proc tixComboBox:GoState-11987,21176
+proc tixComboBox:GoState-12995,21298
+proc tixComboBox:GoState-131005,21422
+proc tixComboBox:GoState-141017,21585
+proc tixComboBox:GoState-151024,21692
+proc tixComboBox:GoState-161032,21822
+proc tixComboBox:GoState-171041,21977
+proc tixComboBox:GoState-191048,22084
+proc tixComboBox:GoState-2905,19887
+proc tixComboBox:GoState-3910,19940
+proc tixComboBox:GoState-4917,20041
+proc tixComboBox:GoState-5929,20232
+proc tixComboBox:GoState-6935,20332
+proc tixComboBox:GoState-7949,20549
+proc tixComboBox:GoState-9965,20781
+proc tixComboBox:GoState-n01062,22454
+proc tixComboBox:GoState-n11066,22508
+proc tixComboBox:GoState-n31073,22616
+proc tixComboBox:GoState-n41080,22739
+proc tixComboBox:GoState-n61087,22847
+proc tixComboBox:Grab1314,28049
+proc tixComboBox:HandleDirKey694,15342
+proc tixComboBox:InitWidgetRec89,2591
+proc tixComboBox:Invoke723,16007
+proc tixComboBox:LbBrowse489,12056
+proc tixComboBox:LbCommand552,13039
+proc tixComboBox:LbGetSelection1150,24388
+proc tixComboBox:LbIndex875,19362
+proc tixComboBox:LbSelect1161,24577
+proc tixComboBox:Popdown1306,27876
+proc tixComboBox:Popup1200,25530
+proc tixComboBox:RestoreBlink858,18959
+proc tixComboBox:RootDown440,11433
+proc tixComboBox:RootUp456,11617
+proc tixComboBox:SetBindings213,5736
+proc tixComboBox:SetCursor1300,27787
+proc tixComboBox:SetSelection788,17481
+proc tixComboBox:SetSelectionFromListbox1142,24171
+proc tixComboBox:SetState1103,23267
+proc tixComboBox:SetValue743,16517
+proc tixComboBox:StateError1111,23421
+proc tixComboBox:Ungrab1332,28375
+proc tixComboBox:UpdateListboxSelection816,18081
+proc tixComboBox:WidUp476,11899
+proc tixComboBox:addhistory1472,31820
+proc tixComboBox:align1464,31700
+proc tixComboBox:appendhistory1494,32225
+proc tixComboBox:config-selection1435,30954
+proc tixComboBox:config-state1373,29217
+proc tixComboBox:config-value1423,30727
+proc tixComboBox:config-variable1445,31158
+proc tixComboBox:flash837,18510
+proc tixComboBox:insert1516,32635
+proc tixComboBox:invoke1542,33205
+proc tixComboBox:pick1528,32897
+proc tixComboBox:popdown1546,33260
+proc tixComboBoxBind268,7132
+
+Compat.tcl,153
+proc tixCombobox26,534
+proc tixDlgBtns18,406
+proc tixFileSelectbox30,595
+proc tixInit38,741
+proc tixScrolledListbox34,666
+proc tixStdDlgBtns22,467
+
+Console.tcl,277
+proc tixConsoleBind260,6541
+proc tixConsoleExit512,11735
+proc tixConsoleHistory174,4492
+proc tixConsoleInit34,1074
+proc tixConsoleInsert452,10593
+proc tixConsoleInvoke119,3260
+proc tixConsoleOutput490,11344
+proc tixConsolePrompt224,5640
+proc tixConsoleSetFont102,2797
+
+Control.tcl,737
+proc tixControl:AdjustValue254,6746
+proc tixControl:ConstructFramedWidget77,1906
+proc tixControl:Destructor440,11209
+proc tixControl:Escape463,11573
+proc tixControl:InitWidgetRec68,1766
+proc tixControl:Invoke363,9389
+proc tixControl:KeyPress470,11694
+proc tixControl:Repeat419,10864
+proc tixControl:SetBindings105,2850
+proc tixControl:SetValue270,7204
+proc tixControl:StartRepeat386,10130
+proc tixControl:StopRepeat434,11135
+proc tixControl:Tab451,11415
+proc tixControl:config-state158,4403
+proc tixControl:config-value178,4882
+proc tixControl:config-variable189,5120
+proc tixControl:decr220,5969
+proc tixControl:incr206,5623
+proc tixControl:invoke234,6326
+proc tixControl:update240,6401
+proc tixControlBind128,3490
+
+DefSchm.tcl,109
+proc tixSetDefaultFontset13,323
+proc tixSetDefaultScheme-Color23,732
+proc tixSetDefaultScheme-Mono56,1667
+
+DialogS.tcl,150
+proc tixDialogShell:ConstructWidget40,1013
+proc tixDialogShell:center89,2093
+proc tixDialogShell:popdown168,3935
+proc tixDialogShell:popup67,1559
+
+DirBox.tcl,380
+proc tixDirSelectBox:Browse-DirList166,3910
+proc tixDirSelectBox:Cmd-DirCbx79,1881
+proc tixDirSelectBox:Cmd-DirList152,3679
+proc tixDirSelectBox:ConstructWidget47,1003
+proc tixDirSelectBox:InitWidgetRec42,907
+proc tixDirSelectBox:SetBindings62,1406
+proc tixDirSelectBox:SetValue204,4863
+proc tixDirSelectBox:config-label188,4446
+proc tixDirSelectBox:config-value180,4286
+
+DirDlg.tcl,247
+proc tixDirSelectDialog:CallCmd80,1757
+proc tixDirSelectDialog:Cancel90,1948
+proc tixDirSelectDialog:ConstructWidget37,735
+proc tixDirSelectDialog:DirBoxCmd72,1603
+proc tixDirSelectDialog:OK65,1489
+proc tixDirSelectDialog:SetBindings57,1328
+
+DirList.tcl,544
+proc tixDirList:Browse114,2854
+proc tixDirList:CallBrowseCmd147,3660
+proc tixDirList:CallCommand157,3853
+proc tixDirList:Command129,3185
+proc tixDirList:ConstructWidget74,1774
+proc tixDirList:HighLight234,5720
+proc tixDirList:InitWidgetRec68,1683
+proc tixDirList:ListHierachy188,4616
+proc tixDirList:ListSubDirs202,4946
+proc tixDirList:LoadDir170,4231
+proc tixDirList:SetBindings92,2302
+proc tixDirList:SetValue219,5372
+proc tixDirList:chdir283,6970
+proc tixDirList:config-showhidden274,6701
+proc tixDirList:config-value267,6586
+
+DirTree.tcl,742
+proc tixDirTree:AddAncestors166,3994
+proc tixDirTree:AddToList143,3506
+proc tixDirTree:BrowseCmd351,8013
+proc tixDirTree:CallBrowseCmd256,6044
+proc tixDirTree:CallCommand245,5818
+proc tixDirTree:ChangeDir277,6422
+proc tixDirTree:CloseCmd331,7629
+proc tixDirTree:Command337,7772
+proc tixDirTree:ConstructWidget81,2077
+proc tixDirTree:HasSubDir130,3293
+proc tixDirTree:InitWidgetRec64,1786
+proc tixDirTree:ListDirs185,4449
+proc tixDirTree:LoadDir202,4900
+proc tixDirTree:OpenCmd325,7488
+proc tixDirTree:SetBindings100,2662
+proc tixDirTree:SetDir313,7190
+proc tixDirTree:StartUp267,6287
+proc tixDirTree:ToggleDir238,5688
+proc tixDirTree:chdir377,8644
+proc tixDirTree:config-directory400,9104
+proc tixDirTree:refresh381,8729
+
+DragDrop.tcl,368
+proc tixDragDropContext:CallCommand36,752
+proc tixDragDropContext:Constructor28,530
+proc tixDragDropContext:Send52,1164
+proc tixDragDropContext:drag93,2235
+proc tixDragDropContext:drop113,2666
+proc tixDragDropContext:set70,1637
+proc tixDragDropContext:startdrag79,1865
+proc tixDropBind144,3382
+proc tixDropBindTags151,3493
+proc tixGetDragDropContext135,3248
+
+DtlList.tcl,36
+proc tixDetailList:FormatCmd34,625
+
+EFileBox.tcl,893
+proc tixExFileSelectBox:Browse-DirList282,6839
+proc tixExFileSelectBox:Cancel330,7912
+proc tixExFileSelectBox:Cmd-DirCombo244,6195
+proc tixExFileSelectBox:Cmd-DirList264,6512
+proc tixExFileSelectBox:Cmd-FileCombo298,7168
+proc tixExFileSelectBox:Cmd-FileList356,8496
+proc tixExFileSelectBox:Cmd-TypeCombo379,9056
+proc tixExFileSelectBox:ConstructWidget96,2191
+proc tixExFileSelectBox:InitWidgetRec73,1709
+proc tixExFileSelectBox:Invoke338,8033
+proc tixExFileSelectBox:IsPattern289,6980
+proc tixExFileSelectBox:LoadFiles391,9341
+proc tixExFileSelectBox:Map430,10358
+proc tixExFileSelectBox:Ok306,7308
+proc tixExFileSelectBox:SetShowHidden233,5976
+proc tixExFileSelectBox:config-directory191,4945
+proc tixExFileSelectBox:config-filetypes206,5318
+proc tixExFileSelectBox:config-showhidden181,4747
+proc tixExFileSelectBox:filter451,10821
+proc tixExFileSelectBox:invoke447,10752
+
+EFileDlg.tcl,145
+proc tixExFileSelectDialog:ConstructWidget27,559
+proc tixExFileSelectDialog:SetBindings42,915
+proc tixExFileSelectDialog:config-command36,800
+
+Event.tcl,237
+proc _tixDeleteFlags125,3184
+proc _tixRecordFlags114,2955
+proc tixBind54,1664
+proc tixBuiltInCmdErrorHandler218,4926
+proc tixEvalCmdBinding133,3314
+proc tixEvent175,4073
+proc tixPopEventStack99,2622
+proc tixPushEventStack74,2142
+
+FileBox.tcl,1096
+proc tixFileSelectBox:ConstructWidget92,2209
+proc tixFileSelectBox:CreateFrame1106,2598
+proc tixFileSelectBox:CreateFrame2123,2948
+proc tixFileSelectBox:CreateFrame3154,3858
+proc tixFileSelectBox:FirstMapped524,12644
+proc tixFileSelectBox:InitWidgetRec69,1611
+proc tixFileSelectBox:InterpFilter320,7869
+proc tixFileSelectBox:InvokeDir463,11152
+proc tixFileSelectBox:InvokeFile513,12389
+proc tixFileSelectBox:LoadDir412,10061
+proc tixFileSelectBox:LoadDirIntoLists357,8794
+proc tixFileSelectBox:MkDirMenu431,10521
+proc tixFileSelectBox:SelInvoke174,4230
+proc tixFileSelectBox:SelectDir437,10625
+proc tixFileSelectBox:SelectFile483,11649
+proc tixFileSelectBox:SetBindings210,4986
+proc tixFileSelectBox:SetDir191,4528
+proc tixFileSelectBox:SetFilter350,8613
+proc tixFileSelectBox:SetPat198,4669
+proc tixFileSelectBox:SetValue184,4391
+proc tixFileSelectBox:config-directory229,5556
+proc tixFileSelectBox:config-pattern242,5835
+proc tixFileSelectBox:config-value258,6226
+proc tixFileSelectBox:filter270,6592
+proc tixFileSelectBox:invoke278,6746
+proc tixMkFileDialog548,13135
+
+FileCbx.tcl,291
+proc tixFileComboBox:ConstructWidget49,1018
+proc tixFileComboBox:InitWidgetRec39,841
+proc tixFileComboBox:OnComboCmd64,1396
+proc tixFileComboBox:SetBindings57,1238
+proc tixFileComboBox:config-directory89,1939
+proc tixFileComboBox:config-text83,1840
+proc tixFileComboBox:invoke96,2079
+
+FileCmpt.tcl,57
+proc tixFileResolveName22,562
+proc tixNSubFolder30,799
+
+FileDlg.tcl,134
+proc tixFileSelectDialog:ConstructTopFrame28,549
+proc tixFileSelectDialog:Invoke62,1784
+proc tixFileSelectDialog:SetBindings38,812
+
+FileEnt.tcl,508
+proc tixFileEntry:ConstructFramedWidget64,1607
+proc tixFileEntry:Destructor228,5658
+proc tixFileEntry:FileDlgCallback197,5012
+proc tixFileEntry:InitWidgetRec53,1402
+proc tixFileEntry:OpenFile179,4693
+proc tixFileEntry:SetBindings78,2013
+proc tixFileEntry:SetValue203,5129
+proc tixFileEntry:config-state105,2885
+proc tixFileEntry:config-value125,3329
+proc tixFileEntry:config-variable129,3407
+proc tixFileEntry:filedialog159,4179
+proc tixFileEntry:invoke146,3910
+proc tixFileEntry:update169,4377
+
+FileUtil.tcl,57
+proc tixCompressDotDot64,1023
+proc tixResolveDir14,313
+
+FloatEnt.tcl,294
+proc tixFloatEntry:ConstructWidget45,984
+proc tixFloatEntry:InitWidgetRec39,890
+proc tixFloatEntry:SetBindings53,1166
+proc tixFloatEntry:config-value103,2329
+proc tixFloatEntry:invoke119,2715
+proc tixFloatEntry:post82,1929
+proc tixFloatEntry:unpost97,2258
+proc tixFloatEntryBind66,1477
+
+Grid.tcl,2831
+proc tixGrid:AutoScan264,4552
+proc tixGrid:B1-Enter219,3911
+proc tixGrid:B1-Leave202,3694
+proc tixGrid:B1-Motion169,3219
+proc tixGrid:Button-1113,2377
+proc tixGrid:ButtonRelease-1158,3065
+proc tixGrid:CallBrowseCmd951,16883
+proc tixGrid:CallCommand963,17084
+proc tixGrid:CheckEdit1016,18129
+proc tixGrid:Control-B1-Enter250,4343
+proc tixGrid:Control-B1-Leave236,4156
+proc tixGrid:Control-B1-Motion177,3330
+proc tixGrid:Control-Button-1136,2719
+proc tixGrid:DirKey288,4932
+proc tixGrid:DoScan921,16416
+proc tixGrid:DoneEdit1078,19441
+proc tixGrid:Double-1191,3543
+proc tixGrid:EditApply997,17772
+proc tixGrid:EditCell978,17403
+proc tixGrid:GetState336,5714
+proc tixGrid:GoState351,5938
+proc tixGrid:GoState-0370,6531
+proc tixGrid:GoState-1384,6721
+proc tixGrid:GoState-12825,14473
+proc tixGrid:GoState-13830,14556
+proc tixGrid:GoState-14837,14723
+proc tixGrid:GoState-16853,15100
+proc tixGrid:GoState-18863,15262
+proc tixGrid:GoState-2398,7006
+proc tixGrid:GoState-20869,15374
+proc tixGrid:GoState-21879,15574
+proc tixGrid:GoState-22889,15776
+proc tixGrid:GoState-3401,7035
+proc tixGrid:GoState-4421,7343
+proc tixGrid:GoState-5410,7177
+proc tixGrid:GoState-b0519,9075
+proc tixGrid:GoState-b1522,9105
+proc tixGrid:GoState-b10615,10633
+proc tixGrid:GoState-b2533,9310
+proc tixGrid:GoState-b3536,9340
+proc tixGrid:GoState-b4546,9520
+proc tixGrid:GoState-b5556,9700
+proc tixGrid:GoState-b6560,9754
+proc tixGrid:GoState-b7566,9822
+proc tixGrid:GoState-b8577,10006
+proc tixGrid:GoState-b9595,10313
+proc tixGrid:GoState-e0723,12649
+proc tixGrid:GoState-e1726,12679
+proc tixGrid:GoState-e10794,13833
+proc tixGrid:GoState-e2737,12884
+proc tixGrid:GoState-e3740,12914
+proc tixGrid:GoState-e4748,13053
+proc tixGrid:GoState-e5759,13272
+proc tixGrid:GoState-e6762,13302
+proc tixGrid:GoState-e7770,13449
+proc tixGrid:GoState-e8786,13728
+proc tixGrid:GoState-e9790,13782
+proc tixGrid:GoState-m0638,11118
+proc tixGrid:GoState-m1641,11148
+proc tixGrid:GoState-m2652,11353
+proc tixGrid:GoState-m3655,11383
+proc tixGrid:GoState-m4663,11522
+proc tixGrid:GoState-m5674,11741
+proc tixGrid:GoState-m6677,11771
+proc tixGrid:GoState-m7685,11918
+proc tixGrid:GoState-m8701,12197
+proc tixGrid:GoState-m9705,12251
+proc tixGrid:GoState-s10496,8592
+proc tixGrid:GoState-s5441,7745
+proc tixGrid:GoState-s6445,7799
+proc tixGrid:GoState-s7451,7867
+proc tixGrid:GoState-s8462,8051
+proc tixGrid:GoState-s9476,8272
+proc tixGrid:GoState-xm7709,12302
+proc tixGrid:Return302,5146
+proc tixGrid:Select911,16242
+proc tixGrid:SelectSingle362,6250
+proc tixGrid:SetAnchor904,16112
+proc tixGrid:SetEdit1033,18473
+proc tixGrid:SetFocus1109,20020
+proc tixGrid:SetState345,5860
+proc tixGrid:Shift-Button-1126,2568
+proc tixGrid:Space316,5346
+proc tixGrid:StartScan916,16316
+proc tixGridBind22,639
+
+HList.tcl,1636
+proc tixHList:AutoScan390,6841
+proc tixHList:B1-Enter379,6680
+proc tixHList:B1-Leave368,6542
+proc tixHList:B1-Motion351,6288
+proc tixHList:Browse833,14967
+proc tixHList:Button-1283,5249
+proc tixHList:ButtonRelease-1314,5779
+proc tixHList:CallIndicatorCmd805,14476
+proc tixHList:DoScan776,13891
+proc tixHList:Double-1343,6176
+proc tixHList:GetNearest731,13034
+proc tixHList:GetState404,7114
+proc tixHList:GoState419,7340
+proc tixHList:GoState-0430,7642
+proc tixHList:GoState-1433,7672
+proc tixHList:GoState-10489,8653
+proc tixHList:GoState-11493,8709
+proc tixHList:GoState-12511,9016
+proc tixHList:GoState-13516,9101
+proc tixHList:GoState-14523,9274
+proc tixHList:GoState-16539,9664
+proc tixHList:GoState-18546,9810
+proc tixHList:GoState-20552,9924
+proc tixHList:GoState-21562,10132
+proc tixHList:GoState-22572,10342
+proc tixHList:GoState-23583,10518
+proc tixHList:GoState-24605,10947
+proc tixHList:GoState-25612,11056
+proc tixHList:GoState-26624,11214
+proc tixHList:GoState-27646,11581
+proc tixHList:GoState-28656,11715
+proc tixHList:GoState-29677,12082
+proc tixHList:GoState-30681,12138
+proc tixHList:GoState-31706,12548
+proc tixHList:GoState-32711,12634
+proc tixHList:GoState-33716,12708
+proc tixHList:GoState-5461,8189
+proc tixHList:GoState-6476,8444
+proc tixHList:InsideArmedIndicator817,14685
+proc tixHList:Keyboard-Activate100,2211
+proc tixHList:Keyboard-Browse124,2590
+proc tixHList:LeftRight142,2848
+proc tixHList:Select759,13508
+proc tixHList:SetAnchor743,13228
+proc tixHList:SetState413,7261
+proc tixHList:StartScan771,13789
+proc tixHList:UpDown202,3812
+proc tixHListBind23,657
+
+HListDD.tcl,362
+proc tixHListSingle:DragTimer20,367
+proc tixHListSingle:Rec:DragIn154,3073
+proc tixHListSingle:Rec:DragOut166,3301
+proc tixHListSingle:Rec:DragOver141,2843
+proc tixHListSingle:Rec:Drop173,3429
+proc tixHListSingle:Send:Cmd107,2136
+proc tixHListSingle:Send:DoneDrag87,1762
+proc tixHListSingle:Send:StartDrag66,1340
+proc tixHListSingle:Send:WaitDrag47,991
+
+IconView.tcl,425
+proc tixIconView:Arrange152,3182
+proc tixIconView:ArrangeGrid166,3396
+proc tixIconView:ArrangePack218,4509
+proc tixIconView:ConstructWidget48,1049
+proc tixIconView:Drag78,1601
+proc tixIconView:EndDrag90,1835
+proc tixIconView:PackOneRow125,2651
+proc tixIconView:PlaceWindow142,3014
+proc tixIconView:SetBindings54,1145
+proc tixIconView:StartDrag66,1419
+proc tixIconView:add100,2085
+proc tixIconView:arrange120,2572
+
+Init.tcl,45
+proc __tixError32,705
+proc __tixInit38,861
+
+LabEntry.tcl,119
+proc tixLabelEntry:ConstructFramedWidget42,861
+proc tixLabelEntry:config-state71,1715
+proc tixLabelEntryBind56,1255
+
+LabFrame.tcl,33
+proc tixLabelFrame:frame44,1002
+
+LabWidg.tcl,407
+proc tixLabelWidget:ConstructFramedWidget60,1380
+proc tixLabelWidget:ConstructWidget39,881
+proc tixLabelWidget:Pack64,1450
+proc tixLabelWidget:Pack-acrosstop72,1621
+proc tixLabelWidget:Pack-bottom102,2452
+proc tixLabelWidget:Pack-left113,2697
+proc tixLabelWidget:Pack-none135,3178
+proc tixLabelWidget:Pack-right124,2936
+proc tixLabelWidget:Pack-top91,2216
+proc tixLabelWidget:config-label146,3505
+
+ListNBk.tcl,472
+proc tixListNoteBook:Choose144,3163
+proc tixListNoteBook:ConstructWidget34,679
+proc tixListNoteBook:CreateChildFrame89,2143
+proc tixListNoteBook:InitGeometryManager71,1802
+proc tixListNoteBook:InitialRaise75,1905
+proc tixListNoteBook:RaiseChildFrame97,2262
+proc tixListNoteBook:add59,1426
+proc tixListNoteBook:config-dynamicgeometry112,2579
+proc tixListNoteBook:config-height126,2831
+proc tixListNoteBook:config-width118,2703
+proc tixListNoteBook:raise134,2961
+
+Meter.tcl,206
+proc tixMeter:ConstructWidget45,914
+proc tixMeter:InitWidgetRec35,650
+proc tixMeter:SetBindings56,1117
+proc tixMeter:Update62,1202
+proc tixMeter:config-text120,2650
+proc tixMeter:config-value113,2542
+
+MultView.tcl,296
+proc tixMultiView:ConstructWidget48,918
+proc tixMultiView:GetWid70,1450
+proc tixMultiView:GridFormat100,2161
+proc tixMultiView:InitWidgetRec38,650
+proc tixMultiView:SetBindings64,1361
+proc tixMultiView:VerifyView146,3276
+proc tixMultiView:add124,2689
+proc tixMultiView:config-view88,1793
+
+NoteBook.tcl,415
+proc tixNoteBook:ConstructWidget45,895
+proc tixNoteBook:FocusNext163,3842
+proc tixNoteBook:InitWidgetRec34,714
+proc tixNoteBook:MouseDown127,2998
+proc tixNoteBook:MouseUp137,3173
+proc tixNoteBook:Resize106,2510
+proc tixNoteBook:SetFocusByKey179,4115
+proc tixNoteBook:add68,1710
+proc tixNoteBook:delete96,2230
+proc tixNoteBook:raise86,2047
+proc tixNoteBookFind193,4521
+proc tixTraverseToNoteBook229,5345
+
+OldUtil.tcl,463
+proc _tixDialogDestroy185,4312
+proc _tixInitMainWindow193,4430
+proc _tixToplevelDestroy136,3531
+proc _tixToplevelMap151,3741
+proc _tixToplevelUnmap142,3596
+proc _tixToplevelVisibility160,3877
+proc setenv15,379
+proc tixCreateDialogShell168,3982
+proc tixCreateToplevel117,2985
+proc tixDialogDestroy93,2567
+proc tixDialogRestore59,1565
+proc tixDialogWithdraw78,2109
+proc tixListGetSingle47,1197
+proc tixQueryAppResource108,2822
+proc tixSetEntry38,959
+
+OptMenu.tcl,692
+proc tixOptionMenu:ConstructFramedWidget59,1386
+proc tixOptionMenu:Destructor359,8020
+proc tixOptionMenu:InitWidgetRec47,1171
+proc tixOptionMenu:Invoke85,2174
+proc tixOptionMenu:Post372,8294
+proc tixOptionMenu:SetBindings76,1925
+proc tixOptionMenu:SetMaxWidth132,3199
+proc tixOptionMenu:SetValue93,2306
+proc tixOptionMenu:add200,4774
+proc tixOptionMenu:config-state150,3637
+proc tixOptionMenu:config-value172,4050
+proc tixOptionMenu:config-variable183,4290
+proc tixOptionMenu:delete269,6193
+proc tixOptionMenu:disable312,7037
+proc tixOptionMenu:enable322,7264
+proc tixOptionMenu:entries352,7944
+proc tixOptionMenu:entrycget342,7723
+proc tixOptionMenu:entryconfigure332,7488
+
+PanedWin.tcl,1535
+proc tixPanedWindow:AddSeparator454,10585
+proc tixPanedWindow:BtnDown517,12374
+proc tixPanedWindow:BtnMove593,14006
+proc tixPanedWindow:BtnMoveCompressed608,14303
+proc tixPanedWindow:BtnUp774,17710
+proc tixPanedWindow:CalculateChange644,14964
+proc tixPanedWindow:CancleLines698,16071
+proc tixPanedWindow:ClientGeomProc965,21847
+proc tixPanedWindow:ConstructWidget66,1683
+proc tixPanedWindow:DeHighlightBtn796,18078
+proc tixPanedWindow:DoRepack1043,23320
+proc tixPanedWindow:GetMotionLimit550,12940
+proc tixPanedWindow:GetNaturalSizes877,19785
+proc tixPanedWindow:Grow1177,26289
+proc tixPanedWindow:HighlightBtn790,17952
+proc tixPanedWindow:InitWidgetRec49,1371
+proc tixPanedWindow:Iterate1193,26568
+proc tixPanedWindow:MasterGeomProc972,21983
+proc tixPanedWindow:Min2542,12852
+proc tixPanedWindow:MoveAfter678,15657
+proc tixPanedWindow:MoveBefore658,15242
+proc tixPanedWindow:PlotHandles715,16370
+proc tixPanedWindow:Repack991,22313
+proc tixPanedWindow:RepackWhenIdle976,22067
+proc tixPanedWindow:SetBindings73,1798
+proc tixPanedWindow:Shrink1162,25999
+proc tixPanedWindow:UpdateSizes812,18452
+proc tixPanedWindow:add103,2517
+proc tixPanedWindow:config-handlebg84,2113
+proc tixPanedWindow:delete243,5849
+proc tixPanedWindow:forget208,5269
+proc tixPanedWindow:manage195,4975
+proc tixPanedWindow:panecget379,8895
+proc tixPanedWindow:paneconfigure282,6568
+proc tixPanedWindow:panes398,9262
+proc tixPanedWindow:setsize406,9412
+proc tixPanedWindow:xGrow1113,24846
+proc tixPanedWindow:xShrink1136,25300
+
+PopMenu.tcl,398
+proc tixPopupMenu:BtnRelease103,2272
+proc tixPopupMenu:ConstructWidget47,940
+proc tixPopupMenu:Destructor118,2503
+proc tixPopupMenu:InitWidgetRec39,819
+proc tixPopupMenu:SetBindings62,1296
+proc tixPopupMenu:Unmap113,2435
+proc tixPopupMenu:Unpost94,2153
+proc tixPopupMenu:bind147,3119
+proc tixPopupMenu:config-title138,2855
+proc tixPopupMenu:post172,3636
+proc tixPopupMenu:unbind158,3335
+
+Primitiv.tcl,482
+proc tixPrimitive:ConstructWidget215,5030
+proc tixPrimitive:Constructor62,1544
+proc tixPrimitive:CreateRootWidget115,2734
+proc tixPrimitive:Destructor405,9549
+proc tixPrimitive:InitWidgetRec181,4292
+proc tixPrimitive:MkWidgetCmd246,5725
+proc tixPrimitive:ParseDefaultOptions122,2874
+proc tixPrimitive:ParseUserOptions152,3523
+proc tixPrimitive:SetBindings196,4583
+proc tixPrimitive:config287,7044
+proc tixPrimitive:subwidget384,9096
+proc tixPrimitive:subwidgets306,7643
+
+ResizeH.tcl,968
+proc tixAddBindTag203,5536
+proc tixDeleteBindTag189,5325
+proc tixResizeHandle:Attach341,8739
+proc tixResizeHandle:BMotion347,8865
+proc tixResizeHandle:BRelease352,8936
+proc tixResizeHandle:ComposeWindow445,10832
+proc tixResizeHandle:ConstructWidget50,1154
+proc tixResizeHandle:Destructor314,8025
+proc tixResizeHandle:DrawTmpLines361,9223
+proc tixResizeHandle:HideHintFrame416,10260
+proc tixResizeHandle:InitWidgetRec41,1013
+proc tixResizeHandle:SetBindings112,3032
+proc tixResizeHandle:SetHintFrame377,9554
+proc tixResizeHandle:ShowHintFrame405,10077
+proc tixResizeHandle:UpdateSize426,10440
+proc tixResizeHandle:attachwidget207,5610
+proc tixResizeHandle:config-height157,4508
+proc tixResizeHandle:config-width153,4406
+proc tixResizeHandle:config-x161,4611
+proc tixResizeHandle:config-y165,4709
+proc tixResizeHandle:detachwidget255,6982
+proc tixResizeHandle:dragstart173,4967
+proc tixResizeHandle:hide289,7576
+proc tixResizeHandle:show264,7157
+
+SGrid.tcl,240
+proc tixScrolledGrid:Button-1167,3888
+proc tixScrolledGrid:ConstructWidget37,774
+proc tixScrolledGrid:FormatCmd211,4930
+proc tixScrolledGrid:GeometryInfo218,5209
+proc tixScrolledGrid:SetBindings54,1152
+proc tixScrolledGridBind77,1835
+
+SHList.tcl,387
+proc tixScrolledHList:ConstructWidget44,1107
+proc tixScrolledHList:GeometryInfo136,3452
+proc tixScrolledHList:RepackHook119,2941
+proc tixScrolledHList:SetBindings64,1604
+proc tixScrolledHList:config-highlightbackground89,2225
+proc tixScrolledHList:config-highlightcolor95,2357
+proc tixScrolledHList:config-highlightthickness101,2479
+proc tixScrolledHList:config-takefocus83,2108
+
+SListBox.tcl,605
+proc tixScrolledListBox:Browse166,3689
+proc tixScrolledListBox:Configure275,6377
+proc tixScrolledListBox:ConstructWidget62,1244
+proc tixScrolledListBox:GeometryInfo267,6216
+proc tixScrolledListBox:InitWidgetRec51,1053
+proc tixScrolledListBox:Invoke195,4452
+proc tixScrolledListBox:KeyBrowse177,3937
+proc tixScrolledListBox:KeyInvoke206,4696
+proc tixScrolledListBox:SetBindings77,1550
+proc tixScrolledListBox:TrickScrollbar288,6669
+proc tixScrolledListBox:XView237,5502
+proc tixScrolledListBox:YView249,5710
+proc tixScrolledListBox:config-takefocus220,5059
+proc tixScrolledListBoxBind97,2151
+
+STList.tcl,177
+proc tixScrolledTList:ConstructWidget37,779
+proc tixScrolledTList:GeometryInfo90,2230
+proc tixScrolledTList:SetBindings52,1078
+proc tixScrolledTList:config-takefocus70,1582
+
+SText.tcl,296
+proc tixScrolledText:ConstructWidget44,816
+proc tixScrolledText:GeometryInfo114,2603
+proc tixScrolledText:SetBindings64,1252
+proc tixScrolledText:XScroll120,2748
+proc tixScrolledText:YScroll131,2956
+proc tixScrolledText:config-scrollbar87,1844
+proc tixScrolledText:config-takefocus81,1729
+
+SWidget.tcl,1175
+proc tixScrolledWidget:CheckScrollbars404,7992
+proc tixScrolledWidget:ClientGeomProc129,2879
+proc tixScrolledWidget:Configure147,3221
+proc tixScrolledWidget:HandleLeftKey507,10211
+proc tixScrolledWidget:HandleLineDown501,10081
+proc tixScrolledWidget:HandleLineUp499,10039
+proc tixScrolledWidget:HandlePageDown505,10167
+proc tixScrolledWidget:HandlePageUp503,10125
+proc tixScrolledWidget:HandleRightKey509,10254
+proc tixScrolledWidget:InitWidgetRec31,697
+proc tixScrolledWidget:MasterGeomProc138,3056
+proc tixScrolledWidget:NeedScrollbar387,7742
+proc tixScrolledWidget:PlaceWindow380,7655
+proc tixScrolledWidget:RawDownKey476,9596
+proc tixScrolledWidget:RawLeftKey480,9671
+proc tixScrolledWidget:RawNextKey492,9895
+proc tixScrolledWidget:RawPriorKey488,9821
+proc tixScrolledWidget:RawRightKey484,9745
+proc tixScrolledWidget:RawUpKey472,9525
+proc tixScrolledWidget:Repack173,3662
+proc tixScrolledWidget:RepackHook177,3729
+proc tixScrolledWidget:ScrollCmd160,3422
+proc tixScrolledWidget:SetBindings55,1117
+proc tixScrolledWidget:config-scrollbar78,1855
+proc tixScrolledWidget:config-scrollbarspace110,2455
+proc tixScrolledWidget:config-sizebox119,2636
+
+SWindow.tcl,355
+proc tixScrolledWindow:ConstructWidget74,1703
+proc tixScrolledWindow:GeometryInfo231,5663
+proc tixScrolledWindow:InitWidgetRec65,1569
+proc tixScrolledWindow:PlaceWindow186,4325
+proc tixScrolledWindow:Scroll126,3018
+proc tixScrolledWindow:ScrollBarCB165,3705
+proc tixScrolledWindow:SetBindings101,2358
+proc tixScrolledWindow:WindowGeomProc114,2727
+
+Select.tcl,344
+proc tixSelect:CallCommand277,6343
+proc tixSelect:Destructor290,6657
+proc tixSelect:InitWidgetRec56,1350
+proc tixSelect:SetValue227,5205
+proc tixSelect:add140,3329
+proc tixSelect:button170,4056
+proc tixSelect:config-state68,1701
+proc tixSelect:config-value123,2909
+proc tixSelect:config-variable105,2527
+proc tixSelect:invoke182,4246
+
+Shell.tcl,72
+proc tixShell:CreateRootWidget33,692
+proc tixShell:config-title41,849
+
+SimpDlg.tcl,44
+proc tixSimpleDialog:ConstructWidget27,565
+
+StackWin.tcl,143
+proc tixStackWindow:ConstructWidget24,481
+proc tixStackWindow:Resize64,1254
+proc tixStackWindow:add37,800
+proc tixStackWindow:raise56,1124
+
+StatBar.tcl,41
+proc tixStatusBar:ConstructWidget32,572
+
+StdBBox.tcl,80
+proc tixStdButtonBox:ConstructWidget37,724
+proc tixStdButtonBox:config48,1117
+
+StdShell.tcl,94
+proc tixStdDialogShell:ConstructTopFrame44,952
+proc tixStdDialogShell:ConstructWidget25,479
+
+TList.tcl,2652
+proc tixTList:AutoScan316,5436
+proc tixTList:B1-Enter271,4779
+proc tixTList:B1-Leave254,4556
+proc tixTList:B1-Motion212,3927
+proc tixTList:Button-1114,2427
+proc tixTList:ButtonRelease-1183,3531
+proc tixTList:CallBrowseCmd979,17342
+proc tixTList:CallCommand989,17534
+proc tixTList:Control-B1-Enter302,5222
+proc tixTList:Control-B1-Leave288,5030
+proc tixTList:Control-B1-Motion229,4183
+proc tixTList:Control-Button-1160,3159
+proc tixTList:DirKey340,5822
+proc tixTList:DoScan949,16873
+proc tixTList:Double-1243,4401
+proc tixTList:GetState388,6616
+proc tixTList:GoState419,7068
+proc tixTList:GoState-12849,14843
+proc tixTList:GoState-13854,14928
+proc tixTList:GoState-14861,15097
+proc tixTList:GoState-16877,15479
+proc tixTList:GoState-18887,15644
+proc tixTList:GoState-20893,15758
+proc tixTList:GoState-21903,15962
+proc tixTList:GoState-22913,16168
+proc tixTList:GoState-b0543,9366
+proc tixTList:GoState-b1546,9397
+proc tixTList:GoState-b10639,10947
+proc tixTList:GoState-b2557,9605
+proc tixTList:GoState-b3560,9636
+proc tixTList:GoState-b4570,9819
+proc tixTList:GoState-b5580,10001
+proc tixTList:GoState-b6584,10057
+proc tixTList:GoState-b7590,10127
+proc tixTList:GoState-b8601,10314
+proc tixTList:GoState-b9619,10624
+proc tixTList:GoState-e0747,12991
+proc tixTList:GoState-e1750,13022
+proc tixTList:GoState-e10818,14197
+proc tixTList:GoState-e2761,13230
+proc tixTList:GoState-e3764,13261
+proc tixTList:GoState-e4772,13403
+proc tixTList:GoState-e5783,13625
+proc tixTList:GoState-e6786,13656
+proc tixTList:GoState-e7794,13806
+proc tixTList:GoState-e8810,14088
+proc tixTList:GoState-e9814,14144
+proc tixTList:GoState-m0662,11435
+proc tixTList:GoState-m1665,11466
+proc tixTList:GoState-m2676,11674
+proc tixTList:GoState-m3679,11705
+proc tixTList:GoState-m4687,11847
+proc tixTList:GoState-m5698,12069
+proc tixTList:GoState-m6701,12100
+proc tixTList:GoState-m7709,12250
+proc tixTList:GoState-m8725,12532
+proc tixTList:GoState-m9729,12588
+proc tixTList:GoState-s0434,7530
+proc tixTList:GoState-s1437,7561
+proc tixTList:GoState-s10520,8880
+proc tixTList:GoState-s2445,7697
+proc tixTList:GoState-s3448,7728
+proc tixTList:GoState-s4458,7911
+proc tixTList:GoState-s5465,8021
+proc tixTList:GoState-s6469,8077
+proc tixTList:GoState-s7475,8147
+proc tixTList:GoState-s8486,8334
+proc tixTList:GoState-s9500,8557
+proc tixTList:GoState-xm7733,12641
+proc tixTList:Return354,6040
+proc tixTList:Select939,16696
+proc tixTList:SetAnchor928,16506
+proc tixTList:SetState413,6989
+proc tixTList:Shift-Button-1137,2790
+proc tixTList:Space368,6244
+proc tixTList:StartScan944,16771
+proc tixTListBind23,652
+
+Tix.tcl,577
+proc tix14,317
+proc tixAppContext:BitmapInit271,6522
+proc tixAppContext:CheckFontSets301,7209
+proc tixAppContext:Constructor51,1017
+proc tixAppContext:FileDialogInit287,6829
+proc tixAppContext:StartupError498,11396
+proc tixAppContext:addbitmapdir333,8013
+proc tixAppContext:config-fontset166,3821
+proc tixAppContext:config-scheme215,5174
+proc tixAppContext:filedialog461,10680
+proc tixAppContext:getbitmap413,9656
+proc tixAppContext:getimage341,8171
+proc tixAppContext:option478,11083
+proc tixAppContext:platform487,11239
+proc tixAppContext:resetoptions151,3526
+
+Tree.tcl,440
+proc tixTree:BrowseCmd185,3850
+proc tixTree:CallSwitchCmd164,3491
+proc tixTree:CloseCmd152,3240
+proc tixTree:Command173,3639
+proc tixTree:ConstructWidget59,1476
+proc tixTree:InitWidgetRec53,1388
+proc tixTree:OpenCmd141,3063
+proc tixTree:SetBindings65,1568
+proc tixTree:SetModes110,2476
+proc tixTree:autosetmode76,1815
+proc tixTree:close80,1872
+proc tixTree:getmode98,2184
+proc tixTree:open89,2029
+proc tixTree:setmode102,2243
+
+UnixFile.tcl,537
+proc _tixFSMakeList184,3513
+proc tixDirSep196,3689
+proc tixFSInfo208,3867
+proc tixFSIntName53,963
+proc tixFSListDir107,2063
+proc tixFSResolveName61,1104
+proc tixFSSep45,872
+proc tixFSSplit23,492
+proc tixFSValid39,814
+proc tixFileDisplayName247,4767
+proc tixFileIntName224,4289
+proc tixFilePattern398,7294
+proc tixFileSplit256,4885
+proc tixInitFileCmpt:Unix13,309
+proc tixIsAbsPath385,7094
+proc tixListDir306,5696
+proc tixNativeName243,4708
+proc tixRootDir381,7059
+proc tixSubFolder287,5254
+proc tixVerifyFile394,7233
+
+Utils.tcl,816
+proc tixAddBindTag154,3342
+proc tixAppendBindTag150,3267
+proc tixBreak331,7291
+proc tixBusy215,4450
+proc tixDescendants74,1853
+proc tixDestroy336,7519
+proc tixDisableAll51,1347
+proc tixEnableAll62,1577
+proc tixForEach93,2177
+proc tixGetMegaWidget193,4024
+proc tixHandleArgv24,733
+proc tixInt_Expand138,3102
+proc tixListboxGetCurrent176,3654
+proc tixOptionName306,6648
+proc tixPConfig144,3193
+proc tixPopGrab407,8872
+proc tixPushGrab357,7818
+proc tixSetChooser316,6883
+proc tixSetMegaWidget187,3931
+proc tixSetSilent310,6731
+proc tixSubwidgetRef158,3415
+proc tixSubwidgetRetCreate164,3487
+proc tixSubwidgetRetDelete170,3570
+proc tixTopLevel123,2822
+proc tixUnsetMegaWidget199,4110
+proc tixWinCmd498,10862
+proc tixWinHeight489,10712
+proc tixWinWidth482,10572
+proc tixWithinWindow467,10243
+
+VResize.tcl,174
+proc tixVResize:DragCompressed151,3225
+proc tixVResize:InitWidgetRec35,769
+proc tixVResize:drag100,2291
+proc tixVResize:dragend114,2539
+proc tixVResize:dragstart50,1136
+
+VStack.tcl,559
+proc tixVStack:ClientGeomProc317,6880
+proc tixVStack:CreateChildFrame255,5496
+proc tixVStack:DestroyTop298,6622
+proc tixVStack:InitGeometryManager243,5227
+proc tixVStack:InitWidgetRec35,829
+proc tixVStack:MasterGeomProc304,6681
+proc tixVStack:RaiseChildFrame267,5773
+proc tixVStack:Resize337,7354
+proc tixVStack:SetBindings57,1193
+proc tixVStack:add67,1477
+proc tixVStack:delete88,1927
+proc tixVStack:pagecget121,2645
+proc tixVStack:pageconfigure145,3075
+proc tixVStack:pages204,4398
+proc tixVStack:raise210,4470
+proc tixVStack:raised234,4993
+
+VTree.tcl,432
+proc tixVTree:Activate112,2274
+proc tixVTree:BrowseCmd201,4118
+proc tixVTree:BrowseCmdHook136,2782
+proc tixVTree:CloseCmd179,3709
+proc tixVTree:Command188,3875
+proc tixVTree:CommandHook129,2673
+proc tixVTree:ConstructWidget36,643
+proc tixVTree:GetType93,1907
+proc tixVTree:IndicatorCmd56,1056
+proc tixVTree:InitWidgetRec30,554
+proc tixVTree:OpenCmd170,3544
+proc tixVTree:SetBindings45,826
+proc tixVTree:SetMode143,2895
+
+Variable.tcl,154
+proc tixVariable:ConfigVariable33,808
+proc tixVariable:DeleteVariable89,2118
+proc tixVariable:TraceProc78,1865
+proc tixVariable:UpdateVariable61,1414
+
+Verify.tcl,60
+proc tixVerifyBoolean13,303
+proc tixVerifyDirectory17,364
+
+Version.tcl,61
+proc tixScriptPatchLevel17,379
+proc tixScriptVersion14,338
+
+WInfo.tcl,21
+proc tixWInfo14,361
+
+WinFile.tcl,798
+proc tixDirSep306,6283
+proc tixFSGetDrives275,5684
+proc tixFSIntJoin135,2905
+proc tixFSIntName110,2459
+proc tixFSJoin143,3079
+proc tixFSListDir165,3606
+proc tixFSMakeList250,5288
+proc tixFSResolveName149,3175
+proc tixFSSep271,5650
+proc tixFSSplit35,795
+proc tixFSValid102,2334
+proc tixFileDisplayName462,9902
+proc tixFileIntName414,8753
+proc tixFilePattern611,12692
+proc tixFileSplit482,10336
+proc tixInitFileCmpt:Win13,312
+proc tixIsAbsPath322,6531
+proc tixListDir546,11472
+proc tixNativeName438,9352
+proc tixRootDir313,6388
+proc tixSubFolder515,10730
+proc tixVerifyFile607,12631
+proc tixWinCurrentDrive391,8215
+proc tixWinFileEmu624,12868
+proc tixWinGetDrives522,10828
+proc tixWinGetFileDrive342,6862
+proc tixWinGetFilePath366,7571
+proc tixWinGetPathFromDrive395,8279
+
+fs.tcl,540
+proc _tixJoin236,3824
+proc _tixNormalize265,4357
+proc tixAssert8,209
+proc tixAssertNorm12,254
+proc tixAssertVPath18,359
+proc tixFSAbsPath28,527
+proc tixFSCreateDirs306,5113
+proc tixFSDisplayName55,971
+proc tixFSIsAbsPath62,1070
+proc tixFSIsNorm75,1302
+proc tixFSIsNorm_os71,1243
+proc tixFSIsVPath134,2032
+proc tixFSIsValid130,1993
+proc tixFSNorm186,2894
+proc tixFSNormDir248,4014
+proc tixFSPWD46,836
+proc tixFSPath152,2284
+proc tixFSTildeSubst164,2507
+proc tixFSVPWD36,666
+proc tixFSVPath142,2149
+proc tixPanic570,9953
