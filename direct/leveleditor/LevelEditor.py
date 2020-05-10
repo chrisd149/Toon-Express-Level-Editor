@@ -11,7 +11,7 @@ from direct.directnotify import DirectNotifyGlobal
 from tkMessageBox import showinfo
 from tkFileDialog import *
 from Tkinter import *
-#from whrandom import *
+from whrandom import *
 from random import *
 from direct.tkwidgets import Floater
 from direct.tkwidgets import VectorWidgets
@@ -19,7 +19,7 @@ import string
 import os
 import getopt
 import sys
-#import whrandom
+import whrandom
 import random
 import types
 from direct.task import Task
@@ -53,14 +53,14 @@ useSnowTree = base.config.GetBool("use-snow-tree", 0)
 
 # Colors used by all color menus
 DEFAULT_COLORS = [
-    Vec4(1, 1, 1, 1),
+    Vec4(0, 1, 1, 1),
     Vec4(0.75, 0.75, 0.75, 1.0),
     Vec4(0.5, 0.5, 0.5, 1.0),
     Vec4(0.25, 0.25, 0.25, 1.0)
     ]
 
 # The list of items with color attributes
-COLOR_TYPES = ['wall_color', 'window_color', 'window_awning_color', 'sign_color', 
+COLOR_TYPES = ['wall_color', 'window_color', 'window_awning_color', 'sign_color',
                 'door_color', 'door_awning_color', 'cornice_color', 'prop_color']
 
 # The list of dna components maintained in the style attribute dictionary
@@ -190,11 +190,11 @@ except NameError:
     # __builtins__["foo"] syntax, since this file runs at the top
     # level.
     __builtin__.DNASTORE = DNASTORE = DNAStorage()
-    
+
     # Load the generic storage files
     loadDNAFile(DNASTORE, 'phase_4/dna/storage.dna', CSDefault, 1)
     loadDNAFile(DNASTORE, 'phase_5/dna/storage_town.dna', CSDefault, 1)
-    
+
     # Load all the neighborhood specific storage files
     if 'ES' in hoods:
         loadDNAFile(DNASTORE, 'phase_5.5/dna/storage_estate.dna', CSDefault, 1)
@@ -253,11 +253,11 @@ except NameError:
 class LevelEditor(NodePath, DirectObject):
     """Class used to create a Toontown LevelEditor object"""
     notify = DirectNotifyGlobal.directNotify.newCategory('LevelEditor')
-    
+
     # Init the list of callbacks:
     selectedNodePathHookHooks=[]
     deselectedNodePathHookHooks=[]
-    
+
     # Primary variables:
     # DNAData: DNA object holding DNA info about level
     # DNAToplevel: Top level DNA Node, all DNA objects descend from this node
@@ -294,7 +294,7 @@ class LevelEditor(NodePath, DirectObject):
         self.createInsertionMarker()
         # Create level Editor Panel
         self.panel = LevelEditorPanel(self)
-        
+
         # Used to store whatever edges and points are loaded in the level
         self.edgeDict = {}
         self.np2EdgeDict = {}
@@ -314,7 +314,7 @@ class LevelEditor(NodePath, DirectObject):
         self.reset(fDeleteToplevel = 0, fCreateToplevel = 1)
 
         base.accept('o', base.oobe)
-        
+
         # The list of events the level editor responds to
         self.actionEvents = [
             # Node path events
@@ -475,7 +475,7 @@ class LevelEditor(NodePath, DirectObject):
         self.fov = 60
         self.isPageUp=0
         self.isPageDown=0
-        
+
         #Make maya mode on by default
         self.panel.fMaya.set(1)
         self.panel.toggleMaya()
@@ -643,7 +643,7 @@ class LevelEditor(NodePath, DirectObject):
         # Renable mouse
         self.enableMouse()
         base.direct.enable()
-        
+
         # [gjeon]  disable avatar and controlManager
         if (self.controlManager):
             self.controlManager.disable()
@@ -1931,52 +1931,6 @@ class LevelEditor(NodePath, DirectObject):
                 ):
                 self.panel.setCurrentColor(self.DNATarget.getColor())
 
-##        b1 = DirectButton(text = ("Button1", "click!", "roll", "disabled"),
-##                  text_scale=0.1, borderWidth = (0.01, 0.01),
-##                  relief=2)
-##
-##        b2 = DirectButton(text = ("Button2", "click!", "roll", "disabled"),
-##                  text_scale=0.1, borderWidth = (0.01, 0.01),
-##                  relief=2)
-##
-##        l1 = DirectLabel(text = "Test1", text_scale=0.1)
-##        l2 = DirectLabel(text = "Test2", text_scale=0.1)
-##        l3 = DirectLabel(text = "Test3", text_scale=0.1)
-##
-##        numItemsVisible = 4
-##        itemHeight = 0.11
-##
-##        myScrolledList = DirectScrolledList(
-##                decButton_pos= (0.35, 0, 0.53),
-##                decButton_text = "Dec",
-##                decButton_text_scale = 0.04,
-##                decButton_borderWidth = (0.005, 0.005),
-##
-##                incButton_pos= (0.35, 0, -0.02),
-##                incButton_text = "Inc",
-##                incButton_text_scale = 0.04,
-##                incButton_borderWidth = (0.005, 0.005),
-##
-##                frameSize = (0.0, 0.7, -0.05, 0.59),
-##                frameColor = (1,0,0,0.5),
-##                pos = (-1, 0, 0),
-##                items = [b1, b2],
-##                numItemsVisible = numItemsVisible,
-##                forceHeight = itemHeight,
-##                itemFrame_frameSize = (-0.2, 0.2, -0.37, 0.11),
-##                itemFrame_pos = (0.35, 0, 0.4),
-##        )
-##
-##        myScrolledList.addItem(l1)
-##        myScrolledList.addItem(l2)
-##        myScrolledList.addItem(l3)
-##
-##        for fruit in ['apple', 'pear', 'banana', 'orange']:
-##            l = DirectLabel(text = fruit, text_scale=0.1)
-##            myScrolledList.addItem(l)
-##
-##        myScrolledList.reparentTo(aspect2d)
-
 
     def setDNATargetColor(self, color):
         if self.DNATarget:
@@ -3072,6 +3026,7 @@ class LevelEditor(NodePath, DirectObject):
         return edgeLine
 
     def drawSuitPoint(self, suitPoint, pos, type, parent):
+        print('Epic')
         marker = self.suitPointMarker.copyTo(parent)
         marker.setName("suitPointMarker")
         marker.setPos(pos)
@@ -3090,6 +3045,7 @@ class LevelEditor(NodePath, DirectObject):
         return marker
 
     def placeSuitPoint(self):
+        print('Congrats')
         if DNAClassEqual(self.DNAParent, DNA_VIS_GROUP):
             v = self.getGridSnapIntersectionPoint()
             # get the absolute pos relative to the top level.
@@ -3368,8 +3324,8 @@ class LevelEditor(NodePath, DirectObject):
         visGroups = self.getDNAVisGroups(self.NPToplevel)
         for visGroup in visGroups:
             np = visGroup[0]
-            np.setColor(0.5 + random.random()/2.0, 
-                        0.5 + random.random()/2.0, 
+            np.setColor(0.5 + random.random()/2.0,
+                        0.5 + random.random()/2.0,
                         0.5 + random.random()/2.0)
 
     def clearZoneColors(self):
@@ -4172,10 +4128,15 @@ class LevelEditor(NodePath, DirectObject):
         else:
             self.autosaver_thread.start()
 
+    def quickAutoSaver(self):
+        global sleep_time
+        sleep_time = 900
+        self.autosaver_thread.start()
+
     def autosaver(self):
         """This function uses the imputed sleep_time to auto save the current file.
 
-        Note: There is no way of killing the process without multiprocessing, which isn't available for Python 2."""
+        Note: There is no way of killing the process without multiprocessing, which isn't available for Python 2.4."""
         try:
             print 'Auto-saver process started! File will be saved every', (sleep_time), 'seconds.'
             while True:
@@ -4190,6 +4151,27 @@ class LevelEditor(NodePath, DirectObject):
         url = 'https://github.com/chrisd149/Toon-Express/blob/master/README.md'
         webbrowser.open(url)
 
+    def controls(self):
+        print("\n<--Controls-->\n"
+              "\n<-Camera->\n"
+              "1, 2, 3, 4: Levels camera with object from 4 directions\n"
+              "5, 6: Pans camera directly above/below slected object\n"
+              "7: Centers selected object\n"
+              "8: Rotates camera\n"
+              "9, 0: Rotates camera around selected object\n"
+              "+, -: Zooms camera in/out towards selected object\n"
+              "\n<-Objects->\n"
+              "Arrow Keys: Move selected objects on X & Z axis\n"
+              "Arrow Keys + Ctrl Key: Move selected objects up or down\n"
+              "Arrow Keys + Shift Key: Moves objects X & Z axis more precisely\n"
+              "Arrow Keys + Ctrl Key + Shift Key: Rotates objects along selected point\n"
+              "J: Moves objects to origin (0, 0, 0)\n"
+              "A: Moves grid to selected object or point\n"
+              "\n<-Misc->\n"
+              "F10: Exports DNA file to BAM file\n"
+              "K: ???\n"
+              "K + Shift Key: Highlights all objects in the same visgroup as a landmark building\n"
+              "")
 
 class LevelEditorPanel(Pmw.MegaToplevel):
     def __init__(self, levelEditor, parent = None, **kw):
@@ -4295,19 +4277,27 @@ class LevelEditorPanel(Pmw.MegaToplevel):
                             label = 'Reload Bldg Styles',
                             command = self.styleManager.createBuildingStyleAttributes)
 
-        menuBar.addmenu('Help', 'Level Editor Help Operations')
-        self.toggleBalloonVar = IntVar()
-        self.toggleBalloonVar.set(0)
-        menuBar.addmenuitem('Help', 'checkbutton',
-                            'Documentation',
-                            label='Documentation',
-                            command=self.levelEditor.open_documentation)
-
         menuBar.addmenu('Auto-saver', 'Auto-saver Operations')
         menuBar.addmenuitem('Auto-saver', 'command',
                             'Toggle Auto-saver',
-                            label='Toggle Auto-saver',
+                            label='Start Auto-Saver',
                             command=self.levelEditor.selectSleepTime)
+        menuBar.addmenuitem('Auto-saver', 'command',
+                            '15-Minute Auto-Saver',
+                            label='15-Minute Auto-Saver',
+                            command=self.levelEditor.quickAutoSaver)
+
+        menuBar.addmenu('Help', 'Level Editor Help Operations')
+        self.toggleBalloonVar = IntVar()
+        self.toggleBalloonVar.set(0)
+        menuBar.addmenuitem('Help', 'command',
+                            'Documentation',
+                            label='Documentation',
+                            command=self.levelEditor.open_documentation)
+        menuBar.addmenuitem('Help', 'command',
+                            'Controls',
+                            label='Controls',
+                            command=self.levelEditor.controls)
 
         self.editMenu = Pmw.ComboBox(
             menuFrame, labelpos = W,
@@ -4827,7 +4817,7 @@ class LevelEditorPanel(Pmw.MegaToplevel):
                 base.direct.widget.disableHandles(['x-ring', 'x-disc', 'y-ring', 'y-disc', 'z-post'])
             else:
                 base.direct.widget.enableHandles('all')
-        
+
         self.fPlaneSnap = IntVar()
         self.fPlaneSnap.set(0)
         self.planeSnapButton = Checkbutton(buttonFrame,
@@ -4836,7 +4826,7 @@ class LevelEditorPanel(Pmw.MegaToplevel):
                                            variable = self.fPlaneSnap,
                                            command = toggleWidgetHandles)
         self.planeSnapButton.pack(side = LEFT, expand = 1, fill = X)
-        
+
         toggleWidgetHandles()
 
         self.fGrid = IntVar()
@@ -4934,7 +4924,7 @@ class LevelEditorPanel(Pmw.MegaToplevel):
     def toggleMaya(self):
         base.direct.cameraControl.lockRoll = self.fMaya.get()
         direct.cameraControl.useMayaCamControls = self.fMaya.get()
-        
+
     def toggleGrid(self):
         if self.fGrid.get():
             base.direct.grid.enable()
