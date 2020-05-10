@@ -2,7 +2,7 @@ Toon Express is a modifed, easy to use level editor for making levels in Toontow
 
 * Most assets from Toontown Online in 2013
 * The ability to add and modify visgroups
-* Panda3D level editor for modifying and creating 
+* Panda3D level editor for modifying and creating DNA files
 
 New features include:
 
