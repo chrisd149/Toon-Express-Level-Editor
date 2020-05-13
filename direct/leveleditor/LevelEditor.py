@@ -401,7 +401,7 @@ class LevelEditor(NodePath, DirectObject):
             ('page_up', base.direct),
             ('page_down',  base.direct)
             ]
-
+        base.accept('shift-a', self.quickAutoSaver)
         # Initialize state
         # Make sure direct is running
         base.direct.enable()
@@ -3026,7 +3026,6 @@ class LevelEditor(NodePath, DirectObject):
         return edgeLine
 
     def drawSuitPoint(self, suitPoint, pos, type, parent):
-        print('Epic')
         marker = self.suitPointMarker.copyTo(parent)
         marker.setName("suitPointMarker")
         marker.setPos(pos)
@@ -3122,7 +3121,7 @@ class LevelEditor(NodePath, DirectObject):
                 # First point, store it
                 self.startSuitPoint = suitPoint
         else:
-            print 'Error: DNAParent is not a VisGroup.'
+            print 'Error: DNAParent is not a VisGroup.  Please reparent to a VisGroup.'
 
     def highlightConnected(self, nodePath = None, fReversePath = 0):
         if nodePath == None:
@@ -3189,7 +3188,7 @@ class LevelEditor(NodePath, DirectObject):
     def placeBattleCell(self):
         # Store the battle cell in the current vis group
         if not DNAClassEqual(self.DNAParent, DNA_VIS_GROUP):
-            print 'Error: DNAParent is not a dnaVisGroup. Did not add battle cell'
+            print 'Error: DNAParent is not a dnaVisGroup. Did not add battle cell.'
             return
 
         v = self.getGridSnapIntersectionPoint()
@@ -4130,6 +4129,7 @@ class LevelEditor(NodePath, DirectObject):
 
     def quickAutoSaver(self):
         global sleep_time
+        """sleep_time can be redefined here for the quick auto save feature."""
         sleep_time = 900
         self.autosaver_thread.start()
 
@@ -4144,6 +4144,7 @@ class LevelEditor(NodePath, DirectObject):
                 self.autoSaveDNADefaultFile()
                 print('Successfully saved file!')
         except ValueError:
+            print('Dang man.')
             raise ValueError
 
     @staticmethod
@@ -4152,26 +4153,32 @@ class LevelEditor(NodePath, DirectObject):
         webbrowser.open(url)
 
     def controls(self):
-        print("\n<--Controls-->\n"
-              "\n<-Camera->\n"
-              "1, 2, 3, 4: Levels camera with object from 4 directions\n"
-              "5, 6: Pans camera directly above/below slected object\n"
-              "7: Centers selected object\n"
-              "8: Rotates camera\n"
-              "9, 0: Rotates camera around selected object\n"
-              "+, -: Zooms camera in/out towards selected object\n"
-              "\n<-Objects->\n"
-              "Arrow Keys: Move selected objects on X & Z axis\n"
-              "Arrow Keys + Ctrl Key: Move selected objects up or down\n"
-              "Arrow Keys + Shift Key: Moves objects X & Z axis more precisely\n"
-              "Arrow Keys + Ctrl Key + Shift Key: Rotates objects along selected point\n"
-              "J: Moves objects to origin (0, 0, 0)\n"
-              "A: Moves grid to selected object or point\n"
-              "\n<-Misc->\n"
-              "F10: Exports DNA file to BAM file\n"
-              "K: ???\n"
-              "K + Shift Key: Highlights all objects in the same visgroup as a landmark building\n"
-              "")
+        showinfo("Controls",
+                 "Camera:\n"
+                 "1, 2, 3, 4: Levels camera with object from 4 directions\n"
+                 "5, 6: Pans camera directly above/below slected object\n"
+                 "7: Centers selected object\n"
+                 "8: Rotates camera\n"
+                 "9, 0: Rotates camera around selected object\n"
+                 "+, -: Zooms camera in/out towards selected object\n"
+                 "\nObjects:\n"
+                 "Arrow Keys: Move selected objects on X & Z axis\n"
+                 "Arrow Keys + Ctrl Key: Move selected objects up or down\n"
+                 "Arrow Keys + Shift Key: Moves objects X & Z axis more precisely\n"
+                 "Arrow Keys + Ctrl Key + Shift Key: Rotates objects along selected point\n"
+                 "J: Moves objects to origin (0, 0, 0)\n"
+                 "A: Moves grid to selected object or point\n"
+                 "\nMisc:\n"
+                 "F10: Exports DNA file to BAM file\n"
+                 "K: ???\n"
+                 "K + Shift Key: Highlights all objects in the same visgroup as a landmark building\n"
+                 "W: Toggles wireframe texture to all objects\n"
+                 "T: Replaces all textures with solid colors\n"
+                 "L: Toggles environmental lights"
+                 "B: Toggles backfaces on all textures/models"
+                 "Shift + A: Toggle Quick Auto-Saver"
+                 )
+
 
 class LevelEditorPanel(Pmw.MegaToplevel):
     def __init__(self, levelEditor, parent = None, **kw):
@@ -4284,7 +4291,7 @@ class LevelEditorPanel(Pmw.MegaToplevel):
                             command=self.levelEditor.selectSleepTime)
         menuBar.addmenuitem('Auto-saver', 'command',
                             '15-Minute Auto-Saver',
-                            label='15-Minute Auto-Saver',
+                            label='Quick Auto-Saver',
                             command=self.levelEditor.quickAutoSaver)
 
         menuBar.addmenu('Help', 'Level Editor Help Operations')
