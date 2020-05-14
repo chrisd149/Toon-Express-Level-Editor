@@ -10,8 +10,9 @@ New features include:
 * Updated controls and documentation
 * Improved suit point and battle cell placement
 
-Features to come:
+Features to come: 
 
+* Full documentation/wiki
 * Screenshots of DNA file from different angles + information
 * Transition to Python 2.7
 * General QoL updates
