@@ -472,7 +472,7 @@ class LevelEditor(NodePath, DirectObject):
         # [gjeon] to control drive mode
         self.controlManager = None
         self.avatar = None
-        self.fov = 60
+        self.fov = 75
         self.isPageUp=0
         self.isPageDown=0
 
@@ -720,15 +720,10 @@ class LevelEditor(NodePath, DirectObject):
 
         self.avatar.setPos(base.camera.getPos())
         self.avatar.reparentTo(render)
+        self.avatar.setBlend(frameBlend=True)
         Sequence(Func(self.avatar.robot.animFSM.request, 'TeleportIn'), Wait(1.5), Func(self.avatar.robot.animFSM.request, 'neutral')).start()
 
-##         pos = base.direct.camera.getPos()
-##         pos.setZ(4.0)
-##         hpr = base.direct.camera.getHpr()
-##         hpr.set(hpr[0], 0.0, 0.0)
-##         t = base.direct.camera.lerpPosHpr(pos, hpr, 1.0, blendType = 'easeInOut',
-##                                    task = 'manipulateCamera')
-        # Note, if this dies an unatural death, this could screw things up
+        # Note, if this dies an unnatural death, this could screw things up
         # t.uponDeath = self.switchToDriveMode
         self.switchToDriveMode(None)
         self.fDrive = True
@@ -744,34 +739,14 @@ class LevelEditor(NodePath, DirectObject):
         #base.direct.manipulationControl.disableManipulation()
         # Update vis data
         self.initVisibilityData()
-##         # Switch to drive mode
-##         base.useDrive()
-##         # Move cam up and back
-##         base.cam.setPos(0, -5, 4)
-##         # And move down and forward to compensate
-##         base.camera.setPos(base.camera, 0, 5, -4)
-##         # Make sure we're where we want to be
-##         pos = base.direct.camera.getPos()
-##         pos.setZ(0.0)
-##         hpr = base.direct.camera.getHpr()
-##         hpr.set(hpr[0], 0.0, 0.0)
-##         # Fine tune the drive mode
-##         base.mouseInterface.node().setPos(pos)
-##         base.mouseInterface.node().setHpr(hpr)
-##         base.mouseInterface.node().setForwardSpeed(0)
-##         base.mouseInterface.node().setReverseSpeed(0)
 
         cameraPos = base.camera.getPos(self.avatar)
         base.camera.reparentTo(self.avatar)
         base.camera.setPos(cameraPos)
-        base.camera.setHpr(0, 0, 0)
-        #base.camera.setPos(0, 0, 0)
-        base.camera.setPos(0, -11.8125, 3.9375)
+        base.camera.setHpr(0, 0, -30)
+        base.camera.setPos(0, -12, 5)
 
         base.camLens.setFov(VBase2(60, 46.8265))
-
-        #self.initializeSmartCameraCollisions()
-        #self._smartCamEnabled = False
 
         # Turn on collisions
         if self.panel.fColl.get():
@@ -3050,7 +3025,10 @@ class LevelEditor(NodePath, DirectObject):
             # That is what gets stored in the point
             mat = base.direct.grid.getMat(self.NPToplevel)
             absPos_old = Point3(mat.xformPoint(v))
-            absPos = Point3(absPos_old.getX(), absPos_old.getY(), absPos_old.getZ() - 0.5)
+            if self.currentSuitPointType == DNASuitPoint.STREETPOINT:
+                absPos = Point3(absPos_old.getX(), absPos_old.getY(), absPos_old.getZ() - 0.5)
+            else:
+                absPos = absPos_old
             print 'Suit point: ' + `absPos`
             # Store the point in the DNA. If this point is already in there,
             # it returns the existing point
