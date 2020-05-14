@@ -3044,13 +3044,13 @@ class LevelEditor(NodePath, DirectObject):
         return marker
 
     def placeSuitPoint(self):
-        print('Congrats')
         if DNAClassEqual(self.DNAParent, DNA_VIS_GROUP):
             v = self.getGridSnapIntersectionPoint()
             # get the absolute pos relative to the top level.
             # That is what gets stored in the point
             mat = base.direct.grid.getMat(self.NPToplevel)
-            absPos = Point3(mat.xformPoint(v))
+            absPos_old = Point3(mat.xformPoint(v))
+            absPos = Point3(absPos_old.getX(), absPos_old.getY(), absPos_old.getZ() - 0.5)
             print 'Suit point: ' + `absPos`
             # Store the point in the DNA. If this point is already in there,
             # it returns the existing point
