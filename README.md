@@ -23,7 +23,7 @@ Note: Windows is the only OS supported as of now, Linux support will come at a l
 
 1. Clone repository
 2. Extract folder if compressed
-3. Navigate to local repository folder
+3. Place phase folders from your choice of source (TTO phase files, etc) into local repository folder
 4. Select *start_level_editor.bat*
 
 A command prompt window will open, and code will start running.  Several windows will open, and will become enabled after the program is fully loaded.  
