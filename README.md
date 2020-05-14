@@ -1,4 +1,4 @@
-Toon Express is a modifed, easy to use level editor for making levels in Toontown.  It uses source code from Disney's inhouse Toontown Online level editor that was used to quickly make and edit most streets and playgrounds.  The program was and still is very buggy and somewhat hard to use, so I decided to revamp the editor with QoL features and It currently features:
+Toon Express is a modifed, easy to use level editor for making levels in Toontown.  It uses source code from Disney's inhouse Toontown Online level editor that was used to quickly make and edit most streets and playgrounds.  The program was and still is very buggy and somewhat hard to use, so I decided to revamp the editor with QoL features and bug fixes. It currently features:
 
 * Most assets from Toontown Online in 2013
 * The ability to add and modify visgroups
