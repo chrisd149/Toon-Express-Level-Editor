@@ -1,4 +1,4 @@
-Toon Express is a modifed, easy to use level editor for making levels in Toontown.  It uses source code from Disney's inhouse Toontown Online level editor that was used to quickly make and edit most streets and playgrounds.  The program was and still is very buggy and somewhat hard to use, so I decided to revamp the editor with QoL features and bug fixes. It currently features:
+Toon Express is a modifed, easy to use level editor for making levels in Toontown.  It uses source code from Disney's inhouse Toontown Online level editor that was used to quickly make and edit most streets and playgrounds.  The program uses libpandadna as a dna parser for dna files, and a working Panda3D level editor.  The program was and still is very buggy and somewhat hard to use, so I decided to revamp the editor with QoL features and bug fixes. It currently features:
 
 * Most assets from Toontown Online in 2013
 * The ability to add and modify visgroups
@@ -10,8 +10,9 @@ New features include:
 * Updated controls and documentation
 * Improved suit point and battle cell placement
 
-Features to come:
+Features to come: 
 
+* Full documentation/wiki
 * Screenshots of DNA file from different angles + information
 * Transition to Python 2.7
 * General QoL updates
@@ -22,11 +23,16 @@ Note: Windows is the only OS supported as of now, Linux support will come at a l
 
 1. Clone repository
 2. Extract folder if compressed
-3. Navigate to local repository folder
+3. Place phase folders from your choice of source (TTO phase files, etc) into local repository folder
 4. Select *start_level_editor.bat*
 
 A command prompt window will open, and code will start running.  Several windows will open, and will become enabled after the program is fully loaded.  
 
+<h2>Issues</h2>
+
+Since this program is very buggy, some DNA files are unable to be edited.  Currently all TTR, TTCC and TTO DNA files have been tested and work as of now.  
+
+The auto-saver cannot be cancelled as of now, but it will still auto-save even if you change working DNA file or manually save the file.  
 
 <h2>Built With</h2>
 
