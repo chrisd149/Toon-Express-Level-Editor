@@ -330,6 +330,7 @@ class LevelEditor(NodePath, DirectObject):
             # Actions in response to Level Editor Panel operations
             ('SGE_Add Group', self.addGroup),
             ('SGE_Add Vis Group', self.addVisGroup),
+            ('SGE_Add Temp Group', self.addTempGroup),
             # Actions in response to Pie Menu interaction
             ('select_building_style_all', self.setBuildingStyle),
             ('select_building_type', self.setBuildingType),
@@ -488,6 +489,8 @@ class LevelEditor(NodePath, DirectObject):
 
         #Makes auto-saver thread
         self.autosaver_thread = threading.Thread(name='Auto-saver', target=self.autosaver)
+
+        self.group_num = 0
 
     # ENABLE/DISABLE
     def enable(self):
@@ -1521,15 +1524,33 @@ class LevelEditor(NodePath, DirectObject):
         # Add a new group to the selected parent
         self.createNewGroup(type = 'vis')
 
+    def addTempGroup(self, nodePath):
+        # Set the node path as the current parent
+        base.direct.setActiveParent(nodePath)
+        # creates visgroup
+        self.createNewGroup(type='vis')
+
+        # creates 3 groups reparented to our visgroup, will be named streets, buildings, and props
+        self.createTempGroup()
+        self.createTempGroup()
+        self.createTempGroup()
+
+        # resets group_num to 0
+        self.group_num = 0
+
     def createNewGroup(self, type = 'dna'):
         print "createNewGroup"
         """ Create a new DNA Node group under the active parent """
         # Create a new DNA Node group
         if type == 'dna':
             newDNANode = DNANode('group_' + `self.getGroupNum()`)
+            # The new Node group becomes the active parent
         else:
             newDNANode = DNAVisGroup('VisGroup' + `self.getGroupNum()`)
             # Increment group counter
+
+        self.setGroupNum(self.getGroupNum() + 1)
+        newDNANode = DNAVisGroup('VisGroup' + `self.getGroupNum()`)
         self.setGroupNum(self.getGroupNum() + 1)
         # Add new DNA Node group to the current parent DNA Object
         self.DNAParent.add(newDNANode)
@@ -1539,8 +1560,32 @@ class LevelEditor(NodePath, DirectObject):
         newNodePath = self.DNAParent.traverse(self.NPParent, DNASTORE, 1)
         # Update NPParent to point to the new node path
         self.NPParent = newNodePath
-        # Update scene graph explorer
-        # self.panel.sceneGraphExplorer.update()
+
+    # creates visgroup with 3 template groups reparented
+    def createTempGroup(self, type='dna'):
+        print('createTempGroup')
+        groups = {1: 'streets', 2: 'buildings', 3: 'props'}
+        if type != 'dna':
+            newDNANode = DNAVisGroup('VisGroup' + `self.getGroupNum()`)
+            self.setGroupNum(self.getGroupNum() + 1)
+            # Add new DNA Node group to the current parent DNA Object
+            self.DNAParent.add(newDNANode)
+            # The new Node group becomes the active parent
+            self.DNAParent = newDNANode
+            # Traverse it to generate the new node path as a child of NPParent
+            newNodePath = self.DNAParent.traverse(self.NPParent, DNASTORE, 1)
+            # Update NPParent to point to the new node path
+            self.NPParent = newNodePath
+        elif type == 'dna':
+            self.group_num = self.group_num + 1
+            for items in groups:
+                newDNANode = DNANode(groups.get(self.group_num))
+            # Add new DNA Node group to the current parent DNA Object
+            self.DNAParent.add(newDNANode)
+            # The new Node group becomes the active parent
+            self.DNAParent = newDNANode
+            # Traverse it to generate the new node path as a child of NPParent
+            newNodePath = self.DNAParent.traverse(self.NPParent, DNASTORE, 1)
 
     def addFlatBuilding(self, buildingType):
         # Create new building
@@ -4756,7 +4801,7 @@ class LevelEditorPanel(Pmw.MegaToplevel):
         self.sceneGraphExplorer = SceneGraphExplorer(
             parent = sceneGraphPage,
             nodePath = self.levelEditor,
-            menuItems = ['Add Group', 'Add Vis Group'])
+            menuItems = ['Add Group', 'Add Vis Group', 'Add Temp Group'])
         self.sceneGraphExplorer.pack(expand = 1, fill = BOTH)
 
         # Compact down notebook
