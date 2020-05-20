@@ -50,7 +50,7 @@ Main Author: Christian M Diaz
 
 *	GitHub UserName: **@chrisd149**
 
-*	Discord Username: **chrisd149#7640**
+*	Discord Username: **Bobby14949#7640**
 
 *	Twitter: **@miguel_TTR**
 
