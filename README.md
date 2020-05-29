@@ -1,5 +1,8 @@
 Toon Express is a modifed, easy to use level editor for making levels in Toontown.  It uses source code from Disney's inhouse Toontown Online level editor that was used to quickly make and edit most streets and playgrounds.  The program uses libpandadna as a dna parser for dna files, and a working Panda3D level editor.  The program was and still is very buggy and somewhat hard to use, so I decided to revamp the editor with QoL features and bug fixes. It currently features:
 
+
+Notice: Toon Express nor any contributors to Toon Express are assoiated with The Walt Disney Company, or Toontown Online.  By downloading and using Toon Express, you agree to release any employees of Disney and/or Toontown Online from any liablity caused to you from the use of Toon Express.  
+
 * Most assets from Toontown Online in 2013
 * The ability to add and modify visgroups
 * Panda3D level editor for modifying and creating DNA files
@@ -50,7 +53,7 @@ Main Author: Christian M Diaz
 
 *	GitHub UserName: **@chrisd149**
 
-*	Discord Username: **Bobby14949#7640**
+*	Discord Username: **Bobby149#7640**
 
 *	Twitter: **@miguel_TTR**
 
