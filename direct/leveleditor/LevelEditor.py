@@ -11,7 +11,6 @@ from direct.directnotify import DirectNotifyGlobal
 from tkMessageBox import showinfo
 from tkFileDialog import *
 from Tkinter import *
-from whrandom import *
 from random import *
 from direct.tkwidgets import Floater
 from direct.tkwidgets import VectorWidgets
@@ -19,7 +18,6 @@ import string
 import os
 import getopt
 import sys
-import whrandom
 import random
 import types
 from direct.task import Task
@@ -257,6 +255,7 @@ class LevelEditor(NodePath, DirectObject):
     # Init the list of callbacks:
     selectedNodePathHookHooks=[]
     deselectedNodePathHookHooks=[]
+    sleep_time = int
 
     # Primary variables:
     # DNAData: DNA object holding DNA info about level
@@ -593,7 +592,7 @@ class LevelEditor(NodePath, DirectObject):
             self.panel.sceneGraphExplorer.update()
 
         self.outputFile = None
-        self.panel["title"] = 'Level Editor: No file loaded'
+        self.panel["title"] = 'Toon Express Level Editor: No file loaded'
 
     def deleteToplevel(self):
         # Destory old toplevel node path and DNA
@@ -2764,7 +2763,7 @@ class LevelEditor(NodePath, DirectObject):
         self.hideBattleCells()
         # Set the title bar to have the filename to make it easier
         # to remember what file you are working on
-        self.panel["title"] = 'Level Editor: ' + os.path.basename(filename)
+        self.panel["title"] = 'Toon Express Level Editor: ' + os.path.basename(filename)
         self.panel.sceneGraphExplorer.update()
         neighborhood = self.neighborhood
         base.accept('f10', writeDNAToBamFile,[ filename, neighborhood ])
@@ -4145,7 +4144,7 @@ class LevelEditor(NodePath, DirectObject):
 
     def selectSleepTime(self):
         global sleep_time
-        sleep_time = input('Select the time in between auto-saves in seconds:')
+        sleep_time = input('Select the time in between auto-saves in minutes: ')
         if sleep_time == string:
             print("Oops! Type in a positive number.")
         else:
@@ -4154,7 +4153,7 @@ class LevelEditor(NodePath, DirectObject):
     def quickAutoSaver(self):
         global sleep_time
         """sleep_time can be redefined here for the quick auto save feature."""
-        sleep_time = 900
+        sleep_time = 15
         self.autosaver_thread.start()
 
     def autosaver(self):
@@ -4162,9 +4161,9 @@ class LevelEditor(NodePath, DirectObject):
 
         Note: There is no way of killing the process without multiprocessing, which isn't available for Python 2.4."""
         try:
-            print 'Auto-saver process started! File will be saved every', sleep_time, 'seconds.'
+            print 'Auto-saver process started! File will be saved every', sleep_time, 'minutes.'
             while True:
-                sleep(sleep_time)
+                sleep(sleep_time * 60)
                 self.autoSaveDNADefaultFile()
                 print('Successfully saved file!')
         except ValueError:
@@ -4199,6 +4198,8 @@ class LevelEditor(NodePath, DirectObject):
                  "L: Toggles environmental lights"
                  "B: Toggles backfaces on all textures/models"
                  "Shift + A: Toggle Quick Auto-Saver"
+                 "Shift + S: Places a suit path"
+                 "Shift + C: Places a battle cell"
                  )
 
 
