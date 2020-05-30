@@ -4162,20 +4162,19 @@ class LevelEditor(NodePath, DirectObject):
 
         Note: There is no way of killing the process without multiprocessing, which isn't available for Python 2.4."""
         try:
-            print('Auto-saver process started! File will be saved every', sleep_time, 'seconds.')
+            print 'Auto-saver process started! File will be saved every', sleep_time, 'seconds.'
             while True:
                 sleep(sleep_time)
                 self.autoSaveDNADefaultFile()
                 print('Successfully saved file!')
         except ValueError:
-            print('Dang man.')
             raise ValueError
 
-    def open_documentation():
+    def open_documentation(self):
         url = 'https://github.com/chrisd149/Toon-Express/blob/master/README.md'
         webbrowser.open(url)
 
-    def controls():
+    def controls(self):
         showinfo("Controls",
                  "Camera:\n"
                  "1, 2, 3, 4: Levels camera with object from 4 directions\n"
