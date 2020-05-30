@@ -4171,7 +4171,7 @@ class LevelEditor(NodePath, DirectObject):
             raise ValueError
 
     def open_documentation(self):
-        url = 'https://github.com/chrisd149/Toon-Express/blob/master/README.md'
+        url = 'https://github.com/chrisd149/Toon-Express-Level-Editor/wiki'
         webbrowser.open(url)
 
     def controls(self):
