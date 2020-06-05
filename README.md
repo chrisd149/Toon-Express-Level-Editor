@@ -54,7 +54,7 @@ Main Collaborator: Christian M Diaz
 
 *	Discord Username: **Bobby149#7640**
 
-*	Twitter: **@miguel_TTR**
+*	Twitter: **@Toon_Express**
 
 * Email: **christianmigueldiaz@gmail.com**
 	* Active Hours Weekdays: 12pm - 12am EST
