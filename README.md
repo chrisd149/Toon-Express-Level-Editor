@@ -45,9 +45,9 @@ The auto-saver cannot be cancelled as of now, but it will still auto-save even i
 
 
 
-<h2>Authors</h2>
+<h2>Collaborators</h2>
 
-Main Author: Christian M Diaz
+Main Collaborator: Christian M Diaz
 
 <h3>Contact Info</h3>
 
@@ -60,3 +60,8 @@ Main Author: Christian M Diaz
 * Email: **christianmigueldiaz@gmail.com**
 	* Active Hours Weekdays: 12pm - 12am EST
 	* Active Hours Weekend: 2pm - 3am EST (Some of the time im availiable to 6am on the weekends)
+	
+<h2>Collaborators</h2>
+We welcome any collaborators, just contact the main collaborator via any contact method.
+
+
