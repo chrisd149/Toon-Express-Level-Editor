@@ -33,7 +33,7 @@ A command prompt window will open, and code will start running.  Several windows
 
 <h2>Issues</h2>
 
-Since this program is very buggy, some DNA files are unable to be edited.  Currently all TTR, TTCC and TTO DNA files have been tested and work as of now.  
+Since this program is very buggy, some DNA files are unable to be edited.  Currently TTCC and TTO DNA files have been tested and work as of now.  
 
 The auto-saver cannot be cancelled as of now, but it will still auto-save even if you change working DNA file or manually save the file.  
 
