@@ -46,30 +46,13 @@ The auto-saver cannot be cancelled as of now, but it will still auto-save even i
 
 *	***Toontown Online Level Editor*** - Source code for level editor.
 
-*	[***PyCharm***](https://www.jetbrains.com/pycharm/) - IDE used to build program.
-
 *	[***Open Toontown***](https://github.com/open-toontown/open-toontown) - Reverse engineered code, as well as primary motovation for this project.
 
+<h2>Current Collaborators</h2>
 
+We welcome any collaborators, just send a message to me (Christian Diaz) via any contact method listed below.
 
-
-<h2>Collaborators</h2>
-
-Main Collaborator: Christian M Diaz
-
-<h3>Contact Info</h3>
-
-*	GitHub UserName: **@chrisd149**
-
-*	Discord Username: **Bobby149#7640**
-
-*	Twitter: **@Toon_Express**
-
-* Email: **christianmigueldiaz@gmail.com**
-	* Active Hours Weekdays: 12pm - 12am EST
-	* Active Hours Weekend: 2pm - 3am EST (Some of the time im availiable to 6am on the weekends)
-	
-<h2>Collaborators</h2>
-We welcome any collaborators, just contact the main collaborator via any contact method.
-
-
+*	**Christian Diaz**: Main developer and founder of Toon Express
+	*	GitHub Username: **@chrisd149**
+	*	Discord Username: **Bobby149#7640**
+	*	Email: **christianmigueldiaz@gmail.com**
