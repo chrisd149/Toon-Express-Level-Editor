@@ -62,7 +62,7 @@ SellBot (Sales): 's'
 
 from direct.actor import Actor
 from otp.avatar import Avatar
-import SuitDNA
+from . import SuitDNA
 from toontown.toonbase import ToontownGlobals
 from pandac.PandaModules import *
 from toontown.battle import SuitBattleGlobals
@@ -425,7 +425,7 @@ def loadSuitModelsAndAnims(level, flag = 0):
     """
     # print "print loading level %d suits..." % level
     
-    for key in ModelDict.keys():
+    for key in list(ModelDict.keys()):
         # load/unload the models
         # All the mods are in 3.5 now, except the suita and B headsd which are in 4
         model, phase = ModelDict[key]
@@ -451,7 +451,7 @@ def loadSuitAnims(suit, flag = 1):
             # no suit specific anims defined
             animList = ()
     else:
-        print "Invalid suit name: ", suit
+        print("Invalid suit name: ", suit)
         return -1
     
     # process the animList

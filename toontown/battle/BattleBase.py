@@ -144,7 +144,7 @@ def findToonAttack(toons, attacks, track):
     """
     foundAttacks = []
     for t in toons:
-        if (attacks.has_key(t)):
+        if (t in attacks):
             attack = attacks[t]
             local_track = attack[TOON_TRACK_COL]
             # If it's an NPC, convert to the appropriate track

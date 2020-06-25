@@ -41,7 +41,7 @@ def edit_config(filename, settings, dry_run=False):
     log.debug("Reading configuration from %s", filename)
     opts = configparser.RawConfigParser()
     opts.read([filename])
-    for section, options in settings.items():
+    for section, options in list(settings.items()):
         if options is None:
             log.info("Deleting section [%s] from %s", section, filename)
             opts.remove_section(section)
@@ -49,7 +49,7 @@ def edit_config(filename, settings, dry_run=False):
             if not opts.has_section(section):
                 log.debug("Adding new section [%s] to %s", section, filename)
                 opts.add_section(section)
-            for option, value in options.items():
+            for option, value in list(options.items()):
                 if value is None:
                     log.debug(
                         "Deleting %s.%s from %s",

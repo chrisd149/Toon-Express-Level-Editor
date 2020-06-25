@@ -1,6 +1,6 @@
-from ToontownGlobals import *
+from .ToontownGlobals import *
 import math
-import TTLocalizer
+from . import TTLocalizer
 
 ### ToontownBattle globals: central repository for all battle globals
 

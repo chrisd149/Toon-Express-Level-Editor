@@ -20,7 +20,7 @@ class Installer:
         filename += self.nspkg_ext
         self.outputs.append(filename)
         log.info("Installing %s", filename)
-        lines = map(self._gen_nspkg_line, nsp)
+        lines = list(map(self._gen_nspkg_line, nsp))
 
         if self.dry_run:
             # always generate the lines, even in dry run
@@ -81,7 +81,7 @@ class Installer:
     def _get_all_ns_packages(self):
         """Return sorted list of all package namespaces"""
         pkgs = self.distribution.namespace_packages or []
-        return sorted(flatten(map(self._pkg_names, pkgs)))
+        return sorted(flatten(list(map(self._pkg_names, pkgs))))
 
     @staticmethod
     def _pkg_names(pkg):

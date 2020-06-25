@@ -191,7 +191,7 @@ class PropPool:
         self.propTypes[propName] = 'model'
 
         splatAnimFileName = self.getPath(3.5, 'splat-chan')
-        for splat in Splats.keys():
+        for splat in list(Splats.keys()):
             propName = 'splat-' + splat
             self.propStrings[propName] = (self.getPath(3.5, 'splat-mod'), splatAnimFileName)
             self.propTypes[propName] = 'actor'
@@ -366,7 +366,7 @@ class PropPool:
     def unloadProps(self):
         """ unloadProps()
         """
-        for p in self.props.values():
+        for p in list(self.props.values()):
             # make sure it's loaded before we remove it
             if (type(p) != type(())):
                 self.__delProp(p)
@@ -376,15 +376,15 @@ class PropPool:
     def getProp(self, name):
         """ getProp(name)
         """
-        assert(self.propStrings.has_key(name))
+        assert(name in self.propStrings)
         return self.__getPropCopy(name)
 
     def __getPropCopy(self, name):
-        assert(self.propStrings.has_key(name))
-        assert(self.propTypes.has_key(name))
+        assert(name in self.propStrings)
+        assert(name in self.propTypes)
         if (self.propTypes[name] == 'actor'):
             # make sure the props is loaded
-            if not self.props.has_key(name):
+            if name not in self.props:
                 prop = Actor.Actor()
                 prop.loadModel(self.propStrings[name][0])
                 animDict = {}
@@ -398,7 +398,7 @@ class PropPool:
             return Actor.Actor(other=self.props[name])
         else:
             # make sure the props is loaded            
-            if not self.props.has_key(name):            
+            if name not in self.props:            
                 prop = loader.loadModel(self.propStrings[name][0])
                 prop.setName(name)
                 self.storeProp(name, prop)
@@ -428,7 +428,7 @@ class PropPool:
         self.notify.debug("propCache = %s" % self.propCache)
         
     def getPropType(self, name):
-        assert(self.propTypes.has_key(name))
+        assert(name in self.propTypes)
         return self.propTypes[name]
 
     def __delProp(self, prop):

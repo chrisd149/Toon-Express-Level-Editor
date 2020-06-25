@@ -9,7 +9,7 @@ parts of a battle, minigames, while running, etc)
 
 
 
-import Toon
+from . import Toon
 from direct.interval.IntervalGlobal import *
 from otp.otpbase import OTPLocalizer
 from toontown.toonbase import TTLocalizer
@@ -494,7 +494,7 @@ class TTEmote(Emote.Emote):
 
     def unlockStateChangeMsg(self):
         if self.stateChangeMsgLocks <= 0:
-            print PythonUtil.lineTag() + ": someone unlocked too many times"
+            print(PythonUtil.lineTag() + ": someone unlocked too many times")
             return
 
         self.stateChangeMsgLocks -= 1
@@ -513,7 +513,7 @@ class TTEmote(Emote.Emote):
         if toon != base.localAvatar:
             return
         # increment the reference count on all emotes
-        self.disableGroup(range(len(self.emoteFunc)), toon)
+        self.disableGroup(list(range(len(self.emoteFunc))), toon)
 
         #self.printEmoteState("disableAll", msg)
 
@@ -522,7 +522,7 @@ class TTEmote(Emote.Emote):
             return
 
         # decrement the reference count on all emotes
-        self.enableGroup(range(len(self.emoteFunc)), toon)
+        self.enableGroup(list(range(len(self.emoteFunc))), toon)
         #self.printEmoteState("releaseAll", msg)
 
     # Body emotes
@@ -577,7 +577,7 @@ class TTEmote(Emote.Emote):
     # Specific emotes
     def disable(self, index, toon):
         # find the emotes index if we are given a string
-        if isinstance(index, types.StringType):
+        if isinstance(index, bytes):
             index = OTPLocalizer.EmoteFuncDict[index]
 
         self.emoteFunc[index][1] = self.emoteFunc[index][1] + 1
@@ -587,7 +587,7 @@ class TTEmote(Emote.Emote):
 
     def enable(self, index, toon):
         # find the emotes index if we are given a string
-        if isinstance(index, types.StringType):
+        if isinstance(index, bytes):
             index = OTPLocalizer.EmoteFuncDict[index]
 
         self.emoteFunc[index][1] = self.emoteFunc[index][1] - 1
@@ -599,7 +599,7 @@ class TTEmote(Emote.Emote):
         try:
             func = self.emoteFunc[emoteIndex][0]
         except:
-            print "Error in finding emote func %s" % emoteIndex
+            print("Error in finding emote func %s" % emoteIndex)
             return None, None
 
         def clearEmoteTrack():
@@ -641,7 +641,7 @@ class TTEmote(Emote.Emote):
 
     def printEmoteState(self, action, msg):
         if __debug__:
-            print "%s(%s), body(%s), head(%s)" % (action, msg, EmoteFunc[0][1], EmoteFunc[2][1])
+            print("%s(%s), body(%s), head(%s)" % (action, msg, EmoteFunc[0][1], EmoteFunc[2][1]))
 
 Emote.globalEmote = TTEmote()
 

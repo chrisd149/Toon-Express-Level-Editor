@@ -15,7 +15,7 @@ class saveopts(option_base):
             if cmd == 'saveopts':
                 continue  # don't save our own options!
 
-            for opt, (src, val) in dist.get_option_dict(cmd).items():
+            for opt, (src, val) in list(dist.get_option_dict(cmd).items()):
                 if src == "command line":
                     settings.setdefault(cmd, {})[opt] = val
 

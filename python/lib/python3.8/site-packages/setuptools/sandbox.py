@@ -137,7 +137,7 @@ class ExceptionSaver:
         if '_saved' not in vars(self):
             return
 
-        type, exc = map(pickle.loads, self._saved)
+        type, exc = list(map(pickle.loads, self._saved))
         six.reraise(type, exc, self._tb)
 
 
@@ -223,7 +223,7 @@ def hide_setuptools():
     necessary to avoid issues such as #315 where setuptools upgrading itself
     would fail to find a function declared in the metadata.
     """
-    modules = filter(_needs_hiding, sys.modules)
+    modules = list(filter(_needs_hiding, sys.modules))
     _clear_modules(modules)
 
 

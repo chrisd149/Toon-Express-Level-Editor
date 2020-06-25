@@ -435,7 +435,7 @@ for type in DropObjectTypes:
 #   Name2DOTypeId['apple'] == some number
 #   DOTypeId2Name[some number] == 'apple'
 Name2DOTypeId = {}
-names = Name2DropObjectType.keys()
+names = list(Name2DropObjectType.keys())
 names.sort()
 for i in range(len(names)):
     Name2DOTypeId[names[i]] = i
@@ -650,11 +650,11 @@ PhaseToMusicData = {
 def getRandomMusicInfo(phase=13):
     if phase == -1:
         # Get random phase
-        keys = PhaseToMusicData.keys()
+        keys = list(PhaseToMusicData.keys())
         phase = keys[randint(0, len(keys) - 1)]
     
     # From that phase, get random filename
-    values = PhaseToMusicData[phase].keys()
+    values = list(PhaseToMusicData[phase].keys())
     filename = values[randint(0, len(values) - 1)]
     
     return (phase, filename)

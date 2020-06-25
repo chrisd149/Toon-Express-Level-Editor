@@ -388,7 +388,7 @@ TrackDict = {
     
     }
 
-TrackIds = TrackDict.keys()
+TrackIds = list(TrackDict.keys())
 # hmmm, this was non-determistic before
 TrackIds.sort()
 
@@ -424,7 +424,7 @@ PeriodDict = {
     AllTime : 1000,
     }
 
-PeriodIds = PeriodDict.keys()
+PeriodIds = list(PeriodDict.keys())
 NumRecordPeriods = len(PeriodIds)
 NumRecordsPerPeriod = 10
 
@@ -564,7 +564,7 @@ def getCircuitLoop(startingTrack):
     circuitLoop = [startingTrack]
     for loop in CircuitLoops:
         if startingTrack in loop:
-            print loop
+            print(loop)
             numTracks = len(loop)
             tempLoop = loop * 2
             startingIndex = tempLoop.index(startingTrack)

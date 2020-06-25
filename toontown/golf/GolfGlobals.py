@@ -363,7 +363,7 @@ for holeId in HoleInfo:
    if type(HoleInfo[holeId]['blockers']) == type(0):
       blockerNum = HoleInfo[holeId]['blockers']
       HoleInfo[holeId]['blockers'] = (blockerNum,)
-   if HoleInfo[holeId].has_key('optionalMovers'):
+   if 'optionalMovers' in HoleInfo[holeId]:
       if type(HoleInfo[holeId]['optionalMovers']) == type(0):
          blockerNum = HoleInfo[holeId]['optionalMovers']
          HoleInfo[holeId]['optionalMovers'] = (blockerNum,)      
@@ -444,7 +444,7 @@ def calcTrophyListFromHistory( history):
    Last item is for 100 course two wins."""
    retval = []
    historyIndex = 0
-   for trophyIndex in xrange(NumHistory):
+   for trophyIndex in range(NumHistory):
        requirements = TrophyRequirements[trophyIndex]
        for amountNeeded in requirements:
            if history[historyIndex] >= amountNeeded:
@@ -466,7 +466,7 @@ def calcCupListFromHistory( history):
    for gotTrophy in trophyList:
       if gotTrophy:
          numTrophiesWon += 1
-   for cupIndex in xrange(len(retval)):
+   for cupIndex in range(len(retval)):
       threshold = (cupIndex + 1) * TrophiesPerCup
       if threshold <= numTrophiesWon:
          retval[cupIndex] = True

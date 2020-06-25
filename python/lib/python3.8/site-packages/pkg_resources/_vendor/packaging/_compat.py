@@ -1,7 +1,7 @@
 # This file is dual licensed under the terms of the Apache License, Version
 # 2.0, and the BSD License. See the LICENSE file in the root of this repository
 # for complete details.
-from __future__ import absolute_import, division, print_function
+
 
 import sys
 
@@ -14,7 +14,7 @@ PY3 = sys.version_info[0] == 3
 if PY3:
     string_types = str,
 else:
-    string_types = basestring,
+    string_types = str,
 
 
 def with_metaclass(meta, *bases):
