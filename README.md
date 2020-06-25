@@ -1,6 +1,6 @@
 # linux branch: this branch is broken for now, and isn't for production use.  Please avoid using this branch with the exception of testing.
 <img src="https://avatars0.githubusercontent.com/u/66463299?s=200&v=4" align="right" width=125>
-Toon-Express-Level-Editor is a modifed, easy to use level editor for making levels in Toontown.  It uses source code from Disney's in-house Toontown Online level editor that was used to quickly make and edit most streets and playgrounds.  The program uses libpandadna as a dna parser for dna files, and a working Panda3D level editor.  The program was and still is very buggy and somewhat hard to use, so I decided to revamp the editor with QoL features and bug fixes.
+Toon-Express-Level-Editor is a modifed, easy to use level editor for making levels in Toontown.  It uses source code from Disney's in-house Toontown Online level editor that was used to quickly make and edit most streets and playgrounds.  The program uses libpandadna as a dna parser for dna files, and a working Panda3D level editor.  The program was and still is very buggy and somewhat hard to use, so I decided to revamp the editor with QoL features and bug fixes. Since this program is very buggy, some DNA files are unable to be edited.  Currently TTCC and TTO DNA files have been tested and work as of now.  
 
 
 <br />***Note***: *This project uses code and assets made and owned by The Walt Disney Company, such as some files in otp and toontown, which were released in the [RobotToonManager reposistory](https://github.com/ToontownFan2003/RobotToonManager)*
@@ -36,19 +36,13 @@ Note: Windows is the only OS supported as of now, Linux support will come at a l
 
 A command prompt window will open, and code will start running.  Several windows will open, and will become enabled after the program is fully loaded.  
 
-<h2>Issues</h2>
-
-Since this program is very buggy, some DNA files are unable to be edited.  Currently TTCC and TTO DNA files have been tested and work as of now.  
-
-The auto-saver cannot be cancelled as of now, but it will still auto-save even if you change working DNA file or manually save the file.  
-
 <h2>Built With</h2>
 
 *	***Toontown Online Level Editor*** - Source code for level editor.
 
 *	[***Open Toontown***](https://github.com/open-toontown/open-toontown) - Reverse engineered code, as well as primary motovation for this project.
 
-<h2>Current Collaborators</h2>
+<h2>Collaborators</h2>
 
 We welcome any collaborators, just send a message to me (Christian Diaz) via any contact method listed below.
 
