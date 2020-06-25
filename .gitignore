@@ -7,3 +7,4 @@ phase_*
 
 # fileSynce database
 *.ffs_db
+*.xml
