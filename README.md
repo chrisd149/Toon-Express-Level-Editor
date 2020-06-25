@@ -3,7 +3,7 @@
 *Toon-Express-Level-Editor* is a modifed, easy to use level editor for making levels in Toontown.  It uses source code from Disney's in-house Toontown Online level editor that was used to quickly make and edit most streets and playgrounds.  The program uses libpandadna as a dna parser for dna files, and a working Panda3D level editor.  The program was and still is very buggy and somewhat hard to use, so I decided to revamp the editor with QoL features and bug fixes.
 
 
-Note: This project uses code and assets made and owned by The Walt Disney Company, such as some files in otp and toontown, which were released in the [RobotToonManager reposistory](https://github.com/ToontownFan2003/RobotToonManager)
+<br />Note: This project uses code and assets made and owned by The Walt Disney Company, such as some files in otp and toontown, which were released in the [RobotToonManager reposistory](https://github.com/ToontownFan2003/RobotToonManager)
 
 It currently features: <br />
 
