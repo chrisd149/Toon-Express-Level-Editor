@@ -1,24 +1,28 @@
 # linux branch: this branch is broken for now, and isn't for production use.  Please avoid using this branch with the exception of testing.
 <img src="https://avatars0.githubusercontent.com/u/66463299?s=200&v=4" align="right" width=125>
-Toon Express is a modifed, easy to use level editor for making levels in Toontown.  It uses source code from Disney's inhouse Toontown Online level editor that was used to quickly make and edit most streets and playgrounds.  The program uses libpandadna as a dna parser for dna files, and a working Panda3D level editor.  The program was and still is very buggy and somewhat hard to use, so I decided to revamp the editor with QoL features and bug fixes. It currently features: <br /> <br />
+*Toon-Express-Level-Editor* is a modifed, easy to use level editor for making levels in Toontown.  It uses source code from Disney's in-house Toontown Online level editor that was used to quickly make and edit most streets and playgrounds.  The program uses libpandadna as a dna parser for dna files, and a working Panda3D level editor.  The program was and still is very buggy and somewhat hard to use, so I decided to revamp the editor with QoL features and bug fixes.<br />
+
+Note: This project uses code and assets made and owned by The Walt Disney Company, such as some files in otp and toontown, which were released in the [RobotToonManager reposistory.](https://github.com/ToontownFan2003/RobotToonManager)
+
+It currently features: <br /> <br />
 
 
-* Most assets from Toontown Online in 2013
-* The ability to add and modify visgroups
-* Panda3D level editor for modifying and creating DNA files
+> * Most assets from Toontown Online in 2013
+> * The ability to add and modify visgroups
+> * Panda3D level editor for modifying and creating DNA files, such as streets
 
 New features include:
 
-* Auto saving feature
-* Updated controls and documentation
-* Improved suit point and battle cell placement
+> * Auto saving feature
+> * Updated controls and documentation
+> * Improved suit point and battle cell placement
 
 Features to come: 
 
-* Full documentation/wiki
-* Transition to Python 3.x
-* Full transition to Linux (sorry Windows)
-* General QoL updates
+> * Full documentation/wiki
+> * Transition to Python 3.x
+> * Full transition to Linux (sorry Windows)
+> * General QoL updates
 
 <h2>Installiation</h2>
 
@@ -42,6 +46,9 @@ The auto-saver cannot be cancelled as of now, but it will still auto-save even i
 *	***Toontown Online Level Editor*** - Source code for level editor.
 
 *	[***PyCharm***](https://www.jetbrains.com/pycharm/) - IDE used to build program.
+
+*	[***Open Toontown***](https://github.com/open-toontown/open-toontown) - Reverse engineered code, as well as primary motovation for this project.
+
 
 
 
