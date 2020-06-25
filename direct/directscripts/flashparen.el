@@ -13,7 +13,7 @@
 ;; flash matching parens a la Zmacs|
 ;; 12-Nov-1995|1.8|~/misc/flashparen.el.gz|
 
-;; $Id: flashparen.el,v 1.1 2003/07/07 17:35:02 drwr Exp $
+;; $Id$
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

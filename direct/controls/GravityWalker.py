@@ -18,15 +18,17 @@ from direct.showbase import DirectObject
 from direct.controls.ControlManager import CollisionHandlerRayStart
 from direct.showbase.InputStateGlobal import inputState
 from direct.task.Task import Task
-from pandac.PandaModules import *
+from panda3d.core import *
+from direct.extensions_native import VBase3_extensions
+from direct.extensions_native import VBase4_extensions
 import math
 
 
 class GravityWalker(DirectObject.DirectObject):
     notify = directNotify.newCategory("GravityWalker")
-    wantDebugIndicator = base.config.GetBool('want-avatar-physics-indicator', 0)
-    wantFloorSphere = base.config.GetBool('want-floor-sphere', 0)
-    earlyEventSphere = base.config.GetBool('early-event-sphere', 0)
+    wantDebugIndicator = ConfigVariableBool('want-avatar-physics-indicator', False)
+    wantFloorSphere = ConfigVariableBool('want-floor-sphere', False)
+    earlyEventSphere = ConfigVariableBool('early-event-sphere', False)
 
     DiagonalFactor = math.sqrt(2.) / 2.
 
@@ -69,90 +71,6 @@ class GravityWalker(DirectObject.DirectObject):
         self.isAirborne = 0
         self.highMark = 0
 
-    """
-    def spawnTest(self):
-        assert self.notify.debugStateCall(self)
-        if not self.wantDebugIndicator:
-            return
-        from pandac.PandaModules import *
-        from direct.interval.IntervalGlobal import *
-        from toontown.coghq import MovingPlatform
-
-        if hasattr(self, "platform"):
-            # Remove the prior instantiation:
-            self.moveIval.pause()
-            del self.moveIval
-            self.platform.destroy()
-            del self.platform
-            self.platform2.destroy()
-            del self.platform2
-
-        model = loader.loadModel('phase_9/models/cogHQ/platform1')
-        fakeId = id(self)
-        self.platform = MovingPlatform.MovingPlatform()
-        self.platform.setupCopyModel(fakeId, model, 'platformcollision')
-        self.platformRoot = render.attachNewNode("GravityWalker-spawnTest-%s"%fakeId)
-        self.platformRoot.setPos(base.localAvatar, Vec3(0.0, 0.0, 1.0))
-        self.platformRoot.setHpr(base.localAvatar, Vec3.zero())
-        self.platform.reparentTo(self.platformRoot)
-
-        self.platform2 = MovingPlatform.MovingPlatform()
-        self.platform2.setupCopyModel(1+fakeId, model, 'platformcollision')
-        self.platform2Root = render.attachNewNode("GravityWalker-spawnTest2-%s"%fakeId)
-        self.platform2Root.setPos(base.localAvatar, Vec3(-16.0, 30.0, 1.0))
-        self.platform2Root.setHpr(base.localAvatar, Vec3.zero())
-        self.platform2.reparentTo(self.platform2Root)
-
-        duration = 5
-        self.moveIval = Parallel(
-                Sequence(
-                    WaitInterval(0.3),
-                    LerpPosInterval(self.platform, duration,
-                                    Vec3(0.0, 30.0, 0.0),
-                                    name='platformOut%s' % fakeId,
-                                    fluid = 1),
-                    WaitInterval(0.3),
-                    LerpPosInterval(self.platform, duration,
-                                    Vec3(0.0, 0.0, 0.0),
-                                    name='platformBack%s' % fakeId,
-                                    fluid = 1),
-                    WaitInterval(0.3),
-                    LerpPosInterval(self.platform, duration,
-                                    Vec3(0.0, 0.0, 30.0),
-                                    name='platformUp%s' % fakeId,
-                                    fluid = 1),
-                    WaitInterval(0.3),
-                    LerpPosInterval(self.platform, duration,
-                                    Vec3(0.0, 0.0, 0.0),
-                                    name='platformDown%s' % fakeId,
-                                    fluid = 1),
-                ),
-                Sequence(
-                    WaitInterval(0.3),
-                    LerpPosInterval(self.platform2, duration,
-                                    Vec3(0.0, -30.0, 0.0),
-                                    name='platform2Out%s' % fakeId,
-                                    fluid = 1),
-                    WaitInterval(0.3),
-                    LerpPosInterval(self.platform2, duration,
-                                    Vec3(0.0, 30.0, 30.0),
-                                    name='platform2Back%s' % fakeId,
-                                    fluid = 1),
-                    WaitInterval(0.3),
-                    LerpPosInterval(self.platform2, duration,
-                                    Vec3(0.0, -30.0, 0.0),
-                                    name='platform2Up%s' % fakeId,
-                                    fluid = 1),
-                    WaitInterval(0.3),
-                    LerpPosInterval(self.platform2, duration,
-                                    Vec3(0.0, 0.0, 0.0),
-                                    name='platformDown%s' % fakeId,
-                                    fluid = 1),
-                ),
-            name='platformIval%s' % fakeId,
-            )
-        self.moveIval.loop()
-    """
     def setWalkSpeed(self, forward, jump, reverse, rotate):
         assert self.notify.debugStateCall(self)
         self.avatarControlForwardSpeed=forward
@@ -179,9 +97,9 @@ class GravityWalker(DirectObject.DirectObject):
         # a higher or lower value depending on whether you want an avatar
         # that is outside of the world to step up to the floor when they
         # get under valid floor:
-        cRay = CollisionRay(0.0, 0.0, CollisionHandlerRayStart, 0.0, 0.0, -1.0)
+        self.cRay = CollisionRay(0.0, 0.0, CollisionHandlerRayStart, 0.0, 0.0, -1.0)
         cRayNode = CollisionNode('GW.cRayNode')
-        cRayNode.addSolid(cRay)
+        cRayNode.addSolid(self.cRay)
         self.cRayNodePath = self.avatarNodePath.attachNewNode(cRayNode)
         cRayNode.setFromCollideMask(bitmask)
         cRayNode.setIntoCollideMask(BitMask32.allOff())
@@ -697,8 +615,4 @@ class GravityWalker(DirectObject.DirectObject):
     # There are sometimes issues if the collision ray height is
     # so tall that it collides with multiple levels of floors.
     def setCollisionRayHeight(self, height):
-        oldNode = self.avatarNodePath.getNode(0)
-        cRayNode = oldNode.getChild(2)
-        cRayNode.removeSolid(0)
-        cRay = CollisionRay(0.0, 0.0, height, 0.0, 0.0, -1.0)
-        cRayNode.addSolid(cRay)
+        self.cRay.setOrigin(0.0, 0.0, height)

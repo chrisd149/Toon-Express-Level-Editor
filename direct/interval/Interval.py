@@ -4,10 +4,12 @@ __all__ = ['Interval']
 
 from direct.directnotify.DirectNotifyGlobal import directNotify
 from direct.showbase.DirectObject import DirectObject
-from pandac.PandaModules import *
 from direct.task.Task import Task, TaskManager
-from direct.showbase import PythonUtil
-from pandac.PandaModules import *
+from direct.task.TaskManagerGlobal import taskMgr
+from panda3d.core import *
+from panda3d.direct import *
+from direct.extensions_native import CInterval_extensions
+from direct.extensions_native import NodePath_extensions
 import math
 
 class Interval(DirectObject):
@@ -114,8 +116,9 @@ class Interval(DirectObject):
         return self.currT
 
     def start(self, startT = 0.0, endT = -1.0, playRate = 1.0):
+        """ Starts the interval.  Returns an awaitable. """
         self.setupPlay(startT, endT, playRate, 0)
-        self.__spawnTask()
+        return self.__spawnTask()
 
     def loop(self, startT = 0.0, endT = -1.0, playRate = 1.0):
         self.setupPlay(startT, endT, playRate, 1)
@@ -250,7 +253,7 @@ class Interval(DirectObject):
     def privReverseInstant(self):
         # Subclasses may redefine this function
         self.state = CInterval.SStarted
-        self.privStep(self.getDuration())
+        self.privStep(0)
         self.state = CInterval.SInitial
 
     def privReverseFinalize(self):
@@ -288,13 +291,13 @@ class Interval(DirectObject):
             self.__endT = endT
             self.__endTAtEnd = 0
 
-        self.__clockStart = globalClock.getFrameTime()
+        self.__clockStart = ClockObject.getGlobalClock().getFrameTime()
         self.__playRate = playRate
         self.__doLoop = doLoop
         self.__loopCount = 0
 
     def setupResume(self):
-        now = globalClock.getFrameTime()
+        now = ClockObject.getGlobalClock().getFrameTime()
         if self.__playRate > 0:
             self.__clockStart = now - ((self.getT() - self.__startT) / self.__playRate)
         elif self.__playRate < 0:
@@ -302,7 +305,7 @@ class Interval(DirectObject):
         self.__loopCount = 0
 
     def stepPlay(self):
-        now = globalClock.getFrameTime()
+        now = ClockObject.getGlobalClock().getFrameTime()
         if self.__playRate >= 0:
             t = (now - self.__clockStart) * self.__playRate + self.__startT
 
@@ -397,6 +400,11 @@ class Interval(DirectObject):
             space = space + ' '
         return (space + self.name + ' dur: %.2f' % self.duration)
 
+    open_ended = property(getOpenEnded)
+    stopped = property(isStopped)
+    t = property(getT, setT)
+    play_rate = property(getPlayRate, setPlayRate)
+    done_event = property(getDoneEvent, setDoneEvent)
 
     # The rest of these methods are duplicates of functions defined
     # for the CInterval class via the file CInterval-extensions.py.
@@ -420,6 +428,7 @@ class Interval(DirectObject):
         task = Task(self.__playTask)
         task.interval = self
         taskMgr.add(task, taskName)
+        return task
 
     def __removeTask(self):
         # Kill old task(s), including those from a similarly-named but
@@ -443,16 +452,19 @@ class Interval(DirectObject):
         """
         Popup control panel for interval.
         """
-        from direct.showbase import TkGlobal
-        import math
-        # I moved this here because Toontown does not ship Tk
-        from Tkinter import Toplevel, Frame, Button, LEFT, X
-        import Pmw
-        from direct.tkwidgets import EntryScale
+        # Don't use a regular import, to prevent ModuleFinder from picking
+        # it up as a dependency when building a .p3d package.
+        import importlib, sys
+        EntryScale = importlib.import_module('direct.tkwidgets.EntryScale')
+        if sys.version_info >= (3, 0):
+            tkinter = importlib.import_module('tkinter')
+        else:
+            tkinter = importlib.import_module('Tkinter')
+
         if tl == None:
-            tl = Toplevel()
+            tl = tkinter.Toplevel()
             tl.title('Interval Controls')
-        outerFrame = Frame(tl)
+        outerFrame = tkinter.Frame(tl)
         def entryScaleCommand(t, s=self):
             s.setT(t)
             s.pause()
@@ -461,8 +473,8 @@ class Interval(DirectObject):
             min = 0, max = math.floor(self.getDuration() * 100) / 100,
             command = entryScaleCommand)
         es.set(self.getT(), fCommand = 0)
-        es.pack(expand = 1, fill = X)
-        bf = Frame(outerFrame)
+        es.pack(expand = 1, fill = tkinter.X)
+        bf = tkinter.Frame(outerFrame)
         # Jump to start and end
         def toStart(s=self, es=es):
             s.clearToInitial()
@@ -472,23 +484,23 @@ class Interval(DirectObject):
             s.setT(s.getDuration())
             es.set(s.getDuration(), fCommand = 0)
             s.pause()
-        jumpToStart = Button(bf, text = '<<', command = toStart)
+        jumpToStart = tkinter.Button(bf, text = '<<', command = toStart)
         # Stop/play buttons
         def doPlay(s=self, es=es):
             s.resume(es.get())
 
-        stop = Button(bf, text = 'Stop',
+        stop = tkinter.Button(bf, text = 'Stop',
                       command = lambda s=self: s.pause())
-        play = Button(
+        play = tkinter.Button(
             bf, text = 'Play',
             command = doPlay)
-        jumpToEnd = Button(bf, text = '>>', command = toEnd)
-        jumpToStart.pack(side = LEFT, expand = 1, fill = X)
-        play.pack(side = LEFT, expand = 1, fill = X)
-        stop.pack(side = LEFT, expand = 1, fill = X)
-        jumpToEnd.pack(side = LEFT, expand = 1, fill = X)
-        bf.pack(expand = 1, fill = X)
-        outerFrame.pack(expand = 1, fill = X)
+        jumpToEnd = tkinter.Button(bf, text = '>>', command = toEnd)
+        jumpToStart.pack(side = tkinter.LEFT, expand = 1, fill = tkinter.X)
+        play.pack(side = tkinter.LEFT, expand = 1, fill = tkinter.X)
+        stop.pack(side = tkinter.LEFT, expand = 1, fill = tkinter.X)
+        jumpToEnd.pack(side = tkinter.LEFT, expand = 1, fill = tkinter.X)
+        bf.pack(expand = 1, fill = tkinter.X)
+        outerFrame.pack(expand = 1, fill = tkinter.X)
         # Add function to update slider during setT calls
         def update(t, es=es):
             es.set(t, fCommand = 0)

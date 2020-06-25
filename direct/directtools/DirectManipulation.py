@@ -1,10 +1,9 @@
 from direct.showbase.DirectObject import DirectObject
-from DirectGlobals import *
-from DirectUtil import *
-from DirectGeometry import *
-from DirectSelection import SelectionRay
+from .DirectGlobals import *
+from .DirectUtil import *
+from .DirectGeometry import *
+from .DirectSelection import SelectionRay
 from direct.task import Task
-import types
 from copy import deepcopy
 
 class DirectManipulationControl(DirectObject):
@@ -187,7 +186,7 @@ class DirectManipulationControl(DirectObject):
 
     def drawMarquee(self, startX, startY):
         if self.marquee:
-            self.marquee.remove()
+            self.marquee.removeNode()
             self.marquee = None
 
         if base.direct.cameraControl.useMayaCamControls and base.direct.fAlt:
@@ -229,7 +228,7 @@ class DirectManipulationControl(DirectObject):
             skipFlags |= SKIP_CAMERA * (1 - base.getControl())
 
             if self.marquee:
-                self.marquee.remove()
+                self.marquee.removeNode()
                 self.marquee = None
                 base.direct.deselectAll()
 
@@ -430,7 +429,6 @@ class DirectManipulationControl(DirectObject):
         taskMgr.remove('manip-move-wait')
         taskMgr.remove('manip-watch-mouse')
         taskMgr.remove('highlightWidgetTask')
-        taskMgr.remove('resizeObjectHandles')
 
     def toggleObjectHandlesMode(self):
         if self.fMovable:
@@ -635,7 +633,7 @@ class DirectManipulationControl(DirectObject):
                 base.direct.widget.getMat(base.direct.selected.last))
         else:
             # Move the objects with the widget
-            base.direct.selected.moveWrtWidgetAll()
+                base.direct.selected.moveWrtWidgetAll()
         # Continue
         return Task.cont
 
@@ -1066,9 +1064,9 @@ class ObjectHandles(NodePath, DirectObject):
         NodePath.__init__(self)
 
         # Load up object handles model and assign it to self
-        self.assign(loader.loadModel('models/misc/objectHandles.bam'))
+        self.assign(loader.loadModel('models/misc/objectHandles'))
         self.setName(name)
-        self.scalingNode = self.getChild(0)
+        self.scalingNode = NodePath(self)
         self.scalingNode.setName('ohScalingNode')
         self.ohScalingFactor = 1.0
         self.directScalingFactor = 1.0
@@ -1208,7 +1206,7 @@ class ObjectHandles(NodePath, DirectObject):
         self.reparentTo(hidden)
 
     def enableHandles(self, handles):
-        if type(handles) == types.ListType:
+        if type(handles) == list:
             for handle in handles:
                 self.enableHandle(handle)
         elif handles == 'x':
@@ -1257,7 +1255,7 @@ class ObjectHandles(NodePath, DirectObject):
             self.zScaleGroup.reparentTo(self.zHandles)
 
     def disableHandles(self, handles):
-        if type(handles) == types.ListType:
+        if type(handles) == list:
             for handle in handles:
                 self.disableHandle(handle)
         elif handles == 'x':
@@ -1388,24 +1386,24 @@ class ObjectHandles(NodePath, DirectObject):
         self.setScale(1)
 
     def multiplyScalingFactorBy(self, factor):
-        taskMgr.remove('resizeObjectHandles')
         self.ohScalingFactor = self.ohScalingFactor * factor
         sf = self.ohScalingFactor * self.directScalingFactor
-        self.scalingNode.lerpScale(sf, sf, sf, 0.5,
-                                   blendType = 'easeInOut',
-                                   task = 'resizeObjectHandles')
+        ival = self.scalingNode.scaleInterval(0.5, (sf, sf, sf),
+                                              blendType = 'easeInOut',
+                                              name = 'resizeObjectHandles')
+        ival.start()
 
     def growToFit(self):
-        taskMgr.remove('resizeObjectHandles')
         # Increase handles scale until they cover 30% of the min dimension
         pos = base.direct.widget.getPos(base.direct.camera)
         minDim = min(base.direct.dr.nearWidth, base.direct.dr.nearHeight)
         sf = 0.15 * minDim * (pos[1]/base.direct.dr.near)
         self.ohScalingFactor = sf
         sf = sf * self.directScalingFactor
-        self.scalingNode.lerpScale(sf, sf, sf, 0.5,
-                                   blendType = 'easeInOut',
-                                   task = 'resizeObjectHandles')
+        ival = self.scalingNode.scaleInterval(0.5, (sf, sf, sf),
+                                              blendType = 'easeInOut',
+                                              name = 'resizeObjectHandles')
+        ival.start()
 
     def createObjectHandleLines(self):
         # X post
@@ -1693,7 +1691,7 @@ class ObjectHandles(NodePath, DirectObject):
         np.setPos(base.direct.camera, hitPt)
         resultPt = Point3(0)
         resultPt.assign(np.getPos())
-        np.remove()
+        np.removeNode()
         del iRay
         return resultPt
 
@@ -1734,39 +1732,39 @@ class ObjectHandles(NodePath, DirectObject):
 
 def drawBox(lines, center, sideLength):
 
-    l = sideLength * 0.5
-    lines.moveTo(center[0] + l, center[1] + l, center[2] + l)
-    lines.drawTo(center[0] + l, center[1] + l, center[2] - l)
-    lines.drawTo(center[0] + l, center[1] - l, center[2] - l)
-    lines.drawTo(center[0] + l, center[1] - l, center[2] + l)
-    lines.drawTo(center[0] + l, center[1] + l, center[2] + l)
+        l = sideLength * 0.5
+        lines.moveTo(center[0] + l, center[1] + l, center[2] + l)
+        lines.drawTo(center[0] + l, center[1] + l, center[2] - l)
+        lines.drawTo(center[0] + l, center[1] - l, center[2] - l)
+        lines.drawTo(center[0] + l, center[1] - l, center[2] + l)
+        lines.drawTo(center[0] + l, center[1] + l, center[2] + l)
 
-    lines.moveTo(center[0] - l, center[1] + l, center[2] + l)
-    lines.drawTo(center[0] - l, center[1] + l, center[2] - l)
-    lines.drawTo(center[0] - l, center[1] - l, center[2] - l)
-    lines.drawTo(center[0] - l, center[1] - l, center[2] + l)
-    lines.drawTo(center[0] - l, center[1] + l, center[2] + l)
+        lines.moveTo(center[0] - l, center[1] + l, center[2] + l)
+        lines.drawTo(center[0] - l, center[1] + l, center[2] - l)
+        lines.drawTo(center[0] - l, center[1] - l, center[2] - l)
+        lines.drawTo(center[0] - l, center[1] - l, center[2] + l)
+        lines.drawTo(center[0] - l, center[1] + l, center[2] + l)
 
-    lines.moveTo(center[0] + l, center[1] + l, center[2] + l)
-    lines.drawTo(center[0] + l, center[1] + l, center[2] - l)
-    lines.drawTo(center[0] - l, center[1] + l, center[2] - l)
-    lines.drawTo(center[0] - l, center[1] + l, center[2] + l)
-    lines.drawTo(center[0] + l, center[1] + l, center[2] + l)
+        lines.moveTo(center[0] + l, center[1] + l, center[2] + l)
+        lines.drawTo(center[0] + l, center[1] + l, center[2] - l)
+        lines.drawTo(center[0] - l, center[1] + l, center[2] - l)
+        lines.drawTo(center[0] - l, center[1] + l, center[2] + l)
+        lines.drawTo(center[0] + l, center[1] + l, center[2] + l)
 
-    lines.moveTo(center[0] + l, center[1] - l, center[2] + l)
-    lines.drawTo(center[0] + l, center[1] - l, center[2] - l)
-    lines.drawTo(center[0] - l, center[1] - l, center[2] - l)
-    lines.drawTo(center[0] - l, center[1] - l, center[2] + l)
-    lines.drawTo(center[0] + l, center[1] - l, center[2] + l)
+        lines.moveTo(center[0] + l, center[1] - l, center[2] + l)
+        lines.drawTo(center[0] + l, center[1] - l, center[2] - l)
+        lines.drawTo(center[0] - l, center[1] - l, center[2] - l)
+        lines.drawTo(center[0] - l, center[1] - l, center[2] + l)
+        lines.drawTo(center[0] + l, center[1] - l, center[2] + l)
 
-    lines.moveTo(center[0] + l, center[1] + l, center[2] + l)
-    lines.drawTo(center[0] - l, center[1] + l, center[2] + l)
-    lines.drawTo(center[0] - l, center[1] - l, center[2] + l)
-    lines.drawTo(center[0] + l, center[1] - l, center[2] + l)
-    lines.drawTo(center[0] + l, center[1] + l, center[2] + l)
+        lines.moveTo(center[0] + l, center[1] + l, center[2] + l)
+        lines.drawTo(center[0] - l, center[1] + l, center[2] + l)
+        lines.drawTo(center[0] - l, center[1] - l, center[2] + l)
+        lines.drawTo(center[0] + l, center[1] - l, center[2] + l)
+        lines.drawTo(center[0] + l, center[1] + l, center[2] + l)
 
-    lines.moveTo(center[0] + l, center[1] + l, center[2] - l)
-    lines.drawTo(center[0] - l, center[1] + l, center[2] - l)
-    lines.drawTo(center[0] - l, center[1] - l, center[2] - l)
-    lines.drawTo(center[0] + l, center[1] - l, center[2] - l)
-    lines.drawTo(center[0] + l, center[1] + l, center[2] - l)
+        lines.moveTo(center[0] + l, center[1] + l, center[2] - l)
+        lines.drawTo(center[0] - l, center[1] + l, center[2] - l)
+        lines.drawTo(center[0] - l, center[1] - l, center[2] - l)
+        lines.drawTo(center[0] + l, center[1] - l, center[2] - l)
+        lines.drawTo(center[0] + l, center[1] + l, center[2] - l)

@@ -1,6 +1,6 @@
 
 
-from DistributedObjectUD import DistributedObjectUD
+from .DistributedObjectUD import DistributedObjectUD
 from direct.directnotify.DirectNotifyGlobal import directNotify
 
 import sys
@@ -26,16 +26,16 @@ class DistributedObjectGlobalUD(DistributedObjectUD):
 
     def execCommand(self, command, mwMgrId, avId, zoneId):
         text = str(self.__execMessage(command))[:config.GetInt("ai-debug-length",300)]
-
-        dclass = uber.air.dclassesByName.get("PiratesMagicWordManagerAI")
-        dg = dclass.aiFormatUpdate(
-            "setMagicWordResponse", mwMgrId, (1<<32)+avId, uber.air.ourChannel, [text])
-        uber.air.send(dg)
+        self.notify.info(text)
 
     def __execMessage(self, message):
         if not self.ExecNamespace:
             # Import some useful variables into the ExecNamespace initially.
-            exec 'from pandac.PandaModules import *' in globals(), self.ExecNamespace
+            import panda3d.core
+
+            for key, value in panda3d.core.__dict__.items():
+                if not key.startswith('__'):
+                    self.ExecNamespace[key] = value
             #self.importExecNamespace()
 
         # Now try to evaluate the expression using ChatInputNormal.ExecNamespace as
@@ -48,7 +48,7 @@ class DistributedObjectGlobalUD(DistributedObjectUD):
             # "import math".  These aren't expressions, so eval()
             # fails, but they can be exec'ed.
             try:
-                exec message in globals(), self.ExecNamespace
+                exec(message, globals(), self.ExecNamespace)
                 return 'ok'
             except:
                 exception = sys.exc_info()[0]

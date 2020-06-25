@@ -1,6 +1,8 @@
 
-from pandac.PandaModules import *
+from panda3d.core import *
+from panda3d.direct import *
 from direct.interval.IntervalGlobal import *
+from direct.directnotify.DirectNotifyGlobal import directNotify
 
 from direct.distributed.DistributedNode import DistributedNode
 from direct.task import Task
@@ -14,7 +16,7 @@ if __debug__:
     from direct.directtools.DirectGeometry import *
     from direct.showbase.PythonUtil import randFloat
 
-from CartesianGridBase import CartesianGridBase
+from .CartesianGridBase import CartesianGridBase
 
 # increase this number if you want to visualize the grid lines
 # above water level
@@ -24,7 +26,7 @@ class DistributedCartesianGrid(DistributedNode, CartesianGridBase):
     notify = directNotify.newCategory("DistributedCartesianGrid")
     notify.setDebug(0)
 
-    VisualizeGrid = config.GetBool("visualize-cartesian-grid", 0)
+    VisualizeGrid = ConfigVariableBool("visualize-cartesian-grid", False)
 
     RuleSeparator = ":"
 
@@ -250,7 +252,7 @@ class DistributedCartesianGrid(DistributedNode, CartesianGridBase):
         assert self.notify.debug("removeObjectFromGrid %s" % av)
         # TODO: WHAT LOCATION SHOULD WE SET THIS TO?
         #av.reparentTo(hidden)
-        if (av.getParent().compareTo(self) == 0):
+        if av.getParent() == self:
             # only detach if object is directly parented
             av.detachNode()
         #av.b_setLocation(0, 0)

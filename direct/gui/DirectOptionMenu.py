@@ -1,14 +1,12 @@
-"""Undocumented Module"""
+"""Implements a pop-up menu containing multiple clickable options."""
 
 __all__ = ['DirectOptionMenu']
 
-import types
-
-from pandac.PandaModules import *
-import DirectGuiGlobals as DGG
-from DirectButton import *
-from DirectLabel import *
-from DirectFrame import *
+from panda3d.core import *
+from . import DirectGuiGlobals as DGG
+from .DirectButton import *
+from .DirectLabel import *
+from .DirectFrame import *
 
 class DirectOptionMenu(DirectButton):
     """
@@ -24,10 +22,12 @@ class DirectOptionMenu(DirectButton):
             # List of items to display on the popup menu
             ('items',       [],             self.setItems),
             # Initial item to display on menu button
-            # Can be an interger index or the same string as the button
+            # Can be an integer index or the same string as the button
             ('initialitem', None,           DGG.INITOPT),
             # Amount of padding to place around popup button indicator
             ('popupMarkerBorder', (.1, .1), None),
+            # The initial position of the popup marker
+            ('popupMarker_pos', None, None),
             # Background color to use to highlight popup menu items
             ('highlightColor', (.5, .5, .5, 1), None),
             # Extra scale to use on highlight popup menu items
@@ -52,13 +52,18 @@ class DirectOptionMenu(DirectButton):
             frameSize = (-0.5, 0.5, -0.2, 0.2),
             scale = 0.4,
             relief = DGG.RAISED)
+        # Record any user specified popup marker position
+        self.initPopupMarkerPos = self['popupMarker_pos']
         # This needs to popup the menu too
         self.popupMarker.bind(DGG.B1PRESS, self.showPopupMenu)
         # Check if item is highlighted on release and select it if it is
         self.popupMarker.bind(DGG.B1RELEASE, self.selectHighlightedIndex)
         # Make popup marker have the same click sound
-        self.popupMarker.guiItem.setSound(
-            DGG.B1PRESS + self.popupMarker.guiId, self['clickSound'])
+        if self['clickSound']:
+            self.popupMarker.guiItem.setSound(
+                DGG.B1PRESS + self.popupMarker.guiId, self['clickSound'])
+        else:
+            self.popupMarker.guiItem.clearSound(DGG.B1PRESS + self.popupMarker.guiId)
         # This is created when you set the menu's items
         self.popupMenu = None
         self.selectedIndex = None
@@ -72,6 +77,7 @@ class DirectOptionMenu(DirectButton):
             state = 'normal')
         # Make sure this is on top of all the other widgets
         self.cancelFrame.setBin('gui-popup', 0)
+        self.cancelFrame.node().setBounds(OmniBoundingVolume())
         self.cancelFrame.bind(DGG.B1PRESS, self.hidePopupMenu)
         # Default action on press is to show popup menu
         self.bind(DGG.B1PRESS, self.showPopupMenu)
@@ -167,8 +173,13 @@ class DirectOptionMenu(DirectButton):
         else:
             # Or base it upon largest item
             bounds = [self.minX, self.maxX, self.minZ, self.maxZ]
-        pm.setPos(bounds[1] + pmw/2.0, 0,
-                  bounds[2] + (bounds[3] - bounds[2])/2.0)
+        if self.initPopupMarkerPos:
+            # Use specified position
+            pmPos = list(self.initPopupMarkerPos)
+        else:
+            # Or base the position on the frame size.
+            pmPos = [bounds[1] + pmw/2.0, 0, bounds[2] + (bounds[3] - bounds[2])/2.0]
+        pm.setPos(pmPos[0], pmPos[1], pmPos[2])
         # Adjust popup menu button to fit all items (or use user specified
         # frame size
         bounds[1] += pmw
@@ -183,6 +194,12 @@ class DirectOptionMenu(DirectButton):
         Adjust popup position if default position puts it outside of
         visible screen region
         """
+
+        # Needed attributes (such as minZ) won't be set unless the user has specified
+        # items to display. Let's assert that we've given items to work with.
+        items = self['items']
+        assert items and len(items) > 0, 'Cannot show an empty popup menu! You must add items!'
+
         # Show the menu
         self.popupMenu.show()
         # Make sure its at the right scale
@@ -249,7 +266,7 @@ class DirectOptionMenu(DirectButton):
 
     def index(self, index):
         intIndex = None
-        if isinstance(index, types.IntType):
+        if isinstance(index, int):
             intIndex = index
         elif index in self['items']:
             i = 0
@@ -269,7 +286,7 @@ class DirectOptionMenu(DirectButton):
             self['text'] = item
             if fCommand and self['command']:
                 # Pass any extra args to command
-                apply(self['command'], [item] + self['extraArgs'])
+                self['command'](*[item] + self['extraArgs'])
 
     def get(self):
         """ Get currently selected item """

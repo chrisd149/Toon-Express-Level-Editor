@@ -1,11 +1,9 @@
-"""Undocumented Module"""
+"""Contains various utility functions."""
 
 __all__ = ['findClass', 'rebindClass', 'copyFuncs', 'replaceMessengerFunc', 'replaceTaskMgrFunc', 'replaceStateFunc', 'replaceCRFunc', 'replaceAIRFunc', 'replaceIvalFunc']
 
-import time
 import types
 import os
-import new
 import sys
 
 def findClass(className):
@@ -33,8 +31,7 @@ def findClass(className):
 def rebindClass(filename):
     file = open(filename, 'r')
     lines = file.readlines()
-    for i in xrange(len(lines)):
-        line = lines[i]
+    for line in lines:
         if (line[0:6] == 'class '):
             # Chop off the "class " syntax and strip extra whitespace
             classHeader = line[6:].strip()
@@ -48,12 +45,12 @@ def rebindClass(filename):
                 if colonLoc > 0:
                     className = classHeader[:colonLoc]
                 else:
-                    print 'error: className not found'
+                    print('error: className not found')
                     # Remove that temp file
                     file.close()
                     os.remove(filename)
                     return
-            print 'Rebinding class name: ' + className
+            print('Rebinding class name: ' + className)
             break
 
     # Try to find the original class with this class name
@@ -70,7 +67,7 @@ def rebindClass(filename):
     realClass, realNameSpace = res
 
     # Now execute that class def in this namespace
-    execfile(filename, realNameSpace)
+    exec(compile(open(filename).read(), filename, 'exec'), realNameSpace)
 
     # That execfile should have created a new class obj in that namespace
     tmpClass = realNameSpace[className]
@@ -107,24 +104,24 @@ def copyFuncs(fromClass, toClass):
                 #   SystemError: cellobject.c:22: bad argument to internal function
                 # Give the new function code the same filename as the old function
                 # Perhaps there is a cleaner way to do this? This was my best idea.
-                newCode = new.code(newFunc.func_code.co_argcount,
-                                   newFunc.func_code.co_nlocals,
-                                   newFunc.func_code.co_stacksize,
-                                   newFunc.func_code.co_flags,
-                                   newFunc.func_code.co_code,
-                                   newFunc.func_code.co_consts,
-                                   newFunc.func_code.co_names,
-                                   newFunc.func_code.co_varnames,
-                                   # Use the oldFunc's filename here. Tricky!
-                                   oldFunc.func_code.co_filename,
-                                   newFunc.func_code.co_name,
-                                   newFunc.func_code.co_firstlineno,
-                                   newFunc.func_code.co_lnotab)
-                newFunc = new.function(newCode,
-                                       newFunc.func_globals,
-                                       newFunc.func_name,
-                                       newFunc.func_defaults,
-                                       newFunc.func_closure)
+                newCode = types.CodeType(newFunc.func_code.co_argcount,
+                                         newFunc.func_code.co_nlocals,
+                                         newFunc.func_code.co_stacksize,
+                                         newFunc.func_code.co_flags,
+                                         newFunc.func_code.co_code,
+                                         newFunc.func_code.co_consts,
+                                         newFunc.func_code.co_names,
+                                         newFunc.func_code.co_varnames,
+                                         # Use the oldFunc's filename here. Tricky!
+                                         oldFunc.func_code.co_filename,
+                                         newFunc.func_code.co_name,
+                                         newFunc.func_code.co_firstlineno,
+                                         newFunc.func_code.co_lnotab)
+                newFunc = types.FunctionType(newCode,
+                                             newFunc.func_globals,
+                                             newFunc.func_name,
+                                             newFunc.func_defaults,
+                                             newFunc.func_closure)
                 """
                 replaceFuncList.append((oldFunc, funcName, newFunc))
             else:
@@ -159,7 +156,7 @@ def replaceMessengerFunc(replaceFuncList):
     for oldFunc, funcName, newFunc in replaceFuncList:
         res = messenger.replaceMethod(oldFunc, newFunc)
         if res:
-            print ('replaced %s messenger function(s): %s' % (res, funcName))
+            print('replaced %s messenger function(s): %s' % (res, funcName))
 
 def replaceTaskMgrFunc(replaceFuncList):
     try:
@@ -168,7 +165,7 @@ def replaceTaskMgrFunc(replaceFuncList):
         return
     for oldFunc, funcName, newFunc in replaceFuncList:
         if taskMgr.replaceMethod(oldFunc, newFunc):
-            print ('replaced taskMgr function: %s' % funcName)
+            print('replaced taskMgr function: %s' % funcName)
 
 def replaceStateFunc(replaceFuncList):
     if not sys.modules.get('base.direct.fsm.State'):
@@ -177,7 +174,7 @@ def replaceStateFunc(replaceFuncList):
     for oldFunc, funcName, newFunc in replaceFuncList:
         res = State.replaceMethod(oldFunc, newFunc)
         if res:
-            print ('replaced %s FSM transition function(s): %s' % (res, funcName))
+            print('replaced %s FSM transition function(s): %s' % (res, funcName))
 
 def replaceCRFunc(replaceFuncList):
     try:
@@ -190,7 +187,7 @@ def replaceCRFunc(replaceFuncList):
         return
     for oldFunc, funcName, newFunc in replaceFuncList:
         if base.cr.replaceMethod(oldFunc, newFunc):
-            print ('replaced DistributedObject function: %s' % funcName)
+            print('replaced DistributedObject function: %s' % funcName)
 
 def replaceAIRFunc(replaceFuncList):
     try:
@@ -199,7 +196,7 @@ def replaceAIRFunc(replaceFuncList):
         return
     for oldFunc, funcName, newFunc in replaceFuncList:
         if simbase.air.replaceMethod(oldFunc, newFunc):
-            print ('replaced DistributedObject function: %s' % funcName)
+            print('replaced DistributedObject function: %s' % funcName)
 
 def replaceIvalFunc(replaceFuncList):
     # Make sure we have imported IntervalManager and thus created
@@ -210,4 +207,4 @@ def replaceIvalFunc(replaceFuncList):
     for oldFunc, funcName, newFunc in replaceFuncList:
         res = FunctionInterval.replaceMethod(oldFunc, newFunc)
         if res:
-            print ('replaced %s interval function(s): %s' % (res, funcName))
+            print('replaced %s interval function(s): %s' % (res, funcName))

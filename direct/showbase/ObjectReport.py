@@ -1,14 +1,3 @@
-"""Undocumented Module"""
-
-__all__ = ['ExclusiveObjectPool', 'ObjectReport']
-
-from direct.directnotify.DirectNotifyGlobal import directNotify
-from direct.showbase import DirectObject, ObjectPool, GarbageReport
-from direct.showbase.PythonUtil import makeList, Sync
-import gc
-import sys
-import __builtin__
-
 """
 >>> from direct.showbase import ObjectReport
 
@@ -19,6 +8,19 @@ import __builtin__
 >>> o2=ObjectReport.ObjectReport('')
 >>> o.diff(o2)
 """
+
+__all__ = ['ExclusiveObjectPool', 'ObjectReport']
+
+from direct.directnotify.DirectNotifyGlobal import directNotify
+from direct.showbase import DirectObject, ObjectPool, GarbageReport
+from direct.showbase.PythonUtil import makeList, Sync
+import gc
+import sys
+
+if sys.version_info >= (3, 0):
+    import builtins
+else:
+    import __builtin__ as builtins
 
 class ExclusiveObjectPool(DirectObject.DirectObject):
     # ObjectPool specialization that excludes particular objects
@@ -134,7 +136,7 @@ class ObjectReport:
             gc_objects = gc.get_objects()
             # use get_referents to find everything else
             objects = gc_objects
-            objects.append(__builtin__.__dict__)
+            objects.append(builtins.__dict__)
             nextObjList = gc_objects
             found = set()
             found.add(id(objects))
@@ -160,7 +162,7 @@ class ObjectReport:
         else:
             objs = []
             stateStack = Stack()
-            root = __builtins__
+            root = builtins
             objIds = set([id(root)])
             stateStack.push((root, None, 0))
             while True:
@@ -183,9 +185,10 @@ class ObjectReport:
                     adjacents = newObjs
                     if len(adjacents) == 0:
                         print 'DEAD END'
-                for i in xrange(resumeIndex, len(adjacents)):
+                for i in range(resumeIndex, len(adjacents)):
                     adj = adjacents[i]
                     stateStack.push((obj, adjacents, i+1))
                     stateStack.push((adj, None, 0))
                     continue
                     """
+

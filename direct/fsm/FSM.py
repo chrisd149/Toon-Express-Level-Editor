@@ -1,5 +1,5 @@
 """The new Finite State Machine module. This replaces the module
-previously called FSM.py (now called ClassicFSM.py).
+previously called FSM (now called :mod:`.ClassicFSM`).
 """
 
 __all__ = ['FSMException', 'FSM']
@@ -9,8 +9,7 @@ from direct.showbase.DirectObject import DirectObject
 from direct.directnotify import DirectNotifyGlobal
 from direct.showbase import PythonUtil
 from direct.stdpy.threading import RLock
-import types
-import string
+
 
 class FSMException(Exception):
     pass
@@ -150,7 +149,7 @@ class FSM(DirectObject):
 
     def __init__(self, name):
         self.fsmLock = RLock()
-        self.name = name
+        self._name = name
         self.stateArray = []
         self._serialNum = FSM.SerialNum
         FSM.SerialNum += 1
@@ -186,12 +185,12 @@ class FSM(DirectObject):
         # the messenger on every state change. The new and old states are
         # accessible as self.oldState and self.newState, and the transition
         # functions will already have been called.
-        return 'FSM-%s-%s-stateChange' % (self._serialNum, self.name)
+        return 'FSM-%s-%s-stateChange' % (self._serialNum, self._name)
 
     def getCurrentFilter(self):
         if not self.state:
             error = "FSM cannot determine current filter while in transition (%s -> %s)." % (self.oldState, self.newState)
-            raise AlreadyInTransition, error
+            raise AlreadyInTransition(error)
 
         filter = getattr(self, "filter" + self.state, None)
         if not filter:
@@ -239,9 +238,9 @@ class FSM(DirectObject):
 
         self.fsmLock.acquire()
         try:
-            assert isinstance(request, types.StringTypes)
+            assert isinstance(request, str)
             self.notify.debug("%s.forceTransition(%s, %s" % (
-                self.name, request, str(args)[1:]))
+                self._name, request, str(args)[1:]))
 
             if not self.state:
                 # Queue up the request.
@@ -267,9 +266,9 @@ class FSM(DirectObject):
 
         self.fsmLock.acquire()
         try:
-            assert isinstance(request, types.StringTypes)
+            assert isinstance(request, str)
             self.notify.debug("%s.demand(%s, %s" % (
-                self.name, request, str(args)[1:]))
+                self._name, request, str(args)[1:]))
             if not self.state:
                 # Queue up the request.
                 self.__requestQueue.append(PythonUtil.Functor(
@@ -277,7 +276,7 @@ class FSM(DirectObject):
                 return
 
             if not self.request(request, *args):
-                raise RequestDenied, "%s (from state: %s)" % (request, self.state)
+                raise RequestDenied("%s (from state: %s)" % (request, self.state))
         finally:
             self.fsmLock.release()
 
@@ -306,14 +305,14 @@ class FSM(DirectObject):
 
         self.fsmLock.acquire()
         try:
-            assert isinstance(request, types.StringTypes)
+            assert isinstance(request, str)
             self.notify.debug("%s.request(%s, %s" % (
-                self.name, request, str(args)[1:]))
+                self._name, request, str(args)[1:]))
 
             filter = self.getCurrentFilter()
             result = filter(request, args)
             if result:
-                if isinstance(result, types.StringTypes):
+                if isinstance(result, str):
                     # If the return value is a string, it's just the name
                     # of the state.  Wrap it in a tuple for consistency.
                     result = (result,) + args
@@ -364,7 +363,7 @@ class FSM(DirectObject):
             # If self.defaultTransitions is None, it means to accept
             # all requests whose name begins with a capital letter.
             # These are direct requests to a particular state.
-            if request[0] in string.uppercase:
+            if request[0].isupper():
                 return (request,) + args
         else:
             # If self.defaultTransitions is not None, it is a map of
@@ -381,18 +380,18 @@ class FSM(DirectObject):
             # to request a direct state transition (capital letter
             # request) not listed in defaultTransitions and not
             # handled by an earlier filter.
-            if request[0] in string.uppercase:
-                raise RequestDenied, "%s (from state: %s)" % (request, self.state)
+            if request[0].isupper():
+                raise RequestDenied("%s (from state: %s)" % (request, self.state))
 
         # In either case, we quietly ignore unhandled command
         # (lowercase) requests.
-        assert self.notify.debug("%s ignoring request %s from state %s." % (self.name, request, self.state))
+        assert self.notify.debug("%s ignoring request %s from state %s." % (self._name, request, self.state))
         return None
 
     def filterOff(self, request, args):
         """From the off state, we can always go directly to any other
         state."""
-        if request[0] in string.uppercase:
+        if request[0].isupper():
             return (request,) + args
         return self.defaultFilter(request, args)
 
@@ -445,7 +444,7 @@ class FSM(DirectObject):
         # Internal function to change unconditionally to the indicated
         # state.
         assert self.state
-        assert self.notify.debug("%s to state %s." % (self.name, newState))
+        assert self.notify.debug("%s to state %s." % (self._name, newState))
 
         self.oldState = self.state
         self.newState = newState
@@ -477,7 +476,7 @@ class FSM(DirectObject):
 
         if self.__requestQueue:
             request = self.__requestQueue.pop(0)
-            assert self.notify.debug("%s continued queued request." % (self.name))
+            assert self.notify.debug("%s continued queued request." % (self._name))
             request()
 
     def __callEnterFunc(self, name, *args):
@@ -526,9 +525,9 @@ class FSM(DirectObject):
         try:
             className = self.__class__.__name__
             if self.state:
-                str = ('%s FSM:%s in state "%s"' % (className, self.name, self.state))
+                str = ('%s FSM:%s in state "%s"' % (className, self._name, self.state))
             else:
-                str = ('%s FSM:%s in transition from \'%s\' to \'%s\'' % (className, self.name, self.oldState, self.newState))
+                str = ('%s FSM:%s in transition from \'%s\' to \'%s\'' % (className, self._name, self.oldState, self.newState))
             return str
         finally:
             self.fsmLock.release()

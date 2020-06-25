@@ -1,11 +1,11 @@
-"""Undocumented Module"""
+"""Defines the DirectScrollBar class."""
 
 __all__ = ['DirectScrollBar']
 
-from pandac.PandaModules import *
-import DirectGuiGlobals as DGG
-from DirectFrame import *
-from DirectButton import *
+from panda3d.core import *
+from . import DirectGuiGlobals as DGG
+from .DirectFrame import *
+from .DirectButton import *
 
 """
 import DirectScrollBar
@@ -142,7 +142,7 @@ class DirectScrollBar(DirectFrame):
         elif self['orientation'] == DGG.VERTICAL_INVERTED:
             self.guiItem.setAxis(Vec3(0, 0, 1))
         else:
-            raise ValueError, 'Invalid value for orientation: %s' % (self['orientation'])
+            raise ValueError('Invalid value for orientation: %s' % (self['orientation']))
 
     def setManageButtons(self):
         self.guiItem.setManagePieces(self['manageButtons'])
@@ -164,4 +164,5 @@ class DirectScrollBar(DirectFrame):
         self._optionInfo['value'][DGG._OPT_VALUE] = self.guiItem.getValue()
 
         if self['command']:
-            apply(self['command'], self['extraArgs'])
+            self['command'](*self['extraArgs'])
+

@@ -1,28 +1,24 @@
-# This is a hack fix to get the graphics pipes to load with my
-# hacked up Panda3D. If you want to load the level editor
-# using DirectX 8 or DirectX 9, uncomment the import for the
-# pipe you want to use. Make sure the pipe you want to load
-# first is imported first.
+"""
+This is a shortcut that instantiates ShowBase automatically on import,
+opening a graphical window and setting up the scene graph.
+This example demonstrates its use:
 
-# DirectX 9
-#try:
-#    import libpandadx9
-#except:
-#    pass
+   import direct.directbase.DirectStart
+   run()
 
-# DirectX 8
-#try:
-#    import libpandadx8
-#except:
-#    pass
+While it may be considered useful for quick prototyping in the interactive
+Python shell, using it in applications is not considered good style.
+As such, it has been deprecated starting with Panda3D 1.9.  It is equivalent
+to and may be replaced by the following code:
 
-# OpenGL
-try:
-    import libpandagl
-except:
-    pass
+   from direct.showbase.ShowBase import ShowBase
+   base = ShowBase()
+"""
 
-print 'DirectStart: Starting the game.'
+__all__ = []
+
+if __debug__:
+    print('Using deprecated DirectStart interface.')
 
 from direct.showbase import ShowBase
 base = ShowBase.ShowBase()

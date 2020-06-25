@@ -19,11 +19,11 @@ from direct.showbase import DirectObject
 from direct.controls.ControlManager import CollisionHandlerRayStart
 from direct.showbase.InputStateGlobal import inputState
 from direct.task.Task import Task
-from pandac.PandaModules import *
+from panda3d.core import *
 
 class NonPhysicsWalker(DirectObject.DirectObject):
     notify = DirectNotifyGlobal.directNotify.newCategory("NonPhysicsWalker")
-    wantDebugIndicator = base.config.GetBool('want-avatar-physics-indicator', 0)
+    wantDebugIndicator = ConfigVariableBool('want-avatar-physics-indicator', False)
 
     # Ghost mode overrides this:
     slideName = "slide-is-disabled"

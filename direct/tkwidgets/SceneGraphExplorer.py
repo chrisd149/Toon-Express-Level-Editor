@@ -1,11 +1,13 @@
-"""Undocumented Module"""
+"""This module defines a widget used to display a graphical overview of the
+scene graph using the tkinter GUI system.
+
+Requires Pmw."""
 
 __all__ = ['SceneGraphExplorer', 'SceneGraphExplorerItem', 'explore']
 
 from direct.showbase.DirectObject import DirectObject
 from direct.showbase.TkGlobal import *
-from Tkinter import *
-from Tree import *
+from .Tree import *
 import Pmw
 
 # changing these strings requires changing DirectSession.py SGE_ strs too!
@@ -27,7 +29,10 @@ DEFAULT_MENU_ITEMS = [
 
 class SceneGraphExplorer(Pmw.MegaWidget, DirectObject):
     "Graphical display of a scene graph"
-    def __init__(self, parent = None, nodePath = render, isItemEditable = True, **kw):
+    def __init__(self, parent = None, nodePath = None, isItemEditable = True, **kw):
+        if nodePath is None:
+            nodePath = base.render
+
         # Define the megawidget options.
         optiondefs = (
             ('menuItems',   [],   Pmw.INITOPT),
@@ -155,7 +160,7 @@ class SceneGraphExplorerItem(TreeItem):
         return type + "  " + name
 
     def GetKey(self):
-        return self.nodePath.id()
+        return hash(self.nodePath)
 
     def IsEditable(self):
         # All nodes' names can be edited nowadays.
@@ -188,7 +193,10 @@ class SceneGraphExplorerItem(TreeItem):
         messenger.send('SGE_' + command, [self.nodePath])
 
 
-def explore(nodePath = render):
+def explore(nodePath = None):
+    if nodePath is None:
+        nodePath = base.render
+
     tl = Toplevel()
     tl.title('Explore: ' + nodePath.getName())
     sge = SceneGraphExplorer(parent = tl, nodePath = nodePath)

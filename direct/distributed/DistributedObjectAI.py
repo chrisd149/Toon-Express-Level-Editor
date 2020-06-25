@@ -3,7 +3,8 @@
 from direct.directnotify.DirectNotifyGlobal import directNotify
 from direct.distributed.DistributedObjectBase import DistributedObjectBase
 from direct.showbase import PythonUtil
-from pandac.PandaModules import *
+from panda3d.core import *
+from panda3d.direct import *
 #from PyDatagram import PyDatagram
 #from PyDatagramIterator import PyDatagramIterator
 
@@ -56,25 +57,26 @@ class DistributedObjectAI(DistributedObjectBase):
         def status(self, indent=0):
             """
             print out doId(parentId, zoneId) className
-                and conditionally show generated, disabled, neverDisable,
-                or cachable
+                and conditionally show generated or deleted
             """
-            spaces=' '*(indent+2)
+            spaces = ' ' * (indent + 2)
             try:
-                print "%s%s:"%(
-                    ' '*indent, self.__class__.__name__)
-                print "%sfrom DistributedObject doId:%s, parent:%s, zone:%s"%(
-                    spaces,
-                    self.doId, self.parentId, self.zoneId),
-                flags=[]
+                print("%s%s:" % (' ' * indent, self.__class__.__name__))
+
+                flags = []
                 if self.__generated:
                     flags.append("generated")
                 if self.air == None:
                     flags.append("deleted")
+
+                flagStr = ""
                 if len(flags):
-                    print "(%s)"%(" ".join(flags),),
-                print
-            except Exception, e: print "%serror printing status"%(spaces,), e
+                    flagStr = " (%s)" % (" ".join(flags))
+
+                print("%sfrom DistributedObject doId:%s, parent:%s, zone:%s%s" % (
+                    spaces, self.doId, self.parentId, self.zoneId, flagStr))
+            except Exception as e:
+                print("%serror printing status %s" % (spaces, e))
 
     def getDeleteEvent(self):
         # this is sent just before we get deleted
@@ -144,8 +146,6 @@ class DistributedObjectAI(DistributedObjectBase):
                     barrier.cleanup()
                 self.__barriers = {}
 
-                self.air.stopTrackRequestDeletedDO(self)
-
                 # DCR: I've re-enabled this block of code so that Toontown's
                 # AI won't leak channels.
                 # Let me know if it causes trouble.
@@ -153,10 +153,9 @@ class DistributedObjectAI(DistributedObjectBase):
                 ### block until a solution is thought out of how to prevent
                 ### this delete message or to handle this message better
                 # TODO: do we still need this check?
-                if not hasattr(self, "doNotDeallocateChannel"):
-                    if self.air and not hasattr(self.air, "doNotDeallocateChannel"):
-                        if self.air.minChannel <= self.doId <= self.air.maxChannel:
-                            self.air.deallocateChannel(self.doId)
+                if not getattr(self, "doNotDeallocateChannel", False):
+                    if self.air:
+                        self.air.deallocateChannel(self.doId)
                 self.air = None
 
                 self.parentId = None
@@ -197,9 +196,6 @@ class DistributedObjectAI(DistributedObjectBase):
         of its required fields filled in. Overwrite when needed.
         """
         pass
-
-    def addInterest(self, zoneId, note="", event=None):
-        self.air.addInterest(self.doId, zoneId, note, event)
 
     def b_setLocation(self, parentId, zoneId):
         self.d_setLocation(parentId, zoneId)
@@ -271,9 +267,6 @@ class DistributedObjectAI(DistributedObjectBase):
         self.postGenerateMessage()
 
         dclass.receiveUpdateOther(self, di)
-
-    def sendSetZone(self, zoneId):
-        self.air.sendSetZone(self, zoneId)
 
     def startMessageBundle(self, name):
         self.air.startMessageBundle(name)
@@ -347,16 +340,16 @@ class DistributedObjectAI(DistributedObjectBase):
             self.air.sendUpdate(self, fieldName, args)
 
     def GetPuppetConnectionChannel(self, doId):
-        return doId + (1L << 32)
+        return doId + (1001 << 32)
 
     def GetAccountConnectionChannel(self, doId):
-        return doId + (3L << 32)
+        return doId + (1003 << 32)
 
     def GetAccountIDFromChannelCode(self, channel):
         return channel >> 32
 
     def GetAvatarIDFromChannelCode(self, channel):
-        return channel & 0xffffffffL
+        return channel & 0xffffffff
 
     def sendUpdateToAvatarId(self, avId, fieldName, args):
         assert self.notify.debugStateCall(self)
@@ -480,7 +473,6 @@ class DistributedObjectAI(DistributedObjectBase):
                 (self.__class__, doId))
             return
         self.air.requestDelete(self)
-        self.air.startTrackRequestDeletedDO(self)
         self._DOAI_requestedDelete = True
 
     def taskName(self, taskString):
@@ -578,3 +570,6 @@ class DistributedObjectAI(DistributedObjectBase):
     def _retrieveCachedData(self):
         """ This is a no-op on the AI. """
         pass
+
+    def setAI(self, aiChannel):
+        self.air.setAI(self.doId, aiChannel)

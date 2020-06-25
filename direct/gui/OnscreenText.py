@@ -2,10 +2,9 @@
 
 __all__ = ['OnscreenText', 'Plain', 'ScreenTitle', 'ScreenPrompt', 'NameConfirm', 'BlackOnWhite']
 
-from pandac.PandaModules import *
-import DirectGuiGlobals as DGG
-from direct.showbase.DirectObject import DirectObject
-import string,types
+from panda3d.core import *
+from . import DirectGuiGlobals as DGG
+import sys
 
 ## These are the styles of text we might commonly see.  They set the
 ## overall appearance of the text according to one of a number of
@@ -17,7 +16,7 @@ ScreenPrompt = 3
 NameConfirm = 4
 BlackOnWhite = 5
 
-class OnscreenText(DirectObject, NodePath):
+class OnscreenText(NodePath):
 
     def __init__(self, text = '',
                  style = Plain,
@@ -36,7 +35,8 @@ class OnscreenText(DirectObject, NodePath):
                  font = None,
                  parent = None,
                  sort = 0,
-                 mayChange = True):
+                 mayChange = True,
+                 direction = None):
         """
         Make a text node from string, put it into the 2d sg and set it
         up with all the indicated parameters.
@@ -96,6 +96,9 @@ class OnscreenText(DirectObject, NodePath):
           mayChange: pass true if the text or its properties may need
               to be changed at runtime, false if it is static once
               created (which leads to better memory optimization).
+
+          direction: this can be set to 'ltr' or 'rtl' to override the
+              direction of the text.
         """
         if parent == None:
             parent = aspect2d
@@ -152,16 +155,16 @@ class OnscreenText(DirectObject, NodePath):
         else:
             raise ValueError
 
-        if not isinstance(scale, types.TupleType):
+        if not isinstance(scale, tuple):
             # If the scale is already a tuple, it's a 2-d (x, y) scale.
             # Otherwise, it's a uniform scale--make it a tuple.
             scale = (scale, scale)
 
         # Save some of the parameters for posterity.
-        self.scale = scale
-        self.pos = pos
-        self.roll = roll
-        self.wordwrap = wordwrap
+        self.__scale = scale
+        self.__pos = pos
+        self.__roll = roll
+        self.__wordwrap = wordwrap
 
         if decal:
             textNode.setCardDecal(1)
@@ -169,11 +172,7 @@ class OnscreenText(DirectObject, NodePath):
         if font == None:
             font = DGG.getDefaultFont()
 
-        if font:
-            textNode.setFont(font)
-        else:
-            textNode.setFont(loader.loadFont('models/fonts/ImpressBT.ttf'))
-
+        textNode.setFont(font)
         textNode.setTextColor(fg[0], fg[1], fg[2], fg[3])
         textNode.setAlign(align)
 
@@ -196,6 +195,17 @@ class OnscreenText(DirectObject, NodePath):
             # If we have a frame color, create a frame.
             textNode.setFrameColor(frame[0], frame[1], frame[2], frame[3])
             textNode.setFrameAsMargin(0.1, 0.1, 0.1, 0.1)
+
+        if direction is not None:
+            if isinstance(direction, str):
+                direction = direction.lower()
+                if direction == 'rtl':
+                    direction = TextProperties.D_rtl
+                elif direction == 'ltr':
+                    direction = TextProperties.D_ltr
+                else:
+                    raise ValueError('invalid direction')
+            textNode.setDirection(direction)
 
         # Create a transform for the text for our scale and position.
         # We'd rather do it here, on the text itself, rather than on
@@ -253,25 +263,38 @@ class OnscreenText(DirectObject, NodePath):
     def getDecal(self):
         return self.textNode.getCardDecal()
 
+    decal = property(getDecal, setDecal)
+
     def setFont(self, font):
         self.textNode.setFont(font)
 
     def getFont(self):
         return self.textNode.getFont()
 
+    font = property(getFont, setFont)
+
     def clearText(self):
         self.textNode.clearText()
 
     def setText(self, text):
-        self.unicodeText = isinstance(text, types.UnicodeType)
+        if sys.version_info >= (3, 0):
+            assert not isinstance(text, bytes)
+            self.unicodeText = True
+        else:
+            self.unicodeText = isinstance(text, unicode)
+
         if self.unicodeText:
             self.textNode.setWtext(text)
         else:
             self.textNode.setText(text)
 
     def appendText(self, text):
-        if isinstance(text, types.UnicodeType):
-            self.unicodeText = 1
+        if sys.version_info >= (3, 0):
+            assert not isinstance(text, bytes)
+            self.unicodeText = True
+        else:
+            self.unicodeText = isinstance(text, unicode)
+
         if self.unicodeText:
             self.textNode.appendWtext(text)
         else:
@@ -283,31 +306,37 @@ class OnscreenText(DirectObject, NodePath):
         else:
             return self.textNode.getText()
 
+    text = property(getText, setText)
+
     def setX(self, x):
-        self.setPos(x, self.pos[1])
+        self.setPos(x, self.__pos[1])
 
     def setY(self, y):
-        self.setPos(self.pos[0], y)
+        self.setPos(self.__pos[0], y)
 
     def setPos(self, x, y):
         """setPos(self, float, float)
         Position the onscreen text in 2d screen space
         """
-        self.pos = (x, y)
+        self.__pos = (x, y)
         self.updateTransformMat()
 
     def getPos(self):
-        return self.pos
+        return self.__pos
+
+    pos = property(getPos, setPos)
 
     def setRoll(self, roll):
         """setRoll(self, float)
         Rotate the onscreen text around the screen's normal
         """
-        self.roll = roll
+        self.__roll = roll
         self.updateTransformMat()
 
     def getRoll(self):
-        return self.roll
+        return self.__roll
+
+    roll = property(getRoll, setRoll)
 
     def setScale(self, sx, sy = None):
         """setScale(self, float, float)
@@ -316,28 +345,30 @@ class OnscreenText(DirectObject, NodePath):
         """
 
         if sy == None:
-            if isinstance(sx, types.TupleType):
-                self.scale = sx
+            if isinstance(sx, tuple):
+                self.__scale = sx
             else:
-                self.scale = (sx, sx)
+                self.__scale = (sx, sx)
         else:
-            self.scale = (sx, sy)
+            self.__scale = (sx, sy)
         self.updateTransformMat()
 
     def updateTransformMat(self):
         assert(isinstance(self.textNode, TextNode))
         mat = (
-            Mat4.scaleMat(self.scale[0], 1, self.scale[1]) *
-            Mat4.rotateMat(self.roll, Vec3(0, -1, 0)) *
-            Mat4.translateMat(self.pos[0], 0, self.pos[1])
+            Mat4.scaleMat(Vec3.rfu(self.__scale[0], 1, self.__scale[1])) *
+            Mat4.rotateMat(self.__roll, Vec3.back()) *
+            Mat4.translateMat(Point3.rfu(self.__pos[0], 0, self.__pos[1]))
             )
         self.textNode.setTransform(mat)
 
     def getScale(self):
-        return self.scale
+        return self.__scale
+
+    scale = property(getScale, setScale)
 
     def setWordwrap(self, wordwrap):
-        self.wordwrap = wordwrap
+        self.__wordwrap = wordwrap
 
         if wordwrap:
             self.textNode.setWordwrap(wordwrap)
@@ -345,10 +376,23 @@ class OnscreenText(DirectObject, NodePath):
             self.textNode.clearWordwrap()
 
     def getWordwrap(self):
-        return self.wordwrap
+        return self.__wordwrap
+
+    wordwrap = property(getWordwrap, setWordwrap)
+
+    def __getFg(self):
+        return self.textNode.getTextColor()
 
     def setFg(self, fg):
         self.textNode.setTextColor(fg[0], fg[1], fg[2], fg[3])
+
+    fg = property(__getFg, setFg)
+
+    def __getBg(self):
+        if self.textNode.hasCard():
+            return self.textNode.getCardColor()
+        else:
+            return LColor(0)
 
     def setBg(self, bg):
         if bg[3] != 0:
@@ -359,6 +403,11 @@ class OnscreenText(DirectObject, NodePath):
             # Otherwise, remove the card.
             self.textNode.clearCard()
 
+    bg = property(__getBg, setBg)
+
+    def __getShadow(self):
+        return self.textNode.getShadowColor()
+
     def setShadow(self, shadow):
         if shadow[3] != 0:
             # If we have a shadow color, create a shadow.
@@ -367,6 +416,11 @@ class OnscreenText(DirectObject, NodePath):
         else:
             # Otherwise, remove the shadow.
             self.textNode.clearShadow()
+
+    shadow = property(__getShadow, setShadow)
+
+    def __getFrame(self):
+        return self.textNode.getFrameColor()
 
     def setFrame(self, frame):
         if frame[3] != 0:
@@ -377,35 +431,42 @@ class OnscreenText(DirectObject, NodePath):
             # Otherwise, remove the frame.
             self.textNode.clearFrame()
 
+    frame = property(__getFrame, setFrame)
+
     def configure(self, option=None, **kw):
         # These is for compatibility with DirectGui functions
         if not self.mayChange:
-            print 'OnscreenText.configure: mayChange == 0'
+            print('OnscreenText.configure: mayChange == 0')
             return
         for option, value in kw.items():
             # Use option string to access setter function
             try:
-                setter = eval('self.set' +
-                              string.upper(option[0]) + option[1:])
+                setter = getattr(self, 'set' + option[0].upper() + option[1:])
                 if setter == self.setPos:
                     setter(value[0], value[1])
                 else:
                     setter(value)
             except AttributeError:
-                print 'OnscreenText.configure: invalid option:', option
+                print('OnscreenText.configure: invalid option: %s' % option)
 
     # Allow index style references
     def __setitem__(self, key, value):
-        apply(self.configure, (), {key: value})
+        self.configure(*(), **{key: value})
 
     def cget(self, option):
         # Get current configuration setting.
         # This is for compatibility with DirectGui functions
-        getter = eval('self.get' + string.upper(option[0]) + option[1:])
+        getter = getattr(self, 'get' + option[0].upper() + option[1:])
         return getter()
+
+    def __getAlign(self):
+        return self.textNode.getAlign()
 
     def setAlign(self, align):
         self.textNode.setAlign(align)
 
+    align = property(__getAlign, setAlign)
+
     # Allow index style refererences
     __getitem__ = cget
+

@@ -1,7 +1,7 @@
 """CRCache module: contains the CRCache class"""
 
 from direct.directnotify import DirectNotifyGlobal
-import DistributedObject
+from . import DistributedObject
 
 class CRCache:
     notify = DirectNotifyGlobal.directNotify.newCategory("CRCache")
@@ -59,7 +59,7 @@ class CRCache:
         doId = distObj.getDoId()
         # Error check
         success = False
-        if self.dict.has_key(doId):
+        if doId in self.dict:
             CRCache.notify.warning("Double cache attempted for distObj "
                                    + str(doId))
         else:
@@ -89,7 +89,7 @@ class CRCache:
 
     def retrieve(self, doId):
         assert self.checkCache()
-        if self.dict.has_key(doId):
+        if doId in self.dict:
             # Find the object
             distObj = self.dict[doId]
             # Remove it from the dictionary
@@ -103,11 +103,11 @@ class CRCache:
             return None
 
     def contains(self, doId):
-        return self.dict.has_key(doId)
+        return doId in self.dict
 
     def delete(self, doId):
         assert self.checkCache()
-        assert self.dict.has_key(doId)
+        assert doId in self.dict
         # Look it up
         distObj = self.dict[doId]
         # Remove it from the dict and fifo
@@ -122,7 +122,7 @@ class CRCache:
     def checkCache(self):
         # For debugging; this verifies that the cache is sensible and
         # returns true if so.
-        from pandac.PandaModules import NodePath
+        from panda3d.core import NodePath
         for obj in self.dict.values():
             if isinstance(obj, NodePath):
                 assert not obj.isEmpty() and obj.getTopNode() != render.node()

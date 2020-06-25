@@ -9,18 +9,18 @@
 ##############################################################################
 
 import os,sys,gc
-from pandac.PandaModules import *
+from panda3d.core import *
 
 class EggCacher:
     def __init__(self, args):
         maindir = Filename.fromOsSpecific(os.getcwd()).getFullpath()
         ExecutionEnvironment.setEnvironmentVariable("MAIN_DIR", maindir)
         self.bamcache = BamCache.getGlobalPtr()
-        self.pandaloader = PandaLoader()
-        self.loaderopts = LoaderOptions()
+        self.pandaloader = Loader()
+        self.loaderopts = LoaderOptions(LoaderOptions.LF_no_ram_cache)
         if (self.bamcache.getActive() == 0):
-            print "The model cache is not currently active."
-            print "You must set a model-cache-dir in your config file."
+            print("The model cache is not currently active.")
+            print("You must set a model-cache-dir in your config file.")
             sys.exit(1)
         self.parseArgs(args)
         files = self.scanPaths(self.paths)
@@ -39,13 +39,13 @@ class EggCacher:
             else:
                 break
         if (len(args) < 1):
-            print "Usage: eggcacher options file-or-directory"
+            print("Usage: eggcacher options file-or-directory")
             sys.exit(1)
         self.paths = args
 
     def scanPath(self, eggs, path):
         if (os.path.exists(path)==0):
-            print "No such file or directory: "+path
+            print("No such file or directory: " + path)
             return
         if (os.path.isdir(path)):
             for f in os.listdir(path):
@@ -55,7 +55,7 @@ class EggCacher:
             size = os.path.getsize(path)
             eggs.append((path,size))
             return
-        if (path.endswith(".egg.pz")):
+        if (path.endswith(".egg.pz") or path.endswith(".egg.gz")):
             size = os.path.getsize(path)
             if (self.pzkeep): eggs.append((path,size))
             else: eggs.append((path[:-3],size))
@@ -69,16 +69,16 @@ class EggCacher:
 
     def processFiles(self, files):
         total = 0
-        for (path,size) in files:
+        for (path, size) in files:
             total += size
         progress = 0
         for (path,size) in files:
             fn = Filename.fromOsSpecific(path)
-            cached = self.bamcache.lookup(fn,"bam")
+            cached = self.bamcache.lookup(fn, "bam")
             percent = (progress * 100) / total
             report = path
             if (self.concise): report = os.path.basename(report)
-            print "Preprocessing Models %2d%% %s" % (percent, report)
+            print("Preprocessing Models %2d%% %s" % (percent, report))
             sys.stdout.flush()
             if (cached) and (cached.hasData()==0):
                 self.pandaloader.loadSync(fn, self.loaderopts)
@@ -88,4 +88,12 @@ class EggCacher:
             progress += size
 
 
-cacher = EggCacher(sys.argv[1:])
+def main(args=None):
+    if args is None:
+        args = sys.argv[1:]
+
+    cacher = EggCacher(args)
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main())

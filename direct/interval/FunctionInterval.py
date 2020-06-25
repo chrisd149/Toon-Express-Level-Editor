@@ -2,11 +2,11 @@
 
 __all__ = ['FunctionInterval', 'EventInterval', 'AcceptInterval', 'IgnoreInterval', 'ParentInterval', 'WrtParentInterval', 'PosInterval', 'HprInterval', 'ScaleInterval', 'PosHprInterval', 'HprScaleInterval', 'PosHprScaleInterval', 'Func', 'Wait']
 
-from pandac.PandaModules import *
+from panda3d.core import *
+from panda3d.direct import *
 from direct.showbase.MessengerGlobal import *
 from direct.directnotify.DirectNotifyGlobal import directNotify
-import Interval
-import types
+from . import Interval
 
 
 #############################################################
@@ -28,18 +28,17 @@ class FunctionInterval(Interval.Interval):
 
         @classmethod
         def replaceMethod(self, oldFunction, newFunction):
-            import new
             import types
             count = 0
             for ival in self.FunctionIntervals:
                 # print 'testing: ', ival.function, oldFunction
                 # Note: you can only replace methods currently
                 if type(ival.function) == types.MethodType:
-                    if (ival.function.im_func == oldFunction):
+                    if ival.function.__func__ == oldFunction:
                         # print 'found: ', ival.function, oldFunction
-                        ival.function = new.instancemethod(newFunction,
-                                                           ival.function.im_self,
-                                                           ival.function.im_class)
+                        ival.function = types.MethodType(newFunction,
+                                                         ival.function.__self__,
+                                                         ival.function.__self__.__class__)
                         count += 1
             return count
 
@@ -58,9 +57,10 @@ class FunctionInterval(Interval.Interval):
         self.function = function
 
         # Create a unique name for the interval if necessary
-        if (name == None):
+        if name is None:
             name = self.makeUniqueName(function)
-        assert isinstance(name, types.StringType)
+        assert isinstance(name, str)
+
         # Record any arguments
         self.extraArgs = extraArgs
         self.kw = kw
@@ -77,7 +77,10 @@ class FunctionInterval(Interval.Interval):
 
     @staticmethod
     def makeUniqueName(func, suffix = ''):
-        name = 'Func-%s-%d' % (func.__name__, FunctionInterval.functionIntervalNum)
+        func_name = getattr(func, '__name__', None)
+        if func_name is None:
+            func_name = str(func)
+        name = 'Func-%s-%d' % (func_name, FunctionInterval.functionIntervalNum)
         FunctionInterval.functionIntervalNum += 1
         if suffix:
             name = '%s-%s' % (name, str(suffix))

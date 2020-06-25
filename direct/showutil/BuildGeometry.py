@@ -1,8 +1,5 @@
-from direct.distributed import DistributedObject
-from direct.directnotify import DirectNotifyGlobal
-from pandac.PandaModules import *
+from panda3d.core import *
 from math import *
-import math
 
 GEO_ID = 0
 
@@ -60,12 +57,12 @@ def addCircle(attachNode, vertexCount, radius, color = Vec4(1.0, 1.0, 1.0, 1.0),
     return targetGeom
 
 def addCircleGeom(rootNode,  vertexCount, radius, color = Vec4(1.0, 1.0, 1.0, 1.0), centerColor = None, layer = 0):
-    global GEO_ID
-    GN=GeomNode("Circle %s" % (GEO_ID))
-    GEO_ID += 1
-    NodePathGeom = rootNode.attachNewNode(GN)
-    geo = addCircle(GN, vertexCount, radius, color, centerColor,layer)
-    return NodePathGeom, GN, geo
+     global GEO_ID
+     GN=GeomNode("Circle %s" % (GEO_ID))
+     GEO_ID += 1
+     NodePathGeom = rootNode.attachNewNode(GN)
+     geo = addCircle(GN, vertexCount, radius, color, centerColor,layer)
+     return NodePathGeom, GN, geo
 
 def addSquare(attachNode, sizeX, sizeY, color = Vec4(1.0, 1.0, 1.0, 1.0), layer = 0):
     targetGN=GeomNode("Square Geom")
@@ -121,12 +118,12 @@ def addSquare(attachNode, sizeX, sizeY, color = Vec4(1.0, 1.0, 1.0, 1.0), layer 
     return boxGeom
 
 def addSquareGeom(rootNode, sizeX, sizeY, color = Vec4(1.0, 1.0, 1.0, 1.0), layer = 0):
-    global GEO_ID
-    GN=GeomNode("Square %s" % (GEO_ID))
-    GEO_ID += 1
-    NodePathGeom = rootNode.attachNewNode(GN)
-    geo = addSquare(GN, sizeX, sizeY, color, layer)
-    return NodePathGeom, GN, geo
+     global GEO_ID
+     GN=GeomNode("Square %s" % (GEO_ID))
+     GEO_ID += 1
+     NodePathGeom = rootNode.attachNewNode(GN)
+     geo = addSquare(GN, sizeX, sizeY, color, layer)
+     return NodePathGeom, GN, geo
 
 def addBox(attachNode, sizeX, sizeY, sizeZ, color = Vec4(1.0, 1.0, 1.0, 1.0), darken = 0):
     targetGN=GeomNode("Box Geom")
@@ -305,12 +302,12 @@ def addBox(attachNode, sizeX, sizeY, sizeZ, color = Vec4(1.0, 1.0, 1.0, 1.0), da
     return boxGeom
 
 def addBoxGeom(rootNode, sizeX, sizeY, sizeZ, color = Vec4(1.0, 1.0, 1.0, 1.0), darken = 0):
-    global GEO_ID
-    GN=GeomNode("Box %s" % (GEO_ID))
-    GEO_ID += 1
-    nodePathGeom = rootNode.attachNewNode(GN)
-    geo = addBox(GN, sizeX, sizeY, sizeZ, color, darken)
-    return nodePathGeom, GN, geo
+     global GEO_ID
+     GN=GeomNode("Box %s" % (GEO_ID))
+     GEO_ID += 1
+     nodePathGeom = rootNode.attachNewNode(GN)
+     geo = addBox(GN, sizeX, sizeY, sizeZ, color, darken)
+     return nodePathGeom, GN, geo
 
 
 def addArrow(attachNode, sizeX, sizeY, color = Vec4(1.0, 1.0, 1.0, 1.0), layer = 0):
@@ -380,9 +377,9 @@ def addArrow(attachNode, sizeX, sizeY, color = Vec4(1.0, 1.0, 1.0, 1.0), layer =
     return boxGeom
 
 def addArrowGeom(rootNode, sizeX, sizeY, color = Vec4(1.0, 1.0, 1.0, 1.0), layer = 0):
-    global GEO_ID
-    GN=GeomNode("Arrow %s" % (GEO_ID))
-    GEO_ID += 1
-    NodePathGeom = rootNode.attachNewNode(GN)
-    geo = addArrow(GN, sizeX, sizeY, color, layer)
-    return NodePathGeom, GN, geo
+     global GEO_ID
+     GN=GeomNode("Arrow %s" % (GEO_ID))
+     GEO_ID += 1
+     NodePathGeom = rootNode.attachNewNode(GN)
+     geo = addArrow(GN, sizeX, sizeY, color, layer)
+     return NodePathGeom, GN, geo

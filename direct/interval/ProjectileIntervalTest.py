@@ -2,9 +2,9 @@
 
 __all__ = ['doTest']
 
-from pandac.PandaModules import *
-from direct.directbase.DirectStart import *
-from IntervalGlobal import *
+from panda3d.core import *
+from panda3d.direct import *
+from .IntervalGlobal import *
 
 def doTest():
     smiley = loader.loadModel('models/misc/smiley')
@@ -15,3 +15,4 @@ def doTest():
                             timeToWayPoint=3)
     pi.loop()
     return pi
+

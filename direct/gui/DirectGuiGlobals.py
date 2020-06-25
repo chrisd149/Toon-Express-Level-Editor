@@ -1,19 +1,18 @@
-"""Undocumented Module"""
-
-__all__ = []
-
-
 """
 Global definitions used by Direct Gui Classes and handy constants
 that can be used during widget construction
 """
-from pandac.PandaModules import *
+
+__all__ = []
+
+from panda3d.core import *
 
 defaultFont = None
 defaultFontFunc = TextNode.getDefaultFont
 defaultClickSound = None
 defaultRolloverSound = None
 defaultDialogGeom = None
+defaultDialogRelief = PGFrameStyle.TBevelOut
 drawOrder = 100
 panel = None
 
@@ -86,6 +85,9 @@ IMAGE_SORT_INDEX = 10
 GEOM_SORT_INDEX = 20
 TEXT_SORT_INDEX = 30
 
+FADE_SORT_INDEX = 1000
+NO_FADE_SORT_INDEX = 2000
+
 # Handy conventions for organizing top-level gui objects in loose buckets.
 BACKGROUND_SORT_INDEX = -100
 MIDGROUND_SORT_INDEX = 0
@@ -103,9 +105,6 @@ BUTTON_ROLLOVER_STATE  = PGButton.SRollover    # 2
 BUTTON_INACTIVE_STATE  = PGButton.SInactive    # 3
 
 def getDefaultRolloverSound():
-    global defaultRolloverSound
-    if defaultRolloverSound == None:
-        defaultRolloverSound = base.loadSfx("audio/sfx/GUI_rollover.wav")
     return defaultRolloverSound
 
 def setDefaultRolloverSound(newSound):
@@ -113,9 +112,6 @@ def setDefaultRolloverSound(newSound):
     defaultRolloverSound = newSound
 
 def getDefaultClickSound():
-    global defaultClickSound
-    if defaultClickSound == None:
-        defaultClickSound = base.loadSfx("audio/sfx/GUI_click.wav")
     return defaultClickSound
 
 def setDefaultClickSound(newSound):
@@ -138,13 +134,16 @@ def setDefaultFontFunc(newFontFunc):
 
 def getDefaultDialogGeom():
     global defaultDialogGeom
-    if defaultDialogGeom == None:
-        defaultDialogGeom = loader.loadModel('models/gui/dialog_box_gui', okMissing = True)
     return defaultDialogGeom
 
-def setDefaultDialogGeom(newDialogGeom):
-    global defaultDialogGeom
+def getDefaultDialogRelief():
+    global defaultDialogRelief
+    return defaultDialogRelief
+
+def setDefaultDialogGeom(newDialogGeom, relief=None):
+    global defaultDialogGeom, defaultDialogRelief
     defaultDialogGeom = newDialogGeom
+    defaultDialogRelief = relief
 
 def getDefaultDrawOrder():
     return drawOrder

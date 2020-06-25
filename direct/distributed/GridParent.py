@@ -1,6 +1,3 @@
-
-from pandac.PandaModules import *
-
 #
 # GridParent.py
 # Any object that can be parented to the ocean grid
@@ -10,6 +7,8 @@ from pandac.PandaModules import *
 # GridParent will put a node inbetween the object and the grid so
 # that the object is broadcasting its position relative to the gridCell
 # it lies in.
+
+from panda3d.core import NodePath
 
 class GridParent:
 
@@ -97,3 +96,5 @@ class GridParent:
 
         #print "gridParent: reparent to %s" % self.av
         #print "gridParent: pos = %s, %s" % (self.av.getPos(), self.av.getParent().getPos())
+
+

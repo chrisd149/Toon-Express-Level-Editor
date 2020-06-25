@@ -1,7 +1,3 @@
-"""Undocumented Module"""
-
-__all__ = ['setupMirror', 'showFrustum']
-
 """This file demonstrates one way to create a mirror effect in Panda.
 Call setupMirror() to create a mirror in the world that reflects
 everything in front of it.
@@ -23,13 +19,18 @@ surface are possible, like a funhouse mirror.  However, the reflection
 itself is always basically planar; for more accurate convex
 reflections, you will need to use a sphere map or a cube map."""
 
-from pandac.PandaModules import *
+__all__ = ['setupMirror', 'showFrustum']
+
+from panda3d.core import *
 from direct.task import Task
 
-def setupMirror(name, width, height):
+def setupMirror(name, width, height, rootCamera = None,
+                bufferSize = 256, clearColor = None):
     # The return value is a NodePath that contains a rectangle that
     # reflects render.  You can reparent, reposition, and rotate it
     # anywhere you like.
+    if rootCamera is None:
+        rootCamera = base.camera
 
     root = render.attachNewNode(name)
 
@@ -49,9 +50,12 @@ def setupMirror(name, width, height):
     # Now create an offscreen buffer for rendering the mirror's point
     # of view.  The parameters here control the resolution of the
     # texture.
-    buffer = base.win.makeTextureBuffer(name, 256, 256)
-    #buffer.setClearColor(base.win.getClearColor())
-    buffer.setClearColor(VBase4(0, 0, 1, 1))
+    buffer = base.win.makeTextureBuffer(name, bufferSize, bufferSize)
+    if clearColor is None:
+        buffer.setClearColor(base.win.getClearColor())
+        #buffer.setClearColor(VBase4(0, 0, 1, 1))
+    else:
+        buffer.setClearColor(clearColor)
 
     # Set up a display region on this buffer, and create a camera.
     dr = buffer.makeDisplayRegion()
@@ -67,9 +71,10 @@ def setupMirror(name, width, height):
     # camera to reverse the direction of its face culling.  We also
     # tell it not to draw (that is, to clip) anything behind the
     # mirror plane.
-    camera.setInitialState(RenderState.make(
-        CullFaceAttrib.makeReverse(),
-        ClipPlaneAttrib.make(ClipPlaneAttrib.OAdd, planeNode)))
+    dummy = NodePath('dummy')
+    dummy.setAttrib(CullFaceAttrib.makeReverse())
+    dummy.setClipPlane(planeNP)
+    camera.setInitialState(dummy.getState())
 
     # Create a visible representation of the camera so we can see it.
     #cameraVis = loader.loadModel('camera.egg')
@@ -80,9 +85,13 @@ def setupMirror(name, width, height):
     # mirror.
     def moveCamera(task, cameraNP = cameraNP, plane = plane,
                    planeNP = planeNP, card = card, lens = lens,
-                   width = width, height = height):
+                   width = width, height = height, rootCamera = rootCamera):
         # Set the camera to the mirror-image position of the main camera.
-        cameraNP.setMat(base.camera.getMat(planeNP) * plane.getReflectionMat())
+        cameraNP.setMat(rootCamera.getMat(planeNP) * plane.getReflectionMat())
+
+        # Set the cameras roll to the roll of the mirror. Otherwise
+        # mirrored objects will be moved unexpectedly
+        cameraNP.setR(planeNP.getR()-180)
 
         # And reset the frustum to exactly frame the mirror's corners.
         # This is a minor detail, but it helps to provide a realistic
@@ -91,6 +100,18 @@ def setupMirror(name, width, height):
         ur = cameraNP.getRelativePoint(card, Point3(width / 2.0, 0, height / 2.0))
         ll = cameraNP.getRelativePoint(card, Point3(-width / 2.0, 0, -height / 2.0))
         lr = cameraNP.getRelativePoint(card, Point3(width / 2.0, 0, -height / 2.0))
+
+        # get the distance from the mirrors camera to the mirror plane
+        camvec = planeNP.getPos() - cameraNP.getPos()
+        camdist = camvec.length()
+
+        # set the discance on the mirrors corners so it will keep correct
+        # sizes of the mirrored objects
+        ul.setY(camdist)
+        ur.setY(camdist)
+        ll.setY(camdist)
+        lr.setY(camdist)
+
         lens.setFrustumFromCorners(ul, ur, ll, lr, Lens.FCCameraPlane | Lens.FCOffAxis | Lens.FCAspectRatio)
 
         return Task.cont
@@ -114,3 +135,22 @@ def showFrustum(np):
     geomNode = GeomNode('frustum')
     geomNode.addGeom(lens.makeGeometry())
     cameraNP.attachNewNode(geomNode)
+
+if __name__ == "__main__":
+    from direct.showbase.ShowBase import ShowBase
+    base = ShowBase()
+
+    panda = loader.loadModel("panda")
+    panda.setH(180)
+    panda.setPos(0, 10, -2.5)
+    panda.setScale(0.5)
+    panda.reparentTo(render)
+
+    myMirror = setupMirror("mirror", 10, 10, bufferSize=1024, clearColor=(0, 0, 1, 1))
+    myMirror.setPos(0, 15, 2.5)
+    myMirror.setH(180)
+
+    # Uncomment this to show the frustum of the camera in the mirror
+    #showFrustum(render)
+
+    base.run()

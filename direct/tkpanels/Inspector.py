@@ -7,9 +7,7 @@ so that I can just type: inspect(anObject) any time."""
 
 __all__ = ['inspect', 'inspectorFor', 'Inspector', 'ModuleInspector', 'ClassInspector', 'InstanceInspector', 'FunctionInspector', 'InstanceMethodInspector', 'CodeInspector', 'ComplexInspector', 'DictionaryInspector', 'SequenceInspector', 'SliceInspector', 'InspectorWindow']
 
-import string
 from direct.showbase.TkGlobal import *
-from Tkinter import *
 import Pmw
 
 ### public API
@@ -23,11 +21,11 @@ def inspect(anObject):
 ### private
 
 def inspectorFor(anObject):
-    typeName = string.capitalize(type(anObject).__name__) + 'Type'
-    if _InspectorMap.has_key(typeName):
+    typeName = type(anObject).__name__.capitalize() + 'Type'
+    if typeName in _InspectorMap:
         inspectorName = _InspectorMap[typeName]
     else:
-        print "Can't find an inspector for " + typeName
+        print(("Can't find an inspector for " + typeName))
         inspectorName = 'Inspector'
     inspector = globals()[inspectorName](anObject)
     return inspector
@@ -92,11 +90,11 @@ class Inspector:
             #    self._partsList.append(each)
 
     def initializePartNames(self):
-        self._partNames = ['up'] + map(lambda each: str(each), self._partsList)
+        self._partNames = ['up'] + [str(each) for each in self._partsList]
 
     def title(self):
         "Subclasses may override."
-        return string.capitalize(self.objectType().__name__)
+        return self.objectType().__name__.capitalize()
 
     def getLastPartNumber(self):
         return self.lastPartNumber
@@ -148,7 +146,7 @@ class ModuleInspector(Inspector):
 
 class ClassInspector(Inspector):
     def namedParts(self):
-        return ['__bases__'] + self.object.__dict__.keys()
+        return ['__bases__'] + list(self.object.__dict__.keys())
 
     def title(self):
         return self.object.__name__ + ' Class'
@@ -167,7 +165,7 @@ class FunctionInspector(Inspector):
 
 class InstanceMethodInspector(Inspector):
     def title(self):
-        return str(self.object.im_class) + "." + self.object.__name__ + "()"
+        return str(self.object.__self__.__class__) + "." + self.object.__name__ + "()"
 
 class CodeInspector(Inspector):
     def title(self):
@@ -185,7 +183,7 @@ class DictionaryInspector(Inspector):
 
     def initializePartsList(self):
         Inspector.initializePartsList(self)
-        keys = self.object.keys()
+        keys = list(self.object.keys())
         keys.sort()
         for each in keys:
             self._partsList.append(each)
@@ -195,7 +193,7 @@ class DictionaryInspector(Inspector):
         if partNumber == 0:
             return self.object
         key = self.privatePartNumber(partNumber)
-        if self.object.has_key(key):
+        if key in self.object:
             return self.object[key]
         else:
             return getattr(self.object, key)
@@ -392,10 +390,10 @@ class InspectorWindow:
 
     #Private
     def selectedIndex(self):
-        indicies = map(int, self.listWidget.curselection())
-        if len(indicies) == 0:
+        indices = list(map(int, self.listWidget.curselection()))
+        if len(indices) == 0:
             return None
-        partNumber = indicies[0]
+        partNumber = indices[0]
         return partNumber
 
     def inspectorForSelectedPart(self):
@@ -406,14 +404,14 @@ class InspectorWindow:
         return self.topInspector().inspectorFor(part)
 
     def popupMenu(self, event):
-        print event
+        print(event)
         partNumber = self.selectedIndex()
-        print partNumber
+        print(partNumber)
         if partNumber == None:
             return
         part = self.topInspector().partNumber(partNumber)
-        print part
-        from pandac.PandaModules import NodePath
+        print(part)
+        from panda3d.core import NodePath
         from direct.fsm import ClassicFSM
         popupMenu = None
         if isinstance(part, NodePath):
@@ -423,11 +421,11 @@ class InspectorWindow:
                  ('Place', NodePath.place),
                  ('Set Color', NodePath.rgbPanel)])
         elif isinstance(part, ClassicFSM.ClassicFSM):
-            import FSMInspector
+            from . import FSMInspector
             popupMenu = self.createPopupMenu(
                 part,
                 [('Inspect ClassicFSM', FSMInspector.FSMInspector)])
-        print popupMenu
+        print(popupMenu)
         if popupMenu:
             popupMenu.post(event.widget.winfo_pointerx(),
                            event.widget.winfo_pointery())
@@ -439,3 +437,7 @@ class InspectorWindow:
                 label = item,
                 command = lambda p = part, f = func: f(p))
         return popupMenu
+
+
+
+

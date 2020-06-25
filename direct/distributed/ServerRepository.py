@@ -1,13 +1,14 @@
 """ServerRepository module: contains the ServerRepository class"""
 
-from pandac.PandaModules import *
+from panda3d.core import *
+from panda3d.direct import *
 from direct.distributed.MsgTypesCMU import *
 from direct.task import Task
 from direct.directnotify import DirectNotifyGlobal
 from direct.distributed.PyDatagram import PyDatagram
-from direct.distributed.PyDatagramIterator import PyDatagramIterator
-import time
-import types
+
+import inspect
+
 
 class ServerRepository:
 
@@ -153,7 +154,7 @@ class ServerRepository:
         for client in flush:
             client.connection.flush()
 
-        return task.again
+        return Task.again
 
     def setTcpHeaderSize(self, headerSize):
         """Sets the header size of TCP packets.  At the present, legal
@@ -192,7 +193,7 @@ class ServerRepository:
                     dcImports[symbolName] = getattr(module, symbolName)
 
                 else:
-                    raise StandardError, 'Symbol %s not defined in module %s.' % (symbolName, moduleName)
+                    raise Exception('Symbol %s not defined in module %s.' % (symbolName, moduleName))
 
         else:
             # "import moduleName"
@@ -274,12 +275,12 @@ class ServerRepository:
             if classDef == None:
                 self.notify.debug("No class definition for %s." % (className))
             else:
-                if type(classDef) == types.ModuleType:
+                if inspect.ismodule(classDef):
                     if not hasattr(classDef, className):
                         self.notify.error("Module %s does not define class %s." % (className, className))
                     classDef = getattr(classDef, className)
 
-                if type(classDef) != types.ClassType and type(classDef) != types.TypeType:
+                if not inspect.isclass(classDef):
                     self.notify.error("Symbol %s is not a class name." % (className))
                 else:
                     dclass.setClassDef(classDef)
@@ -299,7 +300,7 @@ class ServerRepository:
             retVal = self.qcl.getNewConnection(rendezvous, netAddress,
                                                newConnection)
             if not retVal:
-                return task.cont
+                return Task.cont
 
             # Crazy dereferencing
             newConnection = newConnection.p()
@@ -321,13 +322,13 @@ class ServerRepository:
             self.lastConnection = newConnection
             self.sendDoIdRange(client)
 
-        return task.cont
+        return Task.cont
 
     def readerPollUntilEmpty(self, task):
         """ continuously polls for new messages on the server """
         while self.readerPollOnce():
             pass
-        return task.cont
+        return Task.cont
 
     def readerPollOnce(self):
         """ checks for available messages to the server """
@@ -691,7 +692,7 @@ class ServerRepository:
         for client in self.clientsByConnection.values():
             if not self.qcr.isConnectionOk(client.connection):
                 self.handleClientDisconnect(client)
-        return task.cont
+        return Task.cont
 
     def sendToZoneExcept(self, zoneId, datagram, exceptionList):
         """sends a message to everyone who has interest in the
@@ -699,7 +700,7 @@ class ServerRepository:
 
         if self.notify.getDebug():
             self.notify.debug(
-                "ServerRepository sending to all in zone %s except %s:" % (zoneId, map(lambda c: c.doIdBase, exceptionList)))
+                "ServerRepository sending to all in zone %s except %s:" % (zoneId, [c.doIdBase for c in exceptionList]))
             #datagram.dumpHex(ostream)
 
         for client in self.zonesToClients.get(zoneId, []):
@@ -716,7 +717,7 @@ class ServerRepository:
 
         if self.notify.getDebug():
             self.notify.debug(
-                "ServerRepository sending to all except %s:" % (map(lambda c: c.doIdBase, exceptionList),))
+                "ServerRepository sending to all except %s:" % ([c.doIdBase for c in exceptionList],))
             #datagram.dumpHex(ostream)
 
         for client in self.clientsByConnection.values():

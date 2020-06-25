@@ -1,10 +1,9 @@
-"""Undocumented Module"""
+"""Contains the DirectLabel class."""
 
 __all__ = ['DirectLabel']
 
-from pandac.PandaModules import *
-import DirectGuiGlobals as DGG
-from DirectFrame import *
+from panda3d.core import *
+from .DirectFrame import *
 
 class DirectLabel(DirectFrame):
     """

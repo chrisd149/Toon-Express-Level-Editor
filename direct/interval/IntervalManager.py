@@ -1,13 +1,12 @@
-"""Undocumented Module"""
+"""Defines the IntervalManager class as well as the global instance of
+this class, ivalMgr."""
 
 __all__ = ['IntervalManager', 'ivalMgr']
 
-from pandac.PandaModules import *
-from pandac import PandaModules
+from panda3d.core import *
+from panda3d.direct import *
 from direct.directnotify.DirectNotifyGlobal import *
 from direct.showbase import EventManager
-import Interval
-import types
 import fnmatch
 
 class IntervalManager(CIntervalManager):
@@ -138,5 +137,5 @@ class IntervalManager(CIntervalManager):
         assert self.ivals[index] == None or self.ivals[index] == interval
         self.ivals[index] = interval
 
-# The global IntervalManager object.
+#: The global IntervalManager object.
 ivalMgr = IntervalManager(1)

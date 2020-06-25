@@ -13,10 +13,7 @@ class DirectMySQLdbConnection(Connection):
 
         kwargs2 = kwargs.copy()
 
-        if kwargs.has_key('conv'):
-            conv = kwargs['conv']
-        else:
-            conv = conversions
+        conv = kwargs.get('conv', conversions)
 
         kwargs2['conv'] = dict([ (k, v) for k, v in conv.items()
                                  if type(k) is int ])

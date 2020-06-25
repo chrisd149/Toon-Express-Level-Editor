@@ -1,6 +1,8 @@
 """instantiate global DirectNotify used in Direct"""
 
-import DirectNotify
+__all__ = ['directNotify', 'giveNotify']
+
+from . import DirectNotify
 
 directNotify = DirectNotify.DirectNotify()
 giveNotify = directNotify.giveNotify

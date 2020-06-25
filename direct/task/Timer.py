@@ -1,9 +1,8 @@
-"""Undocumented Module"""
+"""Contains the Timer class."""
 
 __all__ = ['Timer']
 
-from pandac.PandaModules import *
-import Task
+from . import Task
 
 class Timer:
     id = 0

@@ -1,75 +1,14 @@
-"""Undocumented Module"""
+"""This defines the Messenger class, which is responsible for most of the
+event handling that happens on the Python side."""
 
 __all__ = ['Messenger']
 
 
-from PythonUtil import *
+from .PythonUtil import *
 from direct.directnotify import DirectNotifyGlobal
 import types
 
-# This one line will replace the cheesy hack below, when we remove the
-# hack.
-#from direct.stdpy.threading import Lock
-
-class Lock:
-    """ This is a cheesy delayed implementation of Lock, designed to
-    support the Toontown ActiveX launch, which must import Messenger
-    before it has downloaded the rest of Panda.  This is a TEMPORARY
-    HACK, to be removed when the ActiveX launch is retired. """
-
-    notify = DirectNotifyGlobal.directNotify.newCategory("Messenger.Lock")
-
-    def __init__(self):
-        self.locked = 0
-
-    def acquire(self):
-        # Before we download Panda, we can't use any threading
-        # interfaces.  So don't, until we observe that we have some
-        # actual contention on the lock.
-
-        if self.locked:
-            # We have contention.
-            return self.__getLock()
-
-        # This relies on the fact that any individual Python statement
-        # is atomic.
-        self.locked += 1
-        if self.locked > 1:
-            # Whoops, we have contention.
-            self.locked -= 1
-            return self.__getLock()
-
-    def release(self):
-        if self.locked:
-            # Still using the old, cheesy lock.
-            self.locked -= 1
-            return
-
-        # The new lock must have been put in place.
-        self.release = self.lock.release
-        return self.lock.release()
-
-    def __getLock(self):
-        # Now that we've started Panda, it's safe to import the Mutex
-        # class, which becomes our actual lock.
-        # From now on, this lock will be used.
-
-        self.notify.info("Acquiring Panda lock for the first time.")
-
-        from pandac.PandaModules import Thread, Mutex
-        self.__dict__.setdefault('lock', Mutex('Messenger'))
-        self.lock.acquire()
-
-        self.acquire = self.lock.acquire
-
-        # Wait for the cheesy lock to be released before we return.
-        self.notify.info("Waiting for cheesy lock to be released.")
-        while self.locked:
-            Thread.forceYield()
-        self.notify.info("Got cheesy lock.")
-
-        # We return with the lock acquired.
-
+from direct.stdpy.threading import Lock
 
 class Messenger:
 
@@ -149,7 +88,7 @@ class Messenger:
         self.lock.acquire()
         try:
             objs = []
-            for refCount, obj in self._id2object.itervalues():
+            for refCount, obj in self._id2object.values():
                 objs.append(obj)
             return objs
         finally:
@@ -159,7 +98,7 @@ class Messenger:
         return len(self.__callbacks.get(event, {}))
 
     def _getEvents(self):
-        return self.__callbacks.keys()
+        return list(self.__callbacks.keys())
 
     def _releaseObject(self, object):
         # assumes lock is held.
@@ -169,6 +108,12 @@ class Messenger:
             record[0] -= 1
             if record[0] <= 0:
                 del self._id2object[id]
+
+    def future(self, event):
+        """ Returns a future that is triggered by the given event name.  This
+        will function only once. """
+
+        return eventMgr.eventHandler.get_future(event)
 
     def accept(self, event, object, method, extraArgs=[], persistent=1):
         """ accept(self, string, DirectObject, Function, List, Boolean)
@@ -194,7 +139,7 @@ class Messenger:
 
         # Make sure extraArgs is a list or tuple
         if not (isinstance(extraArgs, list) or isinstance(extraArgs, tuple) or isinstance(extraArgs, set)):
-            raise TypeError, "A list is required as extraArgs argument"
+            raise TypeError("A list is required as extraArgs argument")
 
         self.lock.acquire()
         try:
@@ -276,7 +221,7 @@ class Messenger:
             # Get the list of events this object is listening to
             eventDict = self.__objectEvents.get(id)
             if eventDict:
-                for event in eventDict.keys():
+                for event in list(eventDict.keys()):
                     # Find the dictionary of all the objects accepting this event
                     acceptorDict = self.__callbacks.get(event)
                     # If this object is there, delete it from the dictionary
@@ -302,7 +247,7 @@ class Messenger:
             # Get the list of events this object is listening to
             eventDict = self.__objectEvents.get(id)
             if eventDict:
-                return eventDict.keys()
+                return list(eventDict.keys())
             return []
         finally:
             self.lock.release()
@@ -369,7 +314,7 @@ class Messenger:
             if not acceptorDict:
                 if __debug__:
                     if foundWatch:
-                        print "Messenger: \"%s\" was sent, but no function in Python listened."%(event,)
+                        print("Messenger: \"%s\" was sent, but no function in Python listened."%(event,))
                 return
 
             if taskChain:
@@ -419,7 +364,7 @@ class Messenger:
         return task.done
 
     def __dispatch(self, acceptorDict, event, sentArgs, foundWatch):
-        for id in acceptorDict.keys():
+        for id in list(acceptorDict.keys()):
             # We have to make this apparently redundant check, because
             # it is possible that one object removes its own hooks
             # in response to a handler called by a previous object.
@@ -451,10 +396,10 @@ class Messenger:
 
                 if __debug__:
                     if foundWatch:
-                        print "Messenger: \"%s\" --> %s%s"%(
+                        print("Messenger: \"%s\" --> %s%s"%(
                             event,
                             self.__methodRepr(method),
-                            tuple(extraArgs + sentArgs))
+                            tuple(extraArgs + sentArgs)))
 
                 #print "Messenger: \"%s\" --> %s%s"%(
                 #            event,
@@ -470,9 +415,13 @@ class Messenger:
                 # Release the lock temporarily while we call the method.
                 self.lock.release()
                 try:
-                    method (*(extraArgs + sentArgs))
+                    result = method (*(extraArgs + sentArgs))
                 finally:
                     self.lock.acquire()
+
+                if hasattr(result, 'cr_await'):
+                    # It's a coroutine, so schedule it with the task manager.
+                    taskMgr.add(result)
 
     def clear(self):
         """
@@ -490,22 +439,21 @@ class Messenger:
         return (len(self.__callbacks) == 0)
 
     def getEvents(self):
-        return self.__callbacks.keys()
+        return list(self.__callbacks.keys())
 
     def replaceMethod(self, oldMethod, newFunction):
         """
         This is only used by Finder.py - the module that lets
         you redefine functions with Control-c-Control-v
         """
-        import new
         retFlag = 0
-        for entry in self.__callbacks.items():
+        for entry in list(self.__callbacks.items()):
             event, objectDict = entry
-            for objectEntry in objectDict.items():
+            for objectEntry in list(objectDict.items()):
                 object, params = objectEntry
                 method = params[0]
                 if (type(method) == types.MethodType):
-                    function = method.im_func
+                    function = method.__func__
                 else:
                     function = method
                 #print ('function: ' + repr(function) + '\n' +
@@ -513,8 +461,8 @@ class Messenger:
                 #       'oldMethod: ' + repr(oldMethod) + '\n' +
                 #       'newFunction: ' + repr(newFunction) + '\n')
                 if (function == oldMethod):
-                    newMethod = new.instancemethod(
-                        newFunction, method.im_self, method.im_class)
+                    newMethod = types.MethodType(
+                        newFunction, method.__self__, method.__self__.__class__)
                     params[0] = newMethod
                     # Found it retrun true
                     retFlag += 1
@@ -525,8 +473,8 @@ class Messenger:
         isVerbose = 1 - Messenger.notify.getDebug()
         Messenger.notify.setDebug(isVerbose)
         if isVerbose:
-            print "Verbose mode true.  quiet list = %s"%(
-                self.quieting.keys(),)
+            print("Verbose mode true.  quiet list = %s"%(
+                list(self.quieting.keys()),))
 
     if __debug__:
         def watch(self, needle):
@@ -590,11 +538,10 @@ class Messenger:
         return a matching event (needle) if found (in haystack).
         This is primarily a debugging tool.
         """
-        keys = self.__callbacks.keys()
+        keys = list(self.__callbacks.keys())
         keys.sort()
         for event in keys:
             if repr(event).find(needle) >= 0:
-                print self.__eventRepr(event),
                 return {event: self.__callbacks[event]}
 
     def findAll(self, needle, limit=None):
@@ -604,11 +551,10 @@ class Messenger:
         This is primarily a debugging tool.
         """
         matches = {}
-        keys = self.__callbacks.keys()
+        keys = list(self.__callbacks.keys())
         keys.sort()
         for event in keys:
             if repr(event).find(needle) >= 0:
-                print self.__eventRepr(event),
                 matches[event] = self.__callbacks[event]
                 # if the limit is not None, decrement and
                 # check for break:
@@ -623,10 +569,13 @@ class Messenger:
         return string version of class.method or method.
         """
         if (type(method) == types.MethodType):
-            functionName = method.im_class.__name__ + '.' + \
-                method.im_func.__name__
+            functionName = method.__self__.__class__.__name__ + '.' + \
+                method.__func__.__name__
         else:
-            functionName = method.__name__
+            if hasattr(method, "__name__"):
+                functionName = method.__name__
+            else:
+                return ""
         return functionName
 
     def __eventRepr(self, event):
@@ -635,7 +584,7 @@ class Messenger:
         """
         str = event.ljust(32) + '\t'
         acceptorDict = self.__callbacks[event]
-        for key, (method, extraArgs, persistent) in acceptorDict.items():
+        for key, (method, extraArgs, persistent) in list(acceptorDict.items()):
             str = str + self.__methodRepr(method) + ' '
         str = str + '\n'
         return str
@@ -645,16 +594,16 @@ class Messenger:
         Compact version of event, acceptor pairs
         """
         str = "The messenger is currently handling:\n" + "="*64 + "\n"
-        keys = self.__callbacks.keys()
+        keys = list(self.__callbacks.keys())
         keys.sort()
         for event in keys:
             str += self.__eventRepr(event)
         # Print out the object: event dictionary too
         str += "="*64 + "\n"
-        for key, eventDict in self.__objectEvents.items():
+        for key, eventDict in list(self.__objectEvents.items()):
             object = self._getObject(key)
             str += "%s:\n" % repr(object)
-            for event in eventDict.keys():
+            for event in list(eventDict.keys()):
                 str += "     %s\n" % repr(event)
 
         str += "="*64 + "\n" + "End of messenger info.\n"
@@ -667,16 +616,17 @@ class Messenger:
         import types
         str = 'Messenger\n'
         str = str + '='*50 + '\n'
-        keys = self.__callbacks.keys()
+        keys = list(self.__callbacks.keys())
         keys.sort()
         for event in keys:
             acceptorDict = self.__callbacks[event]
             str = str + 'Event: ' + event + '\n'
-            for key in acceptorDict.keys():
+            for key in list(acceptorDict.keys()):
                 function, extraArgs, persistent = acceptorDict[key]
                 object = self._getObject(key)
-                if (type(object) == types.InstanceType):
-                    className = object.__class__.__name__
+                objectClass = getattr(object, '__class__', None)
+                if objectClass:
+                    className = objectClass.__name__
                 else:
                     className = "Not a class"
                 functionName = function.__name__
@@ -689,9 +639,23 @@ class Messenger:
                 if (type(function) == types.MethodType):
                     str = (str + '\t' +
                            'Method:       ' + repr(function) + '\n\t' +
-                           'Function:     ' + repr(function.im_func) + '\n')
+                           'Function:     ' + repr(function.__func__) + '\n')
                 else:
                     str = (str + '\t' +
                            'Function:     ' + repr(function) + '\n')
         str = str + '='*50 + '\n'
         return str
+
+    #snake_case alias:
+    get_events = getEvents
+    is_ignoring = isIgnoring
+    who_accepts = whoAccepts
+    find_all = findAll
+    replace_method = replaceMethod
+    ignore_all = ignoreAll
+    is_accepting = isAccepting
+    is_empty = isEmpty
+    detailed_repr = detailedRepr
+    get_all_accepting = getAllAccepting
+    toggle_verbose = toggleVerbose
+

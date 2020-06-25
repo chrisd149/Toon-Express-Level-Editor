@@ -19,7 +19,11 @@ from direct.showbase import DirectObject
 from direct.controls.ControlManager import CollisionHandlerRayStart
 from direct.showbase.InputStateGlobal import inputState
 from direct.task.Task import Task
-from pandac.PandaModules import *
+from panda3d.core import *
+from panda3d.physics import *
+from direct.extensions_native import Mat3_extensions
+from direct.extensions_native import VBase3_extensions
+from direct.extensions_native import VBase4_extensions
 import math
 
 #import LineStream
@@ -27,8 +31,7 @@ import math
 class PhysicsWalker(DirectObject.DirectObject):
 
     notify = DirectNotifyGlobal.directNotify.newCategory("PhysicsWalker")
-    wantDebugIndicator = base.config.GetBool('want-avatar-physics-indicator', 0)
-    wantAvatarPhysicsIndicator = base.config.GetBool('want-avatar-physics-indicator', 0)
+    wantDebugIndicator = ConfigVariableBool('want-avatar-physics-indicator', False)
 
     useLifter = 0
     useHeightRay = 0
@@ -63,51 +66,6 @@ class PhysicsWalker(DirectObject.DirectObject):
 
         self.isAirborne = 0
         self.highMark = 0
-
-    """
-    def spawnTest(self):
-        assert self.debugPrint("\n\nspawnTest()\n")
-        if not self.wantDebugIndicator:
-            return
-        from pandac.PandaModules import *
-        from direct.interval.IntervalGlobal import *
-        from toontown.coghq import MovingPlatform
-
-        if hasattr(self, "platform"):
-            # Remove the prior instantiation:
-            self.moveIval.pause()
-            del self.moveIval
-            self.platform.destroy()
-            del self.platform
-
-        model = loader.loadModel('phase_9/models/cogHQ/platform1')
-        fakeId = id(self)
-        self.platform = MovingPlatform.MovingPlatform()
-        self.platform.setupCopyModel(fakeId, model, 'platformcollision')
-        self.platformRoot = render.attachNewNode("physicsWalker-spawnTest-%s"%fakeId)
-        self.platformRoot.setPos(base.localAvatar, Vec3(0.0, 3.0, 1.0))
-        self.platformRoot.setHpr(base.localAvatar, Vec3.zero())
-        self.platform.reparentTo(self.platformRoot)
-
-        startPos = Vec3(0.0, -15.0, 0.0)
-        endPos = Vec3(0.0, 15.0, 0.0)
-        distance = Vec3(startPos-endPos).length()
-        duration = distance/4
-        self.moveIval = Sequence(
-            WaitInterval(0.3),
-            LerpPosInterval(self.platform, duration,
-                            endPos, startPos=startPos,
-                            name='platformOut%s' % fakeId,
-                            fluid = 1),
-            WaitInterval(0.3),
-            LerpPosInterval(self.platform, duration,
-                            startPos, startPos=endPos,
-                            name='platformBack%s' % fakeId,
-                            fluid = 1),
-            name='platformIval%s' % fakeId,
-            )
-        self.moveIval.loop()
-    """
 
     def setWalkSpeed(self, forward, jump, reverse, rotate):
         assert self.debugPrint("setWalkSpeed()")
@@ -321,7 +279,7 @@ class PhysicsWalker(DirectObject.DirectObject):
             indicator.instanceTo(contactIndicatorNode)
             self.physContactIndicator=contactIndicatorNode
         else:
-            print "failed load of physics indicator"
+            print("failed load of physics indicator")
 
     def avatarPhysicsIndicator(self, task):
         #assert self.debugPrint("avatarPhysicsIndicator()")
@@ -707,7 +665,7 @@ class PhysicsWalker(DirectObject.DirectObject):
     def setPriorParentVector(self):
         assert self.debugPrint("doDeltaPos()")
 
-        print "self.__oldDt", self.__oldDt, "self.__oldPosDelta", self.__oldPosDelta
+        print("self.__oldDt %s self.__oldPosDelta %s" % (self.__oldDt, self.__oldPosDelta))
         if __debug__:
             onScreenDebug.add("__oldDt", "% 10.4f"%self.__oldDt)
             onScreenDebug.add("self.__oldPosDelta",

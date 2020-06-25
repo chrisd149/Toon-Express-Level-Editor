@@ -14,16 +14,14 @@ Still need to implement:
 
 """
 
-from pandac.PandaModules import Point3, Vec3, Vec4
-from pandac.PandaModules import NodePath, PandaNode
-from pandac.PandaModules import RenderState, Texture, Shader
-from pandac.PandaModules import CardMaker
-from pandac.PandaModules import TextureStage
-from pandac.PandaModules import GraphicsPipe, GraphicsOutput
-from pandac.PandaModules import WindowProperties, FrameBufferProperties
-from pandac.PandaModules import Camera, DisplayRegion
-from pandac.PandaModules import OrthographicLens
-from pandac.PandaModules import AuxBitplaneAttrib
+from panda3d.core import NodePath
+from panda3d.core import Texture
+from panda3d.core import CardMaker
+from panda3d.core import GraphicsPipe, GraphicsOutput
+from panda3d.core import WindowProperties, FrameBufferProperties
+from panda3d.core import Camera
+from panda3d.core import OrthographicLens
+from panda3d.core import AuxBitplaneAttrib
 from direct.directnotify.DirectNotifyGlobal import *
 from direct.showbase.DirectObject import DirectObject
 
@@ -42,18 +40,18 @@ class FilterManager(DirectObject):
 
         # Create the notify category
 
-        if (FilterManager.notify == None):
+        if FilterManager.notify is None:
             FilterManager.notify = directNotify.newCategory("FilterManager")
 
         # Find the appropriate display region.
 
         region = None
-        for i in range(win.getNumDisplayRegions()):
-            dr = win.getDisplayRegion(i)
+        for dr in win.getDisplayRegions():
             drcam = dr.getCamera()
-            if (drcam == cam): region=dr
+            if drcam == cam:
+                region = dr
 
-        if (region == None):
+        if region is None:
             self.notify.error('Could not find appropriate DisplayRegion to filter')
             return False
 
@@ -74,7 +72,7 @@ class FilterManager(DirectObject):
         self.nextsort = self.win.getSort() - 1000
         self.basex = 0
         self.basey = 0
-        self.accept("window-event", self.resizeBuffers)
+        self.accept("window-event", self.windowEvent)
 
 
     def getClears(self,region):
@@ -111,22 +109,22 @@ class FilterManager(DirectObject):
 
         winx = self.forcex
         winy = self.forcey
-        if (winx == 0): winx = self.win.getXSize()
-        if (winy == 0): winy = self.win.getYSize()
+        if winx == 0: winx = self.win.getXSize()
+        if winy == 0: winy = self.win.getYSize()
 
-        if (div != 1):
-            winx = ((winx+align-1) / align) * align
-            winy = ((winy+align-1) / align) * align
-            winx = winx / div
-            winy = winy / div
+        if div != 1:
+            winx = ((winx+align-1) // align) * align
+            winy = ((winy+align-1) // align) * align
+            winx = winx // div
+            winy = winy // div
 
-        if (mul != 1):
+        if mul != 1:
             winx = winx * mul
             winy = winy * mul
 
         return winx,winy
 
-    def renderSceneInto(self, depthtex=None, colortex=None, auxtex=None, auxbits=0, textures=None):
+    def renderSceneInto(self, depthtex=None, colortex=None, auxtex=None, auxbits=0, textures=None, fbprops=None):
 
         """ Causes the scene to be rendered into the supplied textures
         instead of into the original window.  Puts a fullscreen quad
@@ -171,18 +169,26 @@ class FilterManager(DirectObject):
             colortex = textures.get("color", None)
             depthtex = textures.get("depth", None)
             auxtex = textures.get("aux", None)
+            auxtex0 = textures.get("aux0", auxtex)
+            auxtex1 = textures.get("aux1", None)
+        else:
+            auxtex0 = auxtex
+            auxtex1 = None
 
         if (colortex == None):
             colortex = Texture("filter-base-color")
             colortex.setWrapU(Texture.WMClamp)
             colortex.setWrapV(Texture.WMClamp)
 
-        texgroup = (depthtex, colortex, auxtex, None)
+        texgroup = (depthtex, colortex, auxtex0, auxtex1)
 
         # Choose the size of the offscreen buffer.
 
         (winx, winy) = self.getScaledSize(1,1,1)
-        buffer = self.createBuffer("filter-base", winx, winy, texgroup)
+        if fbprops is not None:
+            buffer = self.createBuffer("filter-base", winx, winy, texgroup, fbprops=fbprops)
+        else:
+            buffer = self.createBuffer("filter-base", winx, winy, texgroup)
 
         if (buffer == None):
             return None
@@ -193,7 +199,7 @@ class FilterManager(DirectObject):
         quad.setDepthTest(0)
         quad.setDepthWrite(0)
         quad.setTexture(colortex)
-        quad.setColor(Vec4(1,0.5,0.5,1))
+        quad.setColor(1, 0.5, 0.5, 1)
 
         cs = NodePath("dummy")
         cs.setState(self.camstate)
@@ -213,14 +219,18 @@ class FilterManager(DirectObject):
 
         self.region.setCamera(quadcam)
 
-        dr = buffer.getDisplayRegion(0)
-        self.setStackedClears(dr, self.rclears, self.wclears)
-        if (auxtex):
-            dr.setClearActive(GraphicsOutput.RTPAuxRgba0, 1)
-            dr.setClearValue(GraphicsOutput.RTPAuxRgba0, Vec4(0.5,0.5,1.0,0.0))
+        self.setStackedClears(buffer, self.rclears, self.wclears)
+        if (auxtex0):
+            buffer.setClearActive(GraphicsOutput.RTPAuxRgba0, 1)
+            buffer.setClearValue(GraphicsOutput.RTPAuxRgba0, (0.5, 0.5, 1.0, 0.0))
+        if (auxtex1):
+            buffer.setClearActive(GraphicsOutput.RTPAuxRgba1, 1)
         self.region.disableClears()
         if (self.isFullscreen()):
             self.win.disableClears()
+
+        dr = buffer.makeDisplayRegion()
+        dr.disableClears()
         dr.setCamera(self.camera)
         dr.setActive(1)
 
@@ -229,7 +239,7 @@ class FilterManager(DirectObject):
 
         return quad
 
-    def renderQuadInto(self, mul=1, div=1, align=1, depthtex=None, colortex=None, auxtex0=None, auxtex1=None):
+    def renderQuadInto(self, name="filter-stage", mul=1, div=1, align=1, depthtex=None, colortex=None, auxtex0=None, auxtex1=None, fbprops=None):
 
         """ Creates an offscreen buffer for an intermediate
         computation. Installs a quad into the buffer.  Returns
@@ -243,7 +253,10 @@ class FilterManager(DirectObject):
 
         depthbits = bool(depthtex != None)
 
-        buffer = self.createBuffer("filter-stage", winx, winy, texgroup, depthbits)
+        if fbprops is not None:
+            buffer = self.createBuffer(name, winx, winy, texgroup, depthbits, fbprops=fbprops)
+        else:
+            buffer = self.createBuffer(name, winx, winy, texgroup, depthbits)
 
         if (buffer == None):
             return None
@@ -253,7 +266,7 @@ class FilterManager(DirectObject):
         quad = NodePath(cm.generate())
         quad.setDepthTest(0)
         quad.setDepthWrite(0)
-        quad.setColor(Vec4(1,0.5,0.5,1))
+        quad.setColor(1, 0.5, 0.5, 1)
 
         quadcamnode = Camera("filter-quad-cam")
         lens = OrthographicLens()
@@ -263,22 +276,36 @@ class FilterManager(DirectObject):
         quadcamnode.setLens(lens)
         quadcam = quad.attachNewNode(quadcamnode)
 
-        buffer.getDisplayRegion(0).setCamera(quadcam)
-        buffer.getDisplayRegion(0).setActive(1)
+        dr = buffer.makeDisplayRegion((0, 1, 0, 1))
+        dr.disableClears()
+        dr.setCamera(quadcam)
+        dr.setActive(True)
+        dr.setScissorEnabled(False)
+
+        # This clear stage is important if the buffer is padded, so that
+        # any pixels accidentally sampled in the padded region won't
+        # be reading from unititialised memory.
+        buffer.setClearColor((0, 0, 0, 1))
+        buffer.setClearColorActive(True)
 
         self.buffers.append(buffer)
         self.sizes.append((mul, div, align))
 
         return quad
 
-    def createBuffer(self, name, xsize, ysize, texgroup, depthbits=1):
+    def createBuffer(self, name, xsize, ysize, texgroup, depthbits=1, fbprops=None):
         """ Low-level buffer creation.  Not intended for public use. """
 
         winprops = WindowProperties()
         winprops.setSize(xsize, ysize)
-        props = FrameBufferProperties()
+        props = FrameBufferProperties(FrameBufferProperties.getDefault())
+        props.setBackBuffers(0)
         props.setRgbColor(1)
         props.setDepthBits(depthbits)
+        props.setStereo(self.win.isStereo())
+        if fbprops is not None:
+            props.addProperties(fbprops)
+
         depthtex, colortex, auxtex0, auxtex1 = texgroup
         if (auxtex0 != None):
             props.setAuxRgba(1)
@@ -300,7 +327,6 @@ class FilterManager(DirectObject):
             buffer.addRenderTexture(auxtex1, GraphicsOutput.RTMBindOrCopy, GraphicsOutput.RTPAuxRgba1)
         buffer.setSort(self.nextsort)
         buffer.disableClears()
-        buffer.getDisplayRegion(0).disableClears()
         self.nextsort += 1
         return buffer
 
@@ -308,7 +334,7 @@ class FilterManager(DirectObject):
         """ When the window changes size, automatically resize all buffers """
         self.resizeBuffers()
 
-    def resizeBuffers(self, win):
+    def resizeBuffers(self):
         """ Resize all buffers to match the size of the window. """
         for i in range(len(self.buffers)):
             (mul, div, align) = self.sizes[i]
@@ -332,3 +358,15 @@ class FilterManager(DirectObject):
         self.nextsort = self.win.getSort() - 1000
         self.basex = 0
         self.basey = 0
+
+    #snake_case alias:
+    is_fullscreen = isFullscreen
+    resize_buffers = resizeBuffers
+    set_stacked_clears = setStackedClears
+    render_scene_into = renderSceneInto
+    get_scaled_size = getScaledSize
+    render_quad_into = renderQuadInto
+    get_clears = getClears
+    set_clears = setClears
+    create_buffer = createBuffer
+    window_event = windowEvent

@@ -1,11 +1,11 @@
-"""Undocumented Module"""
+"""Contains the DirectScrolledFrame class."""
 
 __all__ = ['DirectScrolledFrame']
 
-from pandac.PandaModules import *
-import DirectGuiGlobals as DGG
-from DirectFrame import *
-from DirectScrollBar import *
+from panda3d.core import *
+from . import DirectGuiGlobals as DGG
+from .DirectFrame import *
+from .DirectScrollBar import *
 
 """
 import DirectScrolledFrame
@@ -33,7 +33,7 @@ class DirectScrolledFrame(DirectFrame):
             ('canvasSize',     (-1, 1, -1, 1),        self.setCanvasSize),
             ('manageScrollBars', 1,                self.setManageScrollBars),
             ('autoHideScrollBars', 1,              self.setAutoHideScrollBars),
-            ('scrollBarWidth', 0.08,               None),
+            ('scrollBarWidth', 0.08,               self.setScrollBarWidth),
             ('borderWidth',    (0.01, 0.01),       self.setBorderWidth),
             )
 
@@ -72,6 +72,11 @@ class DirectScrolledFrame(DirectFrame):
         # Call option initialization functions
         self.initialiseoptions(DirectScrolledFrame)
 
+    def setScrollBarWidth(self):
+        w = self['scrollBarWidth']
+        self.verticalScroll["frameSize"] = (-w / 2.0, w / 2.0, -1, 1)
+        self.horizontalScroll["frameSize"] = (-1, 1, -w / 2.0, w / 2.0)
+
     def setCanvasSize(self):
         f = self['canvasSize']
         self.guiItem.setVirtualFrame(f[0], f[1], f[2], f[3])
@@ -87,7 +92,7 @@ class DirectScrolledFrame(DirectFrame):
 
     def commandFunc(self):
         if self['command']:
-            apply(self['command'], self['extraArgs'])
+            self['command'](*self['extraArgs'])
 
     def destroy(self):
         # Destroy children of the canvas
@@ -100,8 +105,10 @@ class DirectScrolledFrame(DirectFrame):
                 simpleChildGui = self.guiDict.get(parts[-1])
                 if simpleChildGui:
                     simpleChildGui.destroy()
-        self.verticalScroll.destroy()
-        self.horizontalScroll.destroy()
-        del self.verticalScroll
-        del self.horizontalScroll
+        if self.verticalScroll:
+            self.verticalScroll.destroy()
+        if self.horizontalScroll:
+            self.horizontalScroll.destroy()
+        self.verticalScroll = None
+        self.horizontalScroll = None
         DirectFrame.destroy(self)

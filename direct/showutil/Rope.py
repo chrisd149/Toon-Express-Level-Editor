@@ -1,5 +1,5 @@
-from pandac.PandaModules import *
-import types
+from panda3d.core import *
+
 
 class Rope(NodePath):
     """
@@ -10,7 +10,8 @@ class Rope(NodePath):
     thick lines built from triangle strips.
     """
 
-    showRope = base.config.GetBool('show-rope', 1)
+    showRope = ConfigVariableBool('show-rope', True, \
+      "Set this to false to deactivate the display of ropes.")
 
     def __init__(self, name = 'Rope'):
         self.ropeNode = RopeNode(name)
@@ -18,6 +19,9 @@ class Rope(NodePath):
         self.ropeNode.setCurve(self.curve)
         NodePath.__init__(self, self.ropeNode)
         self.name = name
+        self.order = 0
+        self.verts = []
+        self.knots = None
 
     def setup(self, order, verts, knots = None):
         """This must be called to define the shape of the curve
@@ -92,7 +96,7 @@ class Rope(NodePath):
 
         for i in range(numVerts):
             v = self.verts[i]
-            if isinstance(v, types.TupleType):
+            if isinstance(v, tuple):
                 nodePath, point = v
                 color = defaultColor
                 thickness = defaultThickness
@@ -102,7 +106,7 @@ class Rope(NodePath):
                 color = v.get('color', defaultColor)
                 thickness = v.get('thickness', defaultThickness)
 
-            if isinstance(point, types.TupleType):
+            if isinstance(point, tuple):
                 if (len(point) >= 4):
                     self.curve.setVertex(i, VBase4(point[0], point[1], point[2], point[3]))
                 else:

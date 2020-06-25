@@ -254,3 +254,4 @@ class RelatedObjectMgr(DirectObject.DirectObject):
                 objects.append(None)
 
         return objects, doIdsPending
+

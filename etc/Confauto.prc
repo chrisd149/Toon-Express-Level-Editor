@@ -21,6 +21,22 @@
 
 load-file-type egg pandaegg
 
+# If we built with Assimp support, we can enable the Assimp loader,
+# which allows us to load many model formats natively.
+
+load-file-type p3assimp
+
+# These entries work very similar to load-file-type, except they are
+# used by the MovieVideo and MovieAudio code to determine which module
+# should be loaded in order to decode files of the given extension.
+
+# ffmpeg is added by default because it used to be compiled in.
+# The * is a special catch-all extension that is consulted unless a
+# loader has been defined with an explicit extension.
+
+load-audio-type * p3ffmpeg
+load-video-type * p3ffmpeg
+
 # The following lines define some handy object types to use within the
 # egg syntax.  This remaps <ObjectType> { name } into whatever egg
 # syntax is given by egg-object-type-name, which makes a handy
@@ -102,11 +118,19 @@ egg-object-type-direct-widget   <Scalar> collide-mask { 0x80000000 } <Collide> {
 cull-bin gui-popup 60 unsorted
 
 # The following two lines are a fix for flaky hardware clocks.
+# Nowadays, lock-to-one-cpu is probably more trouble than it's worth.
+#lock-to-one-cpu #t
 
-lock-to-one-cpu #t
-paranoid-clock 1
+# So is paranoid-clock.
+#paranoid-clock 1
 
 # This default only comes into play if you try to load a model
 # and don't specify an extension.
 
 default-model-extension .egg
+
+# If we have the SpeedTree library available, we'll want to use it for
+# loading compiled SpeedTree tree objects, and SpeedTree forest
+# tables.
+#load-file-type srt pandaspeedtree
+#load-file-type stf pandaspeedtree

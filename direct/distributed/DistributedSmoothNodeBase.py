@@ -1,8 +1,9 @@
 """DistributedSmoothNodeBase module: contains the DistributedSmoothNodeBase class"""
 
-from ClockDelta import *
+from .ClockDelta import *
 from direct.task import Task
 from direct.showbase.PythonUtil import randFloat, Enum
+from panda3d.direct import CDistributedSmoothNodeBase
 
 class DummyTaskClass:
     def setDelay(self, blah):
@@ -116,3 +117,4 @@ class DistributedSmoothNodeBase:
         if self.d_broadcastPosHpr is None:
             self.cnode.initialize(self, self.dclass, self.doId)
         self.cnode.sendEverything()
+

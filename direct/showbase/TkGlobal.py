@@ -1,33 +1,42 @@
-"""Undocumented Module"""
+""" This module is now vestigial.  """
 
-__all__ = ['taskMgr']
+import sys, Pmw
 
-from Tkinter import *
-from direct.task.TaskManagerGlobal import *
-from direct.task.Task import Task
-import Pmw
-import sys
+if sys.version_info >= (3, 0):
+    from tkinter import *
+else:
+    from Tkinter import *
 
 # This is required by the ihooks.py module used by Squeeze (used by
 # pandaSqueezer.py) so that Pmw initializes properly
 if '_Pmw' in sys.modules:
     sys.modules['_Pmw'].__name__ = '_Pmw'
 
-__builtins__["tkroot"] = Pmw.initialise()
+# Don't export this from the module.
+del sys
 
-def tkLoop(self):
-    # Do all the tkinter events waiting on this frame
-    # dooneevent will return 0 if there are no more events
-    # waiting or 1 if there are still more.
-    # DONT_WAIT tells tkinter not to block waiting for events
-    while tkinter.dooneevent(tkinter.ALL_EVENTS | tkinter.DONT_WAIT):
-        pass
-    # Run forever
-    return Task.cont
+# Hack to workaround broken Pmw.NoteBook in Python 3
+def bordercolors(root, colorName):
+    lightRGB = []
+    darkRGB = []
+    for value in Pmw.Color.name2rgb(root, colorName, 1):
+        value40pc = (14 * value) // 10
+        if value40pc > int(Pmw.Color._MAX_RGB):
+            value40pc = int(Pmw.Color._MAX_RGB)
+        valueHalfWhite = (int(Pmw.Color._MAX_RGB) + value) // 2;
+        lightRGB.append(max(value40pc, valueHalfWhite))
+
+        darkValue = (60 * value) // 100
+        darkRGB.append(darkValue)
+
+    return (
+        '#%04x%04x%04x' % (lightRGB[0], lightRGB[1], lightRGB[2]),
+        '#%04x%04x%04x' % (darkRGB[0], darkRGB[1], darkRGB[2])
+    )
+
+Pmw.Color.bordercolors = bordercolors
+del bordercolors
+
 
 def spawnTkLoop():
-    # Spawn this task
-    taskMgr.add(tkLoop, "tkLoop")
-
-taskMgr.remove('tkLoop')
-spawnTkLoop()
+    base.spawnTkLoop()

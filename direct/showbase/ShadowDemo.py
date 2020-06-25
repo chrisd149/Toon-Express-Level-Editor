@@ -1,8 +1,3 @@
-"""Undocumented Module"""
-
-__all__ = ['ShadowCaster', 'avatarShadow', 'piratesAvatarShadow', 'arbitraryShadow']
-
-
 """Create a cheesy shadow effect by rendering the view of an
 object (e.g. the local avatar) from a special camera as seen from
 above (as if from the sun), using a solid gray foreground and a
@@ -14,7 +9,9 @@ multitexture rendering techniques.  It's not a particularly great
 way to do shadows.
 """
 
-from pandac.PandaModules import *
+__all__ = ['ShadowCaster', 'avatarShadow', 'piratesAvatarShadow', 'arbitraryShadow']
+
+from panda3d.core import *
 from direct.task import Task
 
 sc = None
@@ -204,13 +201,13 @@ def arbitraryShadow(node):
 ##b.reparentTo((base.localAvatar))
 ##a = AmbientLight('cloudAmbientHi')
 ##a.setColor(Vec4(0.9, 0.9, 0.9, 1.000))
-##aNP = s.attachNewNode(a.upcastToPandaNode())
+##aNP = s.attachNewNode(a)
 ##b.setLight(aNP)
 ##d = DirectionalLight("chernabogDirectionalLight")
 ##d.setDirection(Vec3(0, 1, 0))
 ##d.setColor(Vec4(1))
 ###d.setColor(Vec4(0.9, 0.7, 0.7, 1.000))
-##dNP = s.attachNewNode(d.upcastToPandaNode())
+##dNP = s.attachNewNode(d)
 ##b.setLight(dNP)
 ##
 ##ival = Sequence(LerpPosInterval(bs.lightPath, 0.0, Vec3(-200, 0, 50)),
@@ -219,3 +216,6 @@ def arbitraryShadow(node):
 ##                LerpPosInterval(bs.lightPath, 10.0, Vec3(200, 0, 50)),
 ##)
 ##ival.loop()
+
+
+

@@ -65,3 +65,4 @@ class MiniTaskManager:
     def stop(self):
         # Set a flag so we will stop before beginning next frame
         self.running = 0
+

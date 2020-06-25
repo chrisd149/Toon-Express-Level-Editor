@@ -1,4 +1,4 @@
-"""Undocumented Module"""
+"""Contains the NotifyPanel class."""
 
 __all__ = ['NotifyPanel']
 
@@ -16,8 +16,7 @@ class NotifyPanel:
         from direct.showbase.TkGlobal import Pmw, Toplevel, Frame, Label, Radiobutton
         from direct.showbase.TkGlobal import HORIZONTAL, X, W, NW, BOTH, LEFT, RIGHT, IntVar
         # To get severity levels
-        from pandac.PandaModules import NSFatal, NSError, NSWarning, NSInfo
-        from pandac.PandaModules import NSDebug, NSSpam
+        from panda3d.core import NSFatal, NSError, NSWarning, NSInfo, NSDebug, NSSpam
 
         if tl == None:
             tl = Toplevel()
@@ -125,14 +124,14 @@ class NotifyPanel:
         return categories
 
     def getPandaCategories(self):
-        from pandac.PandaModules import Notify
+        from panda3d.core import Notify
         topCategory = Notify.ptr().getTopCategory()
         return self._getPandaCategories(topCategory)
 
     def _getPandaCategoriesAsList(self, pc, list):
         import types
         for item in pc:
-            if type(item) == types.ListType:
+            if type(item) == list:
                 self._getPandaCategoriesAsList(item, list)
             else:
                 list.append(item)
@@ -152,3 +151,4 @@ class NotifyPanel:
     def setActiveSeverity(self):
         if self.activeCategory:
             self.activeCategory.setSeverity(self.severity.get())
+

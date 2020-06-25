@@ -1,4 +1,7 @@
-"""Undocumented Module"""
+"""
+This module hooks into Python's import mechanism to print out all imports to
+the standard output as they happen.
+"""
 
 __all__ = []
 
@@ -18,14 +21,14 @@ def newimport(*args, **kw):
     fPrint = 0
     name = args[0]
     # Only print the name if we have not imported this before
-    if not sys.modules.has_key(name):
-        print (" "*indentLevel + "import " + args[0])
+    if name not in sys.modules:
+        print((" "*indentLevel + "import " + args[0]))
         fPrint = 1
     indentLevel += 1
     result = oldimport(*args, **kw)
     indentLevel -= 1
     if fPrint:
-        print (" "*indentLevel + "DONE: import " + args[0])
+        print((" "*indentLevel + "DONE: import " + args[0]))
     return result
 
 # Replace the builtin import with our new import

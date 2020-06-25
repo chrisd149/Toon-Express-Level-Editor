@@ -2,11 +2,10 @@
 Notifier module: contains methods for handling information output
 for the programmer/user
 """
-from LoggerGlobal import defaultLogger
+from .LoggerGlobal import defaultLogger
 from direct.showbase import PythonUtil
-from libpandaexpress import ConfigVariableBool
+from panda3d.core import ConfigVariableBool, NotifyCategory, StreamWriter, Notify
 import time
-import types
 import sys
 
 class Notifier:
@@ -17,6 +16,9 @@ class Notifier:
     # particularly useful for integrating the Python notify system
     # with the C++ notify system.
     streamWriter = None
+    if ConfigVariableBool('notify-integrate', True):
+        streamWriter = StreamWriter(Notify.out(), False)
+
     showTime = ConfigVariableBool('notify-timestamp', False)
 
     def __init__(self, name, logger=None):
@@ -41,9 +43,6 @@ class Notifier:
         self.__debug = 0
         self.__logging = 0
 
-
-
-
     def setServerDelta(self, delta, timezone):
         """
         Call this method on any Notify object to globally change the
@@ -58,7 +57,6 @@ class Notifier:
         # The following call is necessary to make the output from C++
         # notify messages show the same timestamp as those generated
         # from Python-level notify messages.
-        from pandac.PandaModules import NotifyCategory
         NotifyCategory.setServerDelta(self.serverDelta)
 
         self.info("Notify clock adjusted by %s (and timezone adjusted by %s hours) to synchronize with server." % (PythonUtil.formatElapsedSeconds(delta), (time.timezone - timezone) / 3600))
@@ -88,7 +86,7 @@ class Notifier:
 
     # Severity funcs
     def setSeverity(self, severity):
-        from pandac.PandaModules import NSDebug, NSInfo, NSWarning, NSError
+        from panda3d.core import NSDebug, NSInfo, NSWarning, NSError
         if severity >= NSError:
             self.setWarning(0)
             self.setInfo(0)
@@ -107,7 +105,7 @@ class Notifier:
             self.setDebug(1)
 
     def getSeverity(self):
-        from pandac.PandaModules import NSDebug, NSInfo, NSWarning, NSError
+        from panda3d.core import NSDebug, NSInfo, NSWarning, NSError
         if self.getDebug():
             return NSDebug
         elif self.getInfo():
@@ -118,7 +116,7 @@ class Notifier:
             return NSError
 
     # error funcs
-    def error(self, errorString, exception=StandardError):
+    def error(self, errorString, exception=Exception):
         """
         Raise an exception with given string and optional type:
         Exception: error
@@ -237,9 +235,9 @@ class Notifier:
         Prints the string to output followed by a newline.
         """
         if self.streamWriter:
-            self.streamWriter.appendData(string + '\n')
+            self.streamWriter.write(string + '\n')
         else:
-            print >> sys.stderr, string
+            sys.stderr.write(string + '\n')
 
     def debugStateCall(self, obj=None, fsmMemberName='fsm',
             secondaryFsm='secondaryFSM'):
@@ -299,3 +297,4 @@ class Notifier:
             self.__log(string)
             self.__print(string)
         return 1 # to allow assert self.notify.debugCall("blah")
+

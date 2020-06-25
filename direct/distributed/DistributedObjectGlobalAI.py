@@ -1,5 +1,5 @@
 
-from DistributedObjectAI import DistributedObjectAI
+from .DistributedObjectAI import DistributedObjectAI
 from direct.directnotify.DirectNotifyGlobal import directNotify
 
 
@@ -18,14 +18,15 @@ class DistributedObjectGlobalAI(DistributedObjectAI):
             if not self.doNotListenToChannel:
                 self.air.registerForChannel(self.doId)
         except AttributeError:
-            self.air.registerForChannel(self.doId)
+                self.air.registerForChannel(self.doId)
         return False
 
     def delete(self):
-        DistributedObjectAI.delete(self)
-        try:
+       DistributedObjectAI.delete(self)
+       try:
             if not self.doNotListenToChannel:
-                self.air.unregisterForChannel(self.doId)
-        except AttributeError:
-            self.air.unregisterForChannel(self.doId)
+               self.air.unregisterForChannel(self.doId)
+       except AttributeError:
+           self.air.unregisterForChannel(self.doId)
         ## self.air.removeDOFromTables(self)
+

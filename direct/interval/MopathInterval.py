@@ -2,8 +2,9 @@
 
 __all__ = ['MopathInterval']
 
-import LerpInterval
-from pandac.PandaModules import *
+from . import LerpInterval
+from panda3d.core import *
+from panda3d.direct import *
 from direct.directnotify.DirectNotifyGlobal import *
 
 # import Mopath
@@ -44,3 +45,4 @@ class MopathInterval(LerpInterval.LerpFunctionInterval):
         Go to time t
         """
         self.mopath.goTo(self.node, t)
+

@@ -1,4 +1,4 @@
-from pandac.PandaModules import Vec3, Point3, BitMask32
+from panda3d.core import Vec3, Point3, BitMask32
 
 UNPICKABLE = ['x-disc-visible', 'y-disc-visible', 'z-disc-visible',
               'GridBack', 'unpickable']
@@ -51,11 +51,12 @@ LE_CAM_MASKS = {'persp':LE_PERSP_CAM_MASK,
                  'top':LE_TOP_CAM_MASK}
 
 def LE_showInAllCam(nodePath):
-    for camName in LE_CAM_MASKS.keys():
+    for camName in LE_CAM_MASKS:
         nodePath.show(LE_CAM_MASKS[camName])
 
 def LE_showInOneCam(nodePath, thisCamName):
     LE_showInAllCam(nodePath)
-    for camName in LE_CAM_MASKS.keys():
+    for camName in LE_CAM_MASKS:
         if camName != thisCamName:
             nodePath.hide(LE_CAM_MASKS[camName])
+

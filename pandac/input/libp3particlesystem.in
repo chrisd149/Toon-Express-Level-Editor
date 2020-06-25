@@ -1,0 +1,3702 @@
+1592976423
+3 3
+19 libp3particlesystem 4 BxOc 15 panda3d.physics 
+324
+352 9 make_copy 0 6 676 30 BaseParticleEmitter::make_copy 0 1 1 0
+70
+virtual BaseParticleEmitter *BaseParticleEmitter::make_copy(void) = 0;
+
+353 8 generate 0 4 676 29 BaseParticleEmitter::generate 0 1 2 37
+/**
+ * parent generation function
+ */
+64
+void BaseParticleEmitter::generate(LPoint3 &pos, LVector3 &vel);
+
+354 17 set_emission_type 0 4 676 38 BaseParticleEmitter::set_emission_type 0 1 3 35
+/**
+ * emission type assignment
+ */
+89
+inline void BaseParticleEmitter::set_emission_type(BaseParticleEmitter::emissionType et);
+
+355 13 set_amplitude 0 4 676 34 BaseParticleEmitter::set_amplitude 0 1 4 31
+/**
+ * amplitude assignment
+ */
+62
+inline void BaseParticleEmitter::set_amplitude(PN_stdfloat a);
+
+356 20 set_amplitude_spread 0 4 676 41 BaseParticleEmitter::set_amplitude_spread 0 1 5 38
+/**
+ * amplitude spread assignment
+ */
+70
+inline void BaseParticleEmitter::set_amplitude_spread(PN_stdfloat as);
+
+357 16 set_offset_force 0 4 676 37 BaseParticleEmitter::set_offset_force 0 1 6 83
+// this is a constant force applied to all particles
+
+/**
+ * user-defined force
+ */
+70
+inline void BaseParticleEmitter::set_offset_force(LVector3 const &of);
+
+358 26 set_explicit_launch_vector 0 4 676 47 BaseParticleEmitter::set_explicit_launch_vector 0 1 7 110
+// this is a constant force applied to all particles
+
+/**
+ * assignment of explicit emission launch vector
+ */
+81
+inline void BaseParticleEmitter::set_explicit_launch_vector(LVector3 const &elv);
+
+359 18 set_radiate_origin 0 4 676 39 BaseParticleEmitter::set_radiate_origin 0 1 8 54
+/**
+ * assignment of radiate emission origin point
+ */
+71
+inline void BaseParticleEmitter::set_radiate_origin(LPoint3 const &ro);
+
+360 17 get_emission_type 0 4 676 38 BaseParticleEmitter::get_emission_type 0 1 9 30
+/**
+ * emission type query
+ */
+92
+inline BaseParticleEmitter::emissionType BaseParticleEmitter::get_emission_type(void) const;
+
+361 13 get_amplitude 0 4 676 34 BaseParticleEmitter::get_amplitude 0 1 10 26
+/**
+ * amplitude query
+ */
+66
+inline PN_stdfloat BaseParticleEmitter::get_amplitude(void) const;
+
+362 20 get_amplitude_spread 0 4 676 41 BaseParticleEmitter::get_amplitude_spread 0 1 11 33
+/**
+ * amplitude spread query
+ */
+73
+inline PN_stdfloat BaseParticleEmitter::get_amplitude_spread(void) const;
+
+363 16 get_offset_force 0 4 676 37 BaseParticleEmitter::get_offset_force 0 1 12 29
+/**
+ * user-defined force
+ */
+66
+inline LVector3 BaseParticleEmitter::get_offset_force(void) const;
+
+364 26 get_explicit_launch_vector 0 4 676 47 BaseParticleEmitter::get_explicit_launch_vector 0 1 13 52
+/**
+ * query for explicit emission launch vector
+ */
+76
+inline LVector3 BaseParticleEmitter::get_explicit_launch_vector(void) const;
+
+365 18 get_radiate_origin 0 4 676 39 BaseParticleEmitter::get_radiate_origin 0 1 14 52
+/**
+ * query for explicit emission launch vector
+ */
+67
+inline LPoint3 BaseParticleEmitter::get_radiate_origin(void) const;
+
+366 6 output 0 6 676 27 BaseParticleEmitter::output 0 1 15 67
+/**
+ * Write a string representation of this instance to <out>.
+ */
+66
+virtual void BaseParticleEmitter::output(std::ostream &out) const;
+
+367 5 write 0 6 676 26 BaseParticleEmitter::write 0 1 16 67
+/**
+ * Write a string representation of this instance to <out>.
+ */
+81
+virtual void BaseParticleEmitter::write(std::ostream &out, int indent = 0) const;
+
+368 11 RingEmitter 0 4 679 24 RingEmitter::RingEmitter 0 2 17 18 51
+/**
+ * constructor
+ */
+
+/**
+ * copy constructor
+ */
+82
+RingEmitter::RingEmitter(void);
+RingEmitter::RingEmitter(RingEmitter const &copy);
+
+369 10 set_radius 0 4 679 23 RingEmitter::set_radius 0 1 19 0
+51
+inline void RingEmitter::set_radius(PN_stdfloat r);
+
+370 9 set_angle 0 4 679 22 RingEmitter::set_angle 0 1 20 0
+54
+inline void RingEmitter::set_angle(PN_stdfloat angle);
+
+371 17 set_radius_spread 0 4 679 30 RingEmitter::set_radius_spread 0 1 21 0
+63
+inline void RingEmitter::set_radius_spread(PN_stdfloat spread);
+
+372 20 set_uniform_emission 0 4 679 33 RingEmitter::set_uniform_emission 0 1 22 0
+68
+inline void RingEmitter::set_uniform_emission(int uniform_emission);
+
+373 10 get_radius 0 4 679 23 RingEmitter::get_radius 0 1 23 0
+55
+inline PN_stdfloat RingEmitter::get_radius(void) const;
+
+374 9 get_angle 0 4 679 22 RingEmitter::get_angle 0 1 24 0
+54
+inline PN_stdfloat RingEmitter::get_angle(void) const;
+
+375 17 get_radius_spread 0 4 679 30 RingEmitter::get_radius_spread 0 1 25 0
+62
+inline PN_stdfloat RingEmitter::get_radius_spread(void) const;
+
+376 20 get_uniform_emission 0 4 679 33 RingEmitter::get_uniform_emission 0 1 26 0
+57
+inline int RingEmitter::get_uniform_emission(void) const;
+
+377 10 ArcEmitter 0 4 680 22 ArcEmitter::ArcEmitter 0 2 27 28 51
+/**
+ * constructor
+ */
+
+/**
+ * copy constructor
+ */
+77
+ArcEmitter::ArcEmitter(void);
+ArcEmitter::ArcEmitter(ArcEmitter const &copy);
+
+378 15 set_start_angle 0 4 680 27 ArcEmitter::set_start_angle 0 1 29 0
+59
+inline void ArcEmitter::set_start_angle(PN_stdfloat angle);
+
+379 13 set_end_angle 0 4 680 25 ArcEmitter::set_end_angle 0 1 30 0
+57
+inline void ArcEmitter::set_end_angle(PN_stdfloat angle);
+
+380 7 set_arc 0 4 680 19 ArcEmitter::set_arc 0 1 31 0
+78
+inline void ArcEmitter::set_arc(PN_stdfloat startAngle, PN_stdfloat endAngle);
+
+381 15 get_start_angle 0 4 680 27 ArcEmitter::get_start_angle 0 1 32 0
+53
+inline PN_stdfloat ArcEmitter::get_start_angle(void);
+
+382 13 get_end_angle 0 4 680 25 ArcEmitter::get_end_angle 0 1 33 0
+51
+inline PN_stdfloat ArcEmitter::get_end_angle(void);
+
+383 17 set_lifespan_base 0 4 681 38 BaseParticleFactory::set_lifespan_base 0 1 34 17
+/**
+ * public
+ */
+67
+inline void BaseParticleFactory::set_lifespan_base(PN_stdfloat lb);
+
+384 19 set_lifespan_spread 0 4 681 40 BaseParticleFactory::set_lifespan_spread 0 1 35 17
+/**
+ * public
+ */
+69
+inline void BaseParticleFactory::set_lifespan_spread(PN_stdfloat ls);
+
+385 13 set_mass_base 0 4 681 34 BaseParticleFactory::set_mass_base 0 1 36 17
+/**
+ * public
+ */
+63
+inline void BaseParticleFactory::set_mass_base(PN_stdfloat mb);
+
+386 15 set_mass_spread 0 4 681 36 BaseParticleFactory::set_mass_spread 0 1 37 17
+/**
+ * public
+ */
+65
+inline void BaseParticleFactory::set_mass_spread(PN_stdfloat ms);
+
+387 26 set_terminal_velocity_base 0 4 681 47 BaseParticleFactory::set_terminal_velocity_base 0 1 38 17
+/**
+ * public
+ */
+77
+inline void BaseParticleFactory::set_terminal_velocity_base(PN_stdfloat tvb);
+
+388 28 set_terminal_velocity_spread 0 4 681 49 BaseParticleFactory::set_terminal_velocity_spread 0 1 39 17
+/**
+ * public
+ */
+79
+inline void BaseParticleFactory::set_terminal_velocity_spread(PN_stdfloat tvs);
+
+389 17 get_lifespan_base 0 4 681 38 BaseParticleFactory::get_lifespan_base 0 1 40 17
+/**
+ * public
+ */
+70
+inline PN_stdfloat BaseParticleFactory::get_lifespan_base(void) const;
+
+390 19 get_lifespan_spread 0 4 681 40 BaseParticleFactory::get_lifespan_spread 0 1 41 17
+/**
+ * public
+ */
+72
+inline PN_stdfloat BaseParticleFactory::get_lifespan_spread(void) const;
+
+391 13 get_mass_base 0 4 681 34 BaseParticleFactory::get_mass_base 0 1 42 17
+/**
+ * public
+ */
+66
+inline PN_stdfloat BaseParticleFactory::get_mass_base(void) const;
+
+392 15 get_mass_spread 0 4 681 36 BaseParticleFactory::get_mass_spread 0 1 43 17
+/**
+ * public
+ */
+68
+inline PN_stdfloat BaseParticleFactory::get_mass_spread(void) const;
+
+393 26 get_terminal_velocity_base 0 4 681 47 BaseParticleFactory::get_terminal_velocity_base 0 1 44 17
+/**
+ * public
+ */
+79
+inline PN_stdfloat BaseParticleFactory::get_terminal_velocity_base(void) const;
+
+394 28 get_terminal_velocity_spread 0 4 681 49 BaseParticleFactory::get_terminal_velocity_spread 0 1 45 17
+/**
+ * public
+ */
+81
+inline PN_stdfloat BaseParticleFactory::get_terminal_velocity_spread(void) const;
+
+395 14 alloc_particle 0 6 681 35 BaseParticleFactory::alloc_particle 0 1 46 0
+74
+virtual BaseParticle *BaseParticleFactory::alloc_particle(void) const = 0;
+
+396 17 populate_particle 0 4 681 38 BaseParticleFactory::populate_particle 0 1 47 17
+/**
+ * public
+ */
+62
+void BaseParticleFactory::populate_particle(BaseParticle *bp);
+
+397 6 output 0 6 681 27 BaseParticleFactory::output 0 1 48 67
+/**
+ * Write a string representation of this instance to <out>.
+ */
+66
+virtual void BaseParticleFactory::output(std::ostream &out) const;
+
+398 5 write 0 6 681 26 BaseParticleFactory::write 0 1 49 67
+/**
+ * Write a string representation of this instance to <out>.
+ */
+81
+virtual void BaseParticleFactory::write(std::ostream &out, int indent = 0) const;
+
+399 15 get_render_node 0 4 682 37 BaseParticleRenderer::get_render_node 0 1 50 37
+/**
+ * Query the geomnode pointer
+ */
+67
+inline GeomNode *BaseParticleRenderer::get_render_node(void) const;
+
+400 20 get_render_node_path 0 4 682 42 BaseParticleRenderer::get_render_node_path 0 1 51 37
+/**
+ * Query the geomnode pointer
+ */
+71
+inline NodePath BaseParticleRenderer::get_render_node_path(void) const;
+
+401 14 set_alpha_mode 0 4 682 36 BaseParticleRenderer::set_alpha_mode 0 1 52 8
+/**
+
+ */
+101
+inline void BaseParticleRenderer::set_alpha_mode(BaseParticleRenderer::ParticleRendererAlphaMode am);
+
+402 14 get_alpha_mode 0 4 682 36 BaseParticleRenderer::get_alpha_mode 0 1 53 8
+/**
+
+ */
+104
+inline BaseParticleRenderer::ParticleRendererAlphaMode BaseParticleRenderer::get_alpha_mode(void) const;
+
+403 14 set_user_alpha 0 4 682 36 BaseParticleRenderer::set_user_alpha 0 1 54 43
+/**
+ * sets alpha for "user" alpha mode
+ */
+65
+inline void BaseParticleRenderer::set_user_alpha(PN_stdfloat ua);
+
+404 14 get_user_alpha 0 4 682 36 BaseParticleRenderer::get_user_alpha 0 1 55 43
+/**
+ * gets alpha for "user" alpha mode
+ */
+68
+inline PN_stdfloat BaseParticleRenderer::get_user_alpha(void) const;
+
+405 20 set_color_blend_mode 0 4 682 42 BaseParticleRenderer::set_color_blend_mode 0 1 56 56
+/**
+ * sets the ColorBlendAttrib on the _render_node
+ */
+200
+inline void BaseParticleRenderer::set_color_blend_mode(ColorBlendAttrib::Mode bm, ColorBlendAttrib::Operand oa = ::ColorBlendAttrib::O_zero, ColorBlendAttrib::Operand ob = ::ColorBlendAttrib::O_zero);
+
+406 16 set_ignore_scale 0 4 682 38 BaseParticleRenderer::set_ignore_scale 0 1 57 411
+/**
+ * Sets the "ignore scale" flag.  When this is true, particles will be drawn
+ * as if they had no scale, regardless of whatever scale might be inherited
+ * from above the render node in the scene graph.
+ *
+ * This flag is mainly useful to support legacy code that was written for a
+ * very early version of Panda, whose sprite particle renderer had a bug that
+ * incorrectly ignored the inherited scale.
+ */
+63
+void BaseParticleRenderer::set_ignore_scale(bool ignore_scale);
+
+407 16 get_ignore_scale 0 4 682 38 BaseParticleRenderer::get_ignore_scale 0 1 58 68
+/**
+ * Returns the "ignore scale" flag.  See set_ignore_scale().
+ */
+63
+inline bool BaseParticleRenderer::get_ignore_scale(void) const;
+
+408 6 output 0 6 682 28 BaseParticleRenderer::output 0 1 59 67
+/**
+ * Write a string representation of this instance to <out>.
+ */
+67
+virtual void BaseParticleRenderer::output(std::ostream &out) const;
+
+409 5 write 0 6 682 27 BaseParticleRenderer::write 0 1 60 67
+/**
+ * Write a string representation of this instance to <out>.
+ */
+82
+virtual void BaseParticleRenderer::write(std::ostream &out, int indent = 0) const;
+
+410 10 BoxEmitter 0 4 685 22 BoxEmitter::BoxEmitter 0 2 61 62 51
+/**
+ * constructor
+ */
+
+/**
+ * copy constructor
+ */
+77
+BoxEmitter::BoxEmitter(void);
+BoxEmitter::BoxEmitter(BoxEmitter const &copy);
+
+411 13 set_min_bound 0 4 685 25 BoxEmitter::set_min_bound 0 1 63 30
+/**
+ * boundary assignment
+ */
+59
+inline void BoxEmitter::set_min_bound(LPoint3 const &vmin);
+
+412 13 set_max_bound 0 4 685 25 BoxEmitter::set_max_bound 0 1 64 30
+/**
+ * boundary assignment
+ */
+59
+inline void BoxEmitter::set_max_bound(LPoint3 const &vmax);
+
+413 13 get_min_bound 0 4 685 25 BoxEmitter::get_min_bound 0 1 65 28
+/**
+ * boundary accessor
+ */
+53
+inline LPoint3 BoxEmitter::get_min_bound(void) const;
+
+414 13 get_max_bound 0 4 685 25 BoxEmitter::get_max_bound 0 1 66 28
+/**
+ * boundary accessor
+ */
+53
+inline LPoint3 BoxEmitter::get_max_bound(void) const;
+
+415 11 get_color_a 0 4 686 47 ColorInterpolationFunctionConstant::get_color_a 0 1 67 0
+74
+inline LColor ColorInterpolationFunctionConstant::get_color_a(void) const;
+
+416 11 set_color_a 0 4 686 47 ColorInterpolationFunctionConstant::set_color_a 0 1 68 0
+77
+inline void ColorInterpolationFunctionConstant::set_color_a(LColor const &c);
+
+417 14 get_class_type 0 4 686 50 ColorInterpolationFunctionConstant::get_class_type 0 1 69 0
+75
+static TypeHandle ColorInterpolationFunctionConstant::get_class_type(void);
+
+418 35 ~ColorInterpolationFunctionConstant 0 4 686 71 ColorInterpolationFunctionConstant::~ColorInterpolationFunctionConstant 0 0 0
+78
+ColorInterpolationFunctionConstant::~ColorInterpolationFunctionConstant(void);
+
+419 11 get_color_b 0 4 688 45 ColorInterpolationFunctionLinear::get_color_b 0 1 70 0
+72
+inline LColor ColorInterpolationFunctionLinear::get_color_b(void) const;
+
+420 11 set_color_b 0 4 688 45 ColorInterpolationFunctionLinear::set_color_b 0 1 71 0
+75
+inline void ColorInterpolationFunctionLinear::set_color_b(LColor const &c);
+
+421 14 get_class_type 0 4 688 48 ColorInterpolationFunctionLinear::get_class_type 0 1 72 0
+73
+static TypeHandle ColorInterpolationFunctionLinear::get_class_type(void);
+
+422 33 ~ColorInterpolationFunctionLinear 0 4 688 67 ColorInterpolationFunctionLinear::~ColorInterpolationFunctionLinear 0 0 0
+74
+ColorInterpolationFunctionLinear::~ColorInterpolationFunctionLinear(void);
+
+423 11 get_width_a 0 4 689 47 ColorInterpolationFunctionStepwave::get_width_a 0 1 73 0
+79
+inline PN_stdfloat ColorInterpolationFunctionStepwave::get_width_a(void) const;
+
+424 11 get_width_b 0 4 689 47 ColorInterpolationFunctionStepwave::get_width_b 0 1 74 0
+79
+inline PN_stdfloat ColorInterpolationFunctionStepwave::get_width_b(void) const;
+
+425 11 set_width_a 0 4 689 47 ColorInterpolationFunctionStepwave::set_width_a 0 1 75 0
+81
+inline void ColorInterpolationFunctionStepwave::set_width_a(PN_stdfloat const w);
+
+426 11 set_width_b 0 4 689 47 ColorInterpolationFunctionStepwave::set_width_b 0 1 76 0
+81
+inline void ColorInterpolationFunctionStepwave::set_width_b(PN_stdfloat const w);
+
+427 14 get_class_type 0 4 689 50 ColorInterpolationFunctionStepwave::get_class_type 0 1 77 0
+75
+static TypeHandle ColorInterpolationFunctionStepwave::get_class_type(void);
+
+428 35 ~ColorInterpolationFunctionStepwave 0 4 689 71 ColorInterpolationFunctionStepwave::~ColorInterpolationFunctionStepwave 0 0 0
+78
+ColorInterpolationFunctionStepwave::~ColorInterpolationFunctionStepwave(void);
+
+429 10 get_period 0 4 690 46 ColorInterpolationFunctionSinusoid::get_period 0 1 78 0
+78
+inline PN_stdfloat ColorInterpolationFunctionSinusoid::get_period(void) const;
+
+430 10 set_period 0 4 690 46 ColorInterpolationFunctionSinusoid::set_period 0 1 79 0
+80
+inline void ColorInterpolationFunctionSinusoid::set_period(PN_stdfloat const p);
+
+431 14 get_class_type 0 4 690 50 ColorInterpolationFunctionSinusoid::get_class_type 0 1 80 0
+75
+static TypeHandle ColorInterpolationFunctionSinusoid::get_class_type(void);
+
+432 35 ~ColorInterpolationFunctionSinusoid 0 4 690 71 ColorInterpolationFunctionSinusoid::~ColorInterpolationFunctionSinusoid 0 0 0
+78
+ColorInterpolationFunctionSinusoid::~ColorInterpolationFunctionSinusoid(void);
+
+433 25 ColorInterpolationSegment 0 4 691 52 ColorInterpolationSegment::ColorInterpolationSegment 0 1 81 0
+89
+ColorInterpolationSegment::ColorInterpolationSegment(ColorInterpolationSegment const &s);
+
+434 12 get_function 0 4 691 39 ColorInterpolationSegment::get_function 0 1 82 59
+// INLINE ColorInterpolationFunction* get_function() const;
+80
+inline TypedReferenceCount *ColorInterpolationSegment::get_function(void) const;
+
+435 14 get_time_begin 0 4 691 41 ColorInterpolationSegment::get_time_begin 0 1 83 0
+73
+inline PN_stdfloat ColorInterpolationSegment::get_time_begin(void) const;
+
+436 12 get_time_end 0 4 691 39 ColorInterpolationSegment::get_time_end 0 1 84 0
+71
+inline PN_stdfloat ColorInterpolationSegment::get_time_end(void) const;
+
+437 12 is_modulated 0 4 691 39 ColorInterpolationSegment::is_modulated 0 1 85 0
+64
+inline bool ColorInterpolationSegment::is_modulated(void) const;
+
+438 6 get_id 0 4 691 33 ColorInterpolationSegment::get_id 0 1 86 0
+57
+inline int ColorInterpolationSegment::get_id(void) const;
+
+439 10 is_enabled 0 4 691 37 ColorInterpolationSegment::is_enabled 0 1 87 0
+62
+inline bool ColorInterpolationSegment::is_enabled(void) const;
+
+440 12 set_function 0 4 691 39 ColorInterpolationSegment::set_function 0 1 88 0
+90
+inline void ColorInterpolationSegment::set_function(ColorInterpolationFunction *function);
+
+441 14 set_time_begin 0 4 691 41 ColorInterpolationSegment::set_time_begin 0 1 89 0
+78
+inline void ColorInterpolationSegment::set_time_begin(PN_stdfloat const time);
+
+442 12 set_time_end 0 4 691 39 ColorInterpolationSegment::set_time_end 0 1 90 0
+76
+inline void ColorInterpolationSegment::set_time_end(PN_stdfloat const time);
+
+443 16 set_is_modulated 0 4 691 43 ColorInterpolationSegment::set_is_modulated 0 1 91 0
+73
+inline void ColorInterpolationSegment::set_is_modulated(bool const flag);
+
+444 11 set_enabled 0 4 691 38 ColorInterpolationSegment::set_enabled 0 1 92 0
+71
+inline void ColorInterpolationSegment::set_enabled(bool const enabled);
+
+445 25 ColorInterpolationManager 0 4 692 52 ColorInterpolationManager::ColorInterpolationManager 0 3 93 94 95 0
+223
+ColorInterpolationManager::ColorInterpolationManager(void);
+ColorInterpolationManager::ColorInterpolationManager(LColor const &c);
+ColorInterpolationManager::ColorInterpolationManager(ColorInterpolationManager const &copy);
+
+446 12 add_constant 0 4 692 39 ColorInterpolationManager::add_constant 0 1 96 0
+196
+int ColorInterpolationManager::add_constant(PN_stdfloat const time_begin = 0.0, PN_stdfloat const time_end = 1.0, LColor const &color = LColor(1.0, 1.0, 1.0, 1.0), bool const is_modulated = true);
+
+447 10 add_linear 0 4 692 37 ColorInterpolationManager::add_linear 0 1 97 0
+248
+int ColorInterpolationManager::add_linear(PN_stdfloat const time_begin = 0.0, PN_stdfloat const time_end = 1.0, LColor const &color_a = LColor(1.0, 0.0, 0.0, 1.0), LColor const &color_b = LColor(0.0, 1.0, 0.0, 1.0), bool const is_modulated = true);
+
+448 12 add_stepwave 0 4 692 39 ColorInterpolationManager::add_stepwave 0 1 98 0
+316
+int ColorInterpolationManager::add_stepwave(PN_stdfloat const time_begin = 0.0, PN_stdfloat const time_end = 1.0, LColor const &color_a = LColor(1.0, 0.0, 0.0, 1.0), LColor const &color_b = LColor(0.0, 1.0, 0.0, 1.0), PN_stdfloat const width_a = 0.5, PN_stdfloat const width_b = 0.5, bool const is_modulated = true);
+
+449 12 add_sinusoid 0 4 692 39 ColorInterpolationManager::add_sinusoid 0 1 99 0
+282
+int ColorInterpolationManager::add_sinusoid(PN_stdfloat const time_begin = 0.0, PN_stdfloat const time_end = 1.0, LColor const &color_a = LColor(1.0, 0.0, 0.0, 1.0), LColor const &color_b = LColor(0.0, 1.0, 0.0, 1.0), PN_stdfloat const period = 1.0, bool const is_modulated = true);
+
+450 17 set_default_color 0 4 692 44 ColorInterpolationManager::set_default_color 0 1 100 0
+74
+inline void ColorInterpolationManager::set_default_color(LColor const &c);
+
+451 11 get_segment 0 4 692 38 ColorInterpolationManager::get_segment 0 1 101 0
+91
+inline ColorInterpolationSegment *ColorInterpolationManager::get_segment(int const seg_id);
+
+452 19 get_segment_id_list 0 4 692 46 ColorInterpolationManager::get_segment_id_list 0 1 102 0
+72
+inline std::string ColorInterpolationManager::get_segment_id_list(void);
+
+453 13 clear_segment 0 4 692 40 ColorInterpolationManager::clear_segment 0 1 103 0
+64
+void ColorInterpolationManager::clear_segment(int const seg_id);
+
+454 16 clear_to_initial 0 4 692 43 ColorInterpolationManager::clear_to_initial 0 1 104 0
+55
+void ColorInterpolationManager::clear_to_initial(void);
+
+455 11 DiscEmitter 0 4 693 24 DiscEmitter::DiscEmitter 0 2 105 106 51
+/**
+ * constructor
+ */
+
+/**
+ * copy constructor
+ */
+82
+DiscEmitter::DiscEmitter(void);
+DiscEmitter::DiscEmitter(DiscEmitter const &copy);
+
+456 10 set_radius 0 4 693 23 DiscEmitter::set_radius 0 1 107 0
+51
+inline void DiscEmitter::set_radius(PN_stdfloat r);
+
+457 15 set_outer_angle 0 4 693 28 DiscEmitter::set_outer_angle 0 1 108 0
+62
+inline void DiscEmitter::set_outer_angle(PN_stdfloat o_angle);
+
+458 15 set_inner_angle 0 4 693 28 DiscEmitter::set_inner_angle 0 1 109 0
+62
+inline void DiscEmitter::set_inner_angle(PN_stdfloat i_angle);
+
+459 19 set_outer_magnitude 0 4 693 32 DiscEmitter::set_outer_magnitude 0 1 110 0
+64
+inline void DiscEmitter::set_outer_magnitude(PN_stdfloat o_mag);
+
+460 19 set_inner_magnitude 0 4 693 32 DiscEmitter::set_inner_magnitude 0 1 111 0
+64
+inline void DiscEmitter::set_inner_magnitude(PN_stdfloat i_mag);
+
+461 17 set_cubic_lerping 0 4 693 30 DiscEmitter::set_cubic_lerping 0 1 112 0
+55
+inline void DiscEmitter::set_cubic_lerping(bool clerp);
+
+462 10 get_radius 0 4 693 23 DiscEmitter::get_radius 0 1 113 0
+55
+inline PN_stdfloat DiscEmitter::get_radius(void) const;
+
+463 15 get_outer_angle 0 4 693 28 DiscEmitter::get_outer_angle 0 1 114 0
+60
+inline PN_stdfloat DiscEmitter::get_outer_angle(void) const;
+
+464 15 get_inner_angle 0 4 693 28 DiscEmitter::get_inner_angle 0 1 115 0
+60
+inline PN_stdfloat DiscEmitter::get_inner_angle(void) const;
+
+465 19 get_outer_magnitude 0 4 693 32 DiscEmitter::get_outer_magnitude 0 1 116 0
+64
+inline PN_stdfloat DiscEmitter::get_outer_magnitude(void) const;
+
+466 19 get_inner_magnitude 0 4 693 32 DiscEmitter::get_inner_magnitude 0 1 117 0
+64
+inline PN_stdfloat DiscEmitter::get_inner_magnitude(void) const;
+
+467 17 get_cubic_lerping 0 4 693 30 DiscEmitter::get_cubic_lerping 0 1 118 0
+55
+inline bool DiscEmitter::get_cubic_lerping(void) const;
+
+468 20 GeomParticleRenderer 0 4 694 42 GeomParticleRenderer::GeomParticleRenderer 0 2 119 120 0
+254
+explicit GeomParticleRenderer::GeomParticleRenderer(BaseParticleRenderer::ParticleRendererAlphaMode am = ::BaseParticleRenderer::PR_ALPHA_NONE, PandaNode *geom_node = nullptr);
+GeomParticleRenderer::GeomParticleRenderer(GeomParticleRenderer const &copy);
+
+469 13 set_geom_node 0 4 694 35 GeomParticleRenderer::set_geom_node 0 1 121 0
+65
+inline void GeomParticleRenderer::set_geom_node(PandaNode *node);
+
+470 13 get_geom_node 0 4 694 35 GeomParticleRenderer::get_geom_node 0 1 122 8
+/**
+
+ */
+60
+inline PandaNode *GeomParticleRenderer::get_geom_node(void);
+
+471 31 get_color_interpolation_manager 0 4 694 53 GeomParticleRenderer::get_color_interpolation_manager 0 1 123 8
+/**
+
+ */
+100
+inline ColorInterpolationManager *GeomParticleRenderer::get_color_interpolation_manager(void) const;
+
+472 16 set_x_scale_flag 0 4 694 38 GeomParticleRenderer::set_x_scale_flag 0 1 124 8
+/**
+
+ */
+73
+inline void GeomParticleRenderer::set_x_scale_flag(bool animate_x_ratio);
+
+473 16 set_y_scale_flag 0 4 694 38 GeomParticleRenderer::set_y_scale_flag 0 1 125 8
+/**
+
+ */
+73
+inline void GeomParticleRenderer::set_y_scale_flag(bool animate_y_ratio);
+
+474 16 set_z_scale_flag 0 4 694 38 GeomParticleRenderer::set_z_scale_flag 0 1 126 8
+/**
+
+ */
+73
+inline void GeomParticleRenderer::set_z_scale_flag(bool animate_z_ratio);
+
+475 19 set_initial_x_scale 0 4 694 41 GeomParticleRenderer::set_initial_x_scale 0 1 127 8
+/**
+
+ */
+83
+inline void GeomParticleRenderer::set_initial_x_scale(PN_stdfloat initial_x_scale);
+
+476 17 set_final_x_scale 0 4 694 39 GeomParticleRenderer::set_final_x_scale 0 1 128 8
+/**
+
+ */
+79
+inline void GeomParticleRenderer::set_final_x_scale(PN_stdfloat final_x_scale);
+
+477 19 set_initial_y_scale 0 4 694 41 GeomParticleRenderer::set_initial_y_scale 0 1 129 8
+/**
+
+ */
+83
+inline void GeomParticleRenderer::set_initial_y_scale(PN_stdfloat initial_y_scale);
+
+478 17 set_final_y_scale 0 4 694 39 GeomParticleRenderer::set_final_y_scale 0 1 130 8
+/**
+
+ */
+79
+inline void GeomParticleRenderer::set_final_y_scale(PN_stdfloat final_y_scale);
+
+479 19 set_initial_z_scale 0 4 694 41 GeomParticleRenderer::set_initial_z_scale 0 1 131 8
+/**
+
+ */
+83
+inline void GeomParticleRenderer::set_initial_z_scale(PN_stdfloat initial_z_scale);
+
+480 17 set_final_z_scale 0 4 694 39 GeomParticleRenderer::set_final_z_scale 0 1 132 8
+/**
+
+ */
+79
+inline void GeomParticleRenderer::set_final_z_scale(PN_stdfloat final_z_scale);
+
+481 16 get_x_scale_flag 0 4 694 38 GeomParticleRenderer::get_x_scale_flag 0 1 133 8
+/**
+
+ */
+63
+inline bool GeomParticleRenderer::get_x_scale_flag(void) const;
+
+482 16 get_y_scale_flag 0 4 694 38 GeomParticleRenderer::get_y_scale_flag 0 1 134 8
+/**
+
+ */
+63
+inline bool GeomParticleRenderer::get_y_scale_flag(void) const;
+
+483 16 get_z_scale_flag 0 4 694 38 GeomParticleRenderer::get_z_scale_flag 0 1 135 8
+/**
+
+ */
+63
+inline bool GeomParticleRenderer::get_z_scale_flag(void) const;
+
+484 19 get_initial_x_scale 0 4 694 41 GeomParticleRenderer::get_initial_x_scale 0 1 136 8
+/**
+
+ */
+73
+inline PN_stdfloat GeomParticleRenderer::get_initial_x_scale(void) const;
+
+485 17 get_final_x_scale 0 4 694 39 GeomParticleRenderer::get_final_x_scale 0 1 137 8
+/**
+
+ */
+71
+inline PN_stdfloat GeomParticleRenderer::get_final_x_scale(void) const;
+
+486 19 get_initial_y_scale 0 4 694 41 GeomParticleRenderer::get_initial_y_scale 0 1 138 8
+/**
+
+ */
+73
+inline PN_stdfloat GeomParticleRenderer::get_initial_y_scale(void) const;
+
+487 17 get_final_y_scale 0 4 694 39 GeomParticleRenderer::get_final_y_scale 0 1 139 8
+/**
+
+ */
+71
+inline PN_stdfloat GeomParticleRenderer::get_final_y_scale(void) const;
+
+488 19 get_initial_z_scale 0 4 694 41 GeomParticleRenderer::get_initial_z_scale 0 1 140 8
+/**
+
+ */
+73
+inline PN_stdfloat GeomParticleRenderer::get_initial_z_scale(void) const;
+
+489 17 get_final_z_scale 0 4 694 39 GeomParticleRenderer::get_final_z_scale 0 1 141 8
+/**
+
+ */
+71
+inline PN_stdfloat GeomParticleRenderer::get_final_z_scale(void) const;
+
+490 11 LineEmitter 0 4 695 24 LineEmitter::LineEmitter 0 2 142 143 46
+/**
+ * constructor
+ */
+
+/**
+ * constructor
+ */
+82
+LineEmitter::LineEmitter(void);
+LineEmitter::LineEmitter(LineEmitter const &copy);
+
+491 13 set_endpoint1 0 4 695 26 LineEmitter::set_endpoint1 0 1 144 30
+/**
+ * endpoint assignment
+ */
+61
+inline void LineEmitter::set_endpoint1(LPoint3 const &point);
+
+492 13 set_endpoint2 0 4 695 26 LineEmitter::set_endpoint2 0 1 145 30
+/**
+ * endpoint assignment
+ */
+61
+inline void LineEmitter::set_endpoint2(LPoint3 const &point);
+
+493 13 get_endpoint1 0 4 695 26 LineEmitter::get_endpoint1 0 1 146 28
+/**
+ * endpoint accessor
+ */
+54
+inline LPoint3 LineEmitter::get_endpoint1(void) const;
+
+494 13 get_endpoint2 0 4 695 26 LineEmitter::get_endpoint2 0 1 147 28
+/**
+ * endpoint accessor
+ */
+54
+inline LPoint3 LineEmitter::get_endpoint2(void) const;
+
+495 20 LineParticleRenderer 0 4 696 42 LineParticleRenderer::LineParticleRenderer 0 3 148 149 150 0
+280
+LineParticleRenderer::LineParticleRenderer(void);
+LineParticleRenderer::LineParticleRenderer(LineParticleRenderer const &copy);
+explicit LineParticleRenderer::LineParticleRenderer(LColor const &head, LColor const &tail, BaseParticleRenderer::ParticleRendererAlphaMode alpha_mode);
+
+496 14 set_head_color 0 4 696 36 LineParticleRenderer::set_head_color 0 1 151 8
+/**
+
+ */
+66
+inline void LineParticleRenderer::set_head_color(LColor const &c);
+
+497 14 set_tail_color 0 4 696 36 LineParticleRenderer::set_tail_color 0 1 152 8
+/**
+
+ */
+66
+inline void LineParticleRenderer::set_tail_color(LColor const &c);
+
+498 14 get_head_color 0 4 696 36 LineParticleRenderer::get_head_color 0 1 153 8
+/**
+
+ */
+70
+inline LColor const &LineParticleRenderer::get_head_color(void) const;
+
+499 14 get_tail_color 0 4 696 36 LineParticleRenderer::get_tail_color 0 1 154 8
+/**
+
+ */
+70
+inline LColor const &LineParticleRenderer::get_tail_color(void) const;
+
+500 21 set_line_scale_factor 0 4 696 43 LineParticleRenderer::set_line_scale_factor 0 1 155 19
+/**
+ * accessor
+ */
+72
+inline void LineParticleRenderer::set_line_scale_factor(PN_stdfloat sf);
+
+501 21 get_line_scale_factor 0 4 696 43 LineParticleRenderer::get_line_scale_factor 0 1 156 19
+/**
+ * accessor
+ */
+75
+inline PN_stdfloat LineParticleRenderer::get_line_scale_factor(void) const;
+
+502 14 ParticleSystem 0 4 697 30 ParticleSystem::ParticleSystem 0 2 157 158 61
+/**
+ * Default Constructor.
+ */
+
+/**
+ * Copy Constructor.
+ */
+119
+explicit ParticleSystem::ParticleSystem(int pool_size = 0);
+ParticleSystem::ParticleSystem(ParticleSystem const &copy);
+
+503 13 set_pool_size 0 4 697 29 ParticleSystem::set_pool_size 0 1 159 26
+// accessqueries
+
+/**
+
+ */
+52
+inline void ParticleSystem::set_pool_size(int size);
+
+504 14 set_birth_rate 0 4 697 30 ParticleSystem::set_birth_rate 0 1 160 8
+/**
+
+ */
+63
+inline void ParticleSystem::set_birth_rate(PN_stdfloat new_br);
+
+505 19 set_soft_birth_rate 0 4 697 35 ParticleSystem::set_soft_birth_rate 0 1 161 8
+/**
+
+ */
+68
+inline void ParticleSystem::set_soft_birth_rate(PN_stdfloat new_br);
+
+506 15 set_litter_size 0 4 697 31 ParticleSystem::set_litter_size 0 1 162 8
+/**
+
+ */
+56
+inline void ParticleSystem::set_litter_size(int new_ls);
+
+507 17 set_litter_spread 0 4 697 33 ParticleSystem::set_litter_spread 0 1 163 8
+/**
+
+ */
+58
+inline void ParticleSystem::set_litter_spread(int new_ls);
+
+508 23 set_local_velocity_flag 0 4 697 39 ParticleSystem::set_local_velocity_flag 0 1 164 8
+/**
+
+ */
+61
+inline void ParticleSystem::set_local_velocity_flag(bool lv);
+
+509 27 set_system_grows_older_flag 0 4 697 43 ParticleSystem::set_system_grows_older_flag 0 1 165 8
+/**
+
+ */
+66
+inline void ParticleSystem::set_system_grows_older_flag(bool sgo);
+
+510 19 set_system_lifespan 0 4 697 35 ParticleSystem::set_system_lifespan 0 1 166 8
+/**
+
+ */
+64
+inline void ParticleSystem::set_system_lifespan(PN_stdfloat sl);
+
+511 14 set_system_age 0 4 697 30 ParticleSystem::set_system_age 0 1 167 8
+/**
+
+ */
+60
+inline void ParticleSystem::set_system_age(PN_stdfloat age);
+
+512 22 set_active_system_flag 0 4 697 38 ParticleSystem::set_active_system_flag 0 1 168 8
+/**
+
+ */
+59
+inline void ParticleSystem::set_active_system_flag(bool a);
+
+513 23 set_spawn_on_death_flag 0 4 697 39 ParticleSystem::set_spawn_on_death_flag 0 1 169 8
+/**
+
+ */
+62
+inline void ParticleSystem::set_spawn_on_death_flag(bool sod);
+
+514 21 set_spawn_render_node 0 4 697 37 ParticleSystem::set_spawn_render_node 0 1 170 8
+/**
+
+ */
+67
+inline void ParticleSystem::set_spawn_render_node(PandaNode *node);
+
+515 26 set_spawn_render_node_path 0 4 697 42 ParticleSystem::set_spawn_render_node_path 0 1 171 8
+/**
+
+ */
+77
+inline void ParticleSystem::set_spawn_render_node_path(NodePath const &node);
+
+516 24 set_template_system_flag 0 4 697 40 ParticleSystem::set_template_system_flag 0 1 172 8
+/**
+
+ */
+63
+inline void ParticleSystem::set_template_system_flag(bool tsf);
+
+517 17 set_render_parent 0 4 697 33 ParticleSystem::set_render_parent 0 2 173 174 18
+/**
+
+ */
+
+/**
+
+ */
+132
+inline void ParticleSystem::set_render_parent(PandaNode *node);
+inline void ParticleSystem::set_render_parent(NodePath const &node);
+
+518 12 set_renderer 0 4 697 28 ParticleSystem::set_renderer 0 1 175 8
+/**
+
+ */
+66
+inline void ParticleSystem::set_renderer(BaseParticleRenderer *r);
+
+519 11 set_emitter 0 4 697 27 ParticleSystem::set_emitter 0 1 176 8
+/**
+
+ */
+64
+inline void ParticleSystem::set_emitter(BaseParticleEmitter *e);
+
+520 11 set_factory 0 4 697 27 ParticleSystem::set_factory 0 1 177 8
+/**
+
+ */
+64
+inline void ParticleSystem::set_factory(BaseParticleFactory *f);
+
+521 11 set_floor_z 0 4 697 27 ParticleSystem::set_floor_z 0 1 178 8
+/**
+
+ */
+55
+inline void ParticleSystem::set_floor_z(PN_stdfloat z);
+
+522 13 clear_floor_z 0 4 697 29 ParticleSystem::clear_floor_z 0 1 179 8
+/**
+
+ */
+48
+inline void ParticleSystem::clear_floor_z(void);
+
+523 13 get_pool_size 0 4 697 29 ParticleSystem::get_pool_size 0 1 180 8
+/**
+
+ */
+53
+inline int ParticleSystem::get_pool_size(void) const;
+
+524 14 get_birth_rate 0 4 697 30 ParticleSystem::get_birth_rate 0 1 181 8
+/**
+
+ */
+62
+inline PN_stdfloat ParticleSystem::get_birth_rate(void) const;
+
+525 19 get_soft_birth_rate 0 4 697 35 ParticleSystem::get_soft_birth_rate 0 1 182 8
+/**
+
+ */
+67
+inline PN_stdfloat ParticleSystem::get_soft_birth_rate(void) const;
+
+526 15 get_litter_size 0 4 697 31 ParticleSystem::get_litter_size 0 1 183 8
+/**
+
+ */
+55
+inline int ParticleSystem::get_litter_size(void) const;
+
+527 17 get_litter_spread 0 4 697 33 ParticleSystem::get_litter_spread 0 1 184 8
+/**
+
+ */
+57
+inline int ParticleSystem::get_litter_spread(void) const;
+
+528 23 get_local_velocity_flag 0 4 697 39 ParticleSystem::get_local_velocity_flag 0 1 185 8
+/**
+
+ */
+64
+inline bool ParticleSystem::get_local_velocity_flag(void) const;
+
+529 27 get_system_grows_older_flag 0 4 697 43 ParticleSystem::get_system_grows_older_flag 0 1 186 8
+/**
+
+ */
+68
+inline bool ParticleSystem::get_system_grows_older_flag(void) const;
+
+530 19 get_system_lifespan 0 4 697 35 ParticleSystem::get_system_lifespan 0 1 187 8
+/**
+
+ */
+67
+inline PN_stdfloat ParticleSystem::get_system_lifespan(void) const;
+
+531 14 get_system_age 0 4 697 30 ParticleSystem::get_system_age 0 1 188 8
+/**
+
+ */
+62
+inline PN_stdfloat ParticleSystem::get_system_age(void) const;
+
+532 22 get_active_system_flag 0 4 697 38 ParticleSystem::get_active_system_flag 0 1 189 8
+/**
+
+ */
+63
+inline bool ParticleSystem::get_active_system_flag(void) const;
+
+533 23 get_spawn_on_death_flag 0 4 697 39 ParticleSystem::get_spawn_on_death_flag 0 1 190 8
+/**
+
+ */
+64
+inline bool ParticleSystem::get_spawn_on_death_flag(void) const;
+
+534 21 get_spawn_render_node 0 4 697 37 ParticleSystem::get_spawn_render_node 0 1 191 8
+/**
+
+ */
+68
+inline PandaNode *ParticleSystem::get_spawn_render_node(void) const;
+
+535 26 get_spawn_render_node_path 0 4 697 42 ParticleSystem::get_spawn_render_node_path 0 1 192 8
+/**
+
+ */
+71
+inline NodePath ParticleSystem::get_spawn_render_node_path(void) const;
+
+536 22 get_i_was_spawned_flag 0 4 697 38 ParticleSystem::get_i_was_spawned_flag 0 1 193 8
+/**
+
+ */
+63
+inline bool ParticleSystem::get_i_was_spawned_flag(void) const;
+
+537 20 get_living_particles 0 4 697 36 ParticleSystem::get_living_particles 0 1 194 8
+/**
+
+ */
+60
+inline int ParticleSystem::get_living_particles(void) const;
+
+538 17 get_render_parent 0 4 697 33 ParticleSystem::get_render_parent 0 1 195 8
+/**
+
+ */
+62
+inline NodePath ParticleSystem::get_render_parent(void) const;
+
+539 12 get_renderer 0 4 697 28 ParticleSystem::get_renderer 0 1 196 8
+/**
+
+ */
+70
+inline BaseParticleRenderer *ParticleSystem::get_renderer(void) const;
+
+540 11 get_emitter 0 4 697 27 ParticleSystem::get_emitter 0 1 197 8
+/**
+
+ */
+68
+inline BaseParticleEmitter *ParticleSystem::get_emitter(void) const;
+
+541 11 get_factory 0 4 697 27 ParticleSystem::get_factory 0 1 198 8
+/**
+
+ */
+68
+inline BaseParticleFactory *ParticleSystem::get_factory(void) const;
+
+542 11 get_floor_z 0 4 697 27 ParticleSystem::get_floor_z 0 1 199 8
+/**
+
+ */
+59
+inline PN_stdfloat ParticleSystem::get_floor_z(void) const;
+
+543 18 add_spawn_template 0 4 697 34 ParticleSystem::add_spawn_template 0 1 200 8
+/**
+
+ */
+67
+inline void ParticleSystem::add_spawn_template(ParticleSystem *ps);
+
+544 21 clear_spawn_templates 0 4 697 37 ParticleSystem::clear_spawn_templates 0 1 201 8
+/**
+
+ */
+56
+inline void ParticleSystem::clear_spawn_templates(void);
+
+545 6 render 0 4 697 22 ParticleSystem::render 0 1 202 134
+/**
+ * Populates an attached GeomNode structure with the particle geometry for
+ * rendering.  This is a wrapper for accessability.
+ */
+41
+inline void ParticleSystem::render(void);
+
+546 12 induce_labor 0 4 697 28 ParticleSystem::induce_labor 0 1 203 93
+/**
+ * Forces the birth of a particle litter this frame by resetting
+ * _tics_since_birth
+ */
+47
+inline void ParticleSystem::induce_labor(void);
+
+547 16 clear_to_initial 0 4 697 32 ParticleSystem::clear_to_initial 0 1 204 104
+/**
+ * Resets the system to its start state by resizing to 0, then resizing back
+ * to current size.
+ */
+51
+inline void ParticleSystem::clear_to_initial(void);
+
+548 9 soft_stop 0 4 697 25 ParticleSystem::soft_stop 0 1 205 71
+/**
+ * Causes system to use birth rate set by set_soft_birth_rate()
+ */
+60
+inline void ParticleSystem::soft_stop(PN_stdfloat br = 0.0);
+
+549 10 soft_start 0 4 697 26 ParticleSystem::soft_start 0 1 206 66
+/**
+ * Causes system to use birth rate set by set_birth_rate()
+ */
+61
+inline void ParticleSystem::soft_start(PN_stdfloat br = 0.0);
+
+550 6 update 0 4 697 22 ParticleSystem::update 0 1 207 0
+44
+void ParticleSystem::update(PN_stdfloat dt);
+
+551 24 write_free_particle_fifo 0 6 697 40 ParticleSystem::write_free_particle_fifo 0 1 208 67
+/**
+ * Write a string representation of this instance to <out>.
+ */
+95
+virtual void ParticleSystem::write_free_particle_fifo(std::ostream &out, int indent = 0) const;
+
+552 21 write_spawn_templates 0 6 697 37 ParticleSystem::write_spawn_templates 0 1 209 67
+/**
+ * Write a string representation of this instance to <out>.
+ */
+92
+virtual void ParticleSystem::write_spawn_templates(std::ostream &out, int indent = 0) const;
+
+553 14 get_class_type 0 4 697 30 ParticleSystem::get_class_type 0 1 210 0
+55
+static TypeHandle ParticleSystem::get_class_type(void);
+
+554 12 PointEmitter 0 4 699 26 PointEmitter::PointEmitter 0 2 211 212 51
+/**
+ * constructor
+ */
+
+/**
+ * copy constructor
+ */
+87
+PointEmitter::PointEmitter(void);
+PointEmitter::PointEmitter(PointEmitter const &copy);
+
+555 12 set_location 0 4 699 26 PointEmitter::set_location 0 1 213 24
+/**
+ * point setting
+ */
+57
+inline void PointEmitter::set_location(LPoint3 const &p);
+
+556 12 get_location 0 4 699 26 PointEmitter::get_location 0 1 214 0
+54
+inline LPoint3 PointEmitter::get_location(void) const;
+
+557 20 PointParticleFactory 0 4 700 42 PointParticleFactory::PointParticleFactory 0 2 215 216 59
+/**
+ * default constructor
+ */
+
+/**
+ * copy constructor
+ */
+127
+PointParticleFactory::PointParticleFactory(void);
+PointParticleFactory::PointParticleFactory(PointParticleFactory const &copy);
+
+558 21 PointParticleRenderer 0 4 701 44 PointParticleRenderer::PointParticleRenderer 0 2 217 218 59
+/**
+ * special constructor
+ */
+
+/**
+ * Copy constructor
+ */
+533
+PointParticleRenderer::PointParticleRenderer(PointParticleRenderer const &copy);
+explicit PointParticleRenderer::PointParticleRenderer(BaseParticleRenderer::ParticleRendererAlphaMode ad = ::BaseParticleRenderer::PR_ALPHA_NONE, PN_stdfloat point_size = 1.0, PointParticleRenderer::PointParticleBlendType bt = ::PointParticleRenderer::PP_ONE_COLOR, BaseParticleRenderer::ParticleRendererBlendMethod bm = ::BaseParticleRenderer::PP_NO_BLEND, LColor const &sc = LColor(1.0, 1.0, 1.0, 1.0), LColor const &ec = LColor(1.0, 1.0, 1.0, 1.0));
+
+559 14 set_point_size 0 4 701 37 PointParticleRenderer::set_point_size 0 1 219 8
+/**
+
+ */
+74
+inline void PointParticleRenderer::set_point_size(PN_stdfloat point_size);
+
+560 15 set_start_color 0 4 701 38 PointParticleRenderer::set_start_color 0 1 220 8
+/**
+
+ */
+69
+inline void PointParticleRenderer::set_start_color(LColor const &sc);
+
+561 13 set_end_color 0 4 701 36 PointParticleRenderer::set_end_color 0 1 221 8
+/**
+
+ */
+67
+inline void PointParticleRenderer::set_end_color(LColor const &ec);
+
+562 14 set_blend_type 0 4 701 37 PointParticleRenderer::set_blend_type 0 1 222 8
+/**
+
+ */
+100
+inline void PointParticleRenderer::set_blend_type(PointParticleRenderer::PointParticleBlendType bt);
+
+563 16 set_blend_method 0 4 701 39 PointParticleRenderer::set_blend_method 0 1 223 8
+/**
+
+ */
+106
+inline void PointParticleRenderer::set_blend_method(BaseParticleRenderer::ParticleRendererBlendMethod bm);
+
+564 14 get_point_size 0 4 701 37 PointParticleRenderer::get_point_size 0 1 224 8
+/**
+
+ */
+69
+inline PN_stdfloat PointParticleRenderer::get_point_size(void) const;
+
+565 15 get_start_color 0 4 701 38 PointParticleRenderer::get_start_color 0 1 225 8
+/**
+
+ */
+72
+inline LColor const &PointParticleRenderer::get_start_color(void) const;
+
+566 13 get_end_color 0 4 701 36 PointParticleRenderer::get_end_color 0 1 226 8
+/**
+
+ */
+70
+inline LColor const &PointParticleRenderer::get_end_color(void) const;
+
+567 14 get_blend_type 0 4 701 37 PointParticleRenderer::get_blend_type 0 1 227 8
+/**
+
+ */
+103
+inline PointParticleRenderer::PointParticleBlendType PointParticleRenderer::get_blend_type(void) const;
+
+568 16 get_blend_method 0 4 701 39 PointParticleRenderer::get_blend_method 0 1 228 8
+/**
+
+ */
+109
+inline BaseParticleRenderer::ParticleRendererBlendMethod PointParticleRenderer::get_blend_method(void) const;
+
+569 16 RectangleEmitter 0 4 703 34 RectangleEmitter::RectangleEmitter 0 2 229 230 51
+/**
+ * constructor
+ */
+
+/**
+ * copy constructor
+ */
+107
+RectangleEmitter::RectangleEmitter(void);
+RectangleEmitter::RectangleEmitter(RectangleEmitter const &copy);
+
+570 13 set_min_bound 0 4 703 31 RectangleEmitter::set_min_bound 0 1 231 23
+/**
+ * boundary set
+ */
+65
+inline void RectangleEmitter::set_min_bound(LPoint2 const &vmin);
+
+571 13 set_max_bound 0 4 703 31 RectangleEmitter::set_max_bound 0 1 232 23
+/**
+ * boundary set
+ */
+65
+inline void RectangleEmitter::set_max_bound(LPoint2 const &vmax);
+
+572 13 get_min_bound 0 4 703 31 RectangleEmitter::get_min_bound 0 1 233 23
+/**
+ * boundary get
+ */
+59
+inline LPoint2 RectangleEmitter::get_min_bound(void) const;
+
+573 13 get_max_bound 0 4 703 31 RectangleEmitter::get_max_bound 0 1 234 23
+/**
+ * boundary get
+ */
+59
+inline LPoint2 RectangleEmitter::get_max_bound(void) const;
+
+574 23 SparkleParticleRenderer 0 4 704 48 SparkleParticleRenderer::SparkleParticleRenderer 0 3 235 236 237 83
+/**
+ * Default Constructor
+ */
+
+/**
+ * Constructor
+ */
+
+/**
+ * Copy Constructor
+ */
+417
+SparkleParticleRenderer::SparkleParticleRenderer(void);
+SparkleParticleRenderer::SparkleParticleRenderer(SparkleParticleRenderer const &copy);
+explicit SparkleParticleRenderer::SparkleParticleRenderer(LColor const &center, LColor const &edge, PN_stdfloat birth_radius, PN_stdfloat death_radius, SparkleParticleRenderer::SparkleParticleLifeScale life_scale, BaseParticleRenderer::ParticleRendererAlphaMode alpha_mode);
+
+575 16 set_center_color 0 4 704 41 SparkleParticleRenderer::set_center_color 0 1 238 8
+/**
+
+ */
+71
+inline void SparkleParticleRenderer::set_center_color(LColor const &c);
+
+576 14 set_edge_color 0 4 704 39 SparkleParticleRenderer::set_edge_color 0 1 239 8
+/**
+
+ */
+69
+inline void SparkleParticleRenderer::set_edge_color(LColor const &c);
+
+577 16 set_birth_radius 0 4 704 41 SparkleParticleRenderer::set_birth_radius 0 1 240 8
+/**
+
+ */
+74
+inline void SparkleParticleRenderer::set_birth_radius(PN_stdfloat radius);
+
+578 16 set_death_radius 0 4 704 41 SparkleParticleRenderer::set_death_radius 0 1 241 8
+/**
+
+ */
+74
+inline void SparkleParticleRenderer::set_death_radius(PN_stdfloat radius);
+
+579 14 set_life_scale 0 4 704 39 SparkleParticleRenderer::set_life_scale 0 1 242 8
+/**
+
+ */
+104
+inline void SparkleParticleRenderer::set_life_scale(SparkleParticleRenderer::SparkleParticleLifeScale );
+
+580 16 get_center_color 0 4 704 41 SparkleParticleRenderer::get_center_color 0 1 243 8
+/**
+
+ */
+75
+inline LColor const &SparkleParticleRenderer::get_center_color(void) const;
+
+581 14 get_edge_color 0 4 704 39 SparkleParticleRenderer::get_edge_color 0 1 244 8
+/**
+
+ */
+73
+inline LColor const &SparkleParticleRenderer::get_edge_color(void) const;
+
+582 16 get_birth_radius 0 4 704 41 SparkleParticleRenderer::get_birth_radius 0 1 245 8
+/**
+
+ */
+73
+inline PN_stdfloat SparkleParticleRenderer::get_birth_radius(void) const;
+
+583 16 get_death_radius 0 4 704 41 SparkleParticleRenderer::get_death_radius 0 1 246 8
+/**
+
+ */
+73
+inline PN_stdfloat SparkleParticleRenderer::get_death_radius(void) const;
+
+584 14 get_life_scale 0 4 704 39 SparkleParticleRenderer::get_life_scale 0 1 247 8
+/**
+
+ */
+109
+inline SparkleParticleRenderer::SparkleParticleLifeScale SparkleParticleRenderer::get_life_scale(void) const;
+
+585 20 SphereSurfaceEmitter 0 4 706 42 SphereSurfaceEmitter::SphereSurfaceEmitter 0 2 248 249 51
+/**
+ * constructor
+ */
+
+/**
+ * copy constructor
+ */
+127
+SphereSurfaceEmitter::SphereSurfaceEmitter(void);
+SphereSurfaceEmitter::SphereSurfaceEmitter(SphereSurfaceEmitter const &copy);
+
+586 10 set_radius 0 4 706 32 SphereSurfaceEmitter::set_radius 0 1 250 0
+60
+inline void SphereSurfaceEmitter::set_radius(PN_stdfloat r);
+
+587 10 get_radius 0 4 706 32 SphereSurfaceEmitter::get_radius 0 1 251 0
+64
+inline PN_stdfloat SphereSurfaceEmitter::get_radius(void) const;
+
+588 19 SphereVolumeEmitter 0 4 707 40 SphereVolumeEmitter::SphereVolumeEmitter 0 2 252 253 51
+/**
+ * constructor
+ */
+
+/**
+ * copy constructor
+ */
+122
+SphereVolumeEmitter::SphereVolumeEmitter(void);
+SphereVolumeEmitter::SphereVolumeEmitter(SphereVolumeEmitter const &copy);
+
+589 10 set_radius 0 4 707 31 SphereVolumeEmitter::set_radius 0 1 254 0
+59
+inline void SphereVolumeEmitter::set_radius(PN_stdfloat r);
+
+590 10 get_radius 0 4 707 31 SphereVolumeEmitter::get_radius 0 1 255 0
+63
+inline PN_stdfloat SphereVolumeEmitter::get_radius(void) const;
+
+591 15 set_source_info 0 4 708 27 SpriteAnim::set_source_info 0 2 257 258 0
+142
+void SpriteAnim::set_source_info(std::string const &tex);
+void SpriteAnim::set_source_info(std::string const &model, std::string const &node);
+
+592 15 get_source_type 0 4 708 27 SpriteAnim::get_source_type 0 1 259 0
+63
+SpriteAnim::SourceType SpriteAnim::get_source_type(void) const;
+
+593 14 get_tex_source 0 4 708 26 SpriteAnim::get_tex_source 0 1 260 0
+51
+std::string SpriteAnim::get_tex_source(void) const;
+
+594 16 get_model_source 0 4 708 28 SpriteAnim::get_model_source 0 1 261 0
+53
+std::string SpriteAnim::get_model_source(void) const;
+
+595 15 get_node_source 0 4 708 27 SpriteAnim::get_node_source 0 1 262 0
+52
+std::string SpriteAnim::get_node_source(void) const;
+
+596 14 get_num_frames 0 4 708 26 SpriteAnim::get_num_frames 0 1 263 0
+43
+int SpriteAnim::get_num_frames(void) const;
+
+597 10 SpriteAnim 0 4 708 22 SpriteAnim::SpriteAnim 0 1 256 0
+60
+inline SpriteAnim::SpriteAnim(SpriteAnim const &) = default;
+
+598 11 ~SpriteAnim 0 4 708 23 SpriteAnim::~SpriteAnim 0 0 0
+30
+SpriteAnim::~SpriteAnim(void);
+
+599 22 SpriteParticleRenderer 0 4 710 46 SpriteParticleRenderer::SpriteParticleRenderer 0 2 264 265 51
+/**
+ * constructor
+ */
+
+/**
+ * copy constructor
+ */
+164
+explicit SpriteParticleRenderer::SpriteParticleRenderer(Texture *tex = nullptr);
+SpriteParticleRenderer::SpriteParticleRenderer(SpriteParticleRenderer const &copy);
+
+600 13 set_from_node 0 4 710 37 SpriteParticleRenderer::set_from_node 0 2 266 267 1389
+/**
+ * If the source type is important, use this one.
+ *
+ * model and node should lead to node_path like this: node_path =
+ * loader.loadModel(model).find(node)
+ *
+ * This will remove all previously add textures and resize the renderer to
+ * match the new geometry.
+ */
+
+/**
+ * Sets the properties on this renderer from the geometry referenced by the
+ * indicated NodePath.  This should be a reference to a GeomNode or a
+ * SequenceNode; it extracts out the texture and UV range from the node.
+ *
+ * This will remove all previously added textures and animations.  It will
+ * also resize the renderer to match this new geometry.
+ *
+ * If node_path refers to a GeomNode(or has one beneath it) the texture, its
+ * size, and UV data will be extracted from that.
+ *
+ * If node_path references a SequenceNode(or has one beneath it) with multiple
+ * GeomNodes beneath it, the size data will correspond only to the first
+ * GeomNode found with a valid texture, while the texture and UV information
+ * will be stored for each individual node.
+ *
+ * If size_from_texels is true, the particle size is based on the number of
+ * texels in the source image; otherwise, it is based on the size of the first
+ * polygon found in the node.
+ *
+ * model and node are the two items used to construct node_path.  If the
+ * source type is important, use set_from_node(NodePath,string,string,bool)
+ * instead.
+ */
+254
+void SpriteParticleRenderer::set_from_node(NodePath const &node_path, bool size_from_texels = false);
+void SpriteParticleRenderer::set_from_node(NodePath const &node_path, std::string const &model, std::string const &node, bool size_from_texels = false);
+
+601 13 add_from_node 0 4 710 37 SpriteParticleRenderer::add_from_node 0 2 268 269 778
+/**
+ * This will allow the renderer to randomly choose from more than one texture
+ * or sequence at particle birth.
+ *
+ * If the source type is important, use this one.
+ *
+ * model and node should lead to node_path like this: node_path =
+ * loader.loadModel(model).find(node)
+ *
+ * If resize is true, or if there are no textures currently on the renderer,
+ * it will force the renderer to use the size information from this node from
+ * now on.  (Default is false)
+ */
+
+/**
+ * This will allow the renderer to randomly choose from more than one texture
+ * or sequence at particle birth.
+ *
+ * If resize is true, or if there are no textures currently on the renderer,
+ * it will force the renderer to use the size information from this node from
+ * now on.  (Default is false)
+ */
+296
+void SpriteParticleRenderer::add_from_node(NodePath const &node_path, bool size_from_texels = false, bool resize = false);
+void SpriteParticleRenderer::add_from_node(NodePath const &node_path, std::string const &model, std::string const &node, bool size_from_texels = false, bool resize = false);
+
+602 11 set_texture 0 4 710 35 SpriteParticleRenderer::set_texture 0 1 270 292
+/**
+ * Sets the renderer up to render the entire texture image.  The scale of each
+ * particle is based on the size of the texture in each dimension, modified by
+ * texels_per_unit.
+ *
+ * Used to set the size of the particles.  Will clear all previously loaded
+ * textures and animations.
+ */
+97
+inline void SpriteParticleRenderer::set_texture(Texture *tex, PN_stdfloat texels_per_unit = 1.0);
+
+603 11 add_texture 0 4 710 35 SpriteParticleRenderer::add_texture 0 1 271 198
+/**
+ * Adds texture to image pool, effectively creating a single frame animation
+ * that can be selected at particle birth.  This should only be called after a
+ * previous call to set_texture().
+ */
+118
+inline void SpriteParticleRenderer::add_texture(Texture *tex, PN_stdfloat texels_per_unit = 1.0, bool resize = false);
+
+604 16 remove_animation 0 4 710 40 SpriteParticleRenderer::remove_animation 0 1 272 62
+/**
+ * Removes an animation texture set from the renderer.
+ */
+66
+inline void SpriteParticleRenderer::remove_animation(int const n);
+
+605 9 set_ll_uv 0 4 710 33 SpriteParticleRenderer::set_ll_uv 0 2 273 274 428
+/**
+ * Sets the UV coordinate of the lower-left corner of all the sprites
+ * generated by this renderer.  Normally this is (0, 0), but it might be set
+ * to something else to use only a portion of the texture.
+ */
+
+/**
+ * Sets the UV coordinate of the lower-left corner of all the sprites
+ * generated by this renderer.  Normally this is (0, 0), but it might be set
+ * to something else to use only a portion of the texture.
+ */
+174
+inline void SpriteParticleRenderer::set_ll_uv(LTexCoord const &ll_uv);
+inline void SpriteParticleRenderer::set_ll_uv(LTexCoord const &ll_uv, int const anim, int const frame);
+
+606 9 set_ur_uv 0 4 710 33 SpriteParticleRenderer::set_ur_uv 0 2 275 276 430
+/**
+ * Sets the UV coordinate of the upper-right corner of all the sprites
+ * generated by this renderer.  Normally this is (1, 1), but it might be set
+ * to something else to use only a portion of the texture.
+ */
+
+/**
+ * Sets the UV coordinate of the upper-right corner of all the sprites
+ * generated by this renderer.  Normally this is (1, 1), but it might be set
+ * to something else to use only a portion of the texture.
+ */
+174
+inline void SpriteParticleRenderer::set_ur_uv(LTexCoord const &ur_uv);
+inline void SpriteParticleRenderer::set_ur_uv(LTexCoord const &ur_uv, int const anim, int const frame);
+
+607 8 set_size 0 4 710 32 SpriteParticleRenderer::set_size 0 1 277 57
+/**
+ * Sets the size of each particle in world units.
+ */
+84
+inline void SpriteParticleRenderer::set_size(PN_stdfloat width, PN_stdfloat height);
+
+608 9 set_color 0 4 710 33 SpriteParticleRenderer::set_color 0 1 278 8
+/**
+
+ */
+67
+inline void SpriteParticleRenderer::set_color(LColor const &color);
+
+609 16 set_x_scale_flag 0 4 710 40 SpriteParticleRenderer::set_x_scale_flag 0 1 279 8
+/**
+
+ */
+75
+inline void SpriteParticleRenderer::set_x_scale_flag(bool animate_x_ratio);
+
+610 16 set_y_scale_flag 0 4 710 40 SpriteParticleRenderer::set_y_scale_flag 0 1 280 8
+/**
+
+ */
+75
+inline void SpriteParticleRenderer::set_y_scale_flag(bool animate_y_ratio);
+
+611 19 set_anim_angle_flag 0 4 710 43 SpriteParticleRenderer::set_anim_angle_flag 0 1 281 8
+/**
+
+ */
+76
+inline void SpriteParticleRenderer::set_anim_angle_flag(bool animate_theta);
+
+612 19 set_initial_x_scale 0 4 710 43 SpriteParticleRenderer::set_initial_x_scale 0 1 282 8
+/**
+
+ */
+85
+inline void SpriteParticleRenderer::set_initial_x_scale(PN_stdfloat initial_x_scale);
+
+613 17 set_final_x_scale 0 4 710 41 SpriteParticleRenderer::set_final_x_scale 0 1 283 8
+/**
+
+ */
+81
+inline void SpriteParticleRenderer::set_final_x_scale(PN_stdfloat final_x_scale);
+
+614 19 set_initial_y_scale 0 4 710 43 SpriteParticleRenderer::set_initial_y_scale 0 1 284 8
+/**
+
+ */
+85
+inline void SpriteParticleRenderer::set_initial_y_scale(PN_stdfloat initial_y_scale);
+
+615 17 set_final_y_scale 0 4 710 41 SpriteParticleRenderer::set_final_y_scale 0 1 285 8
+/**
+
+ */
+81
+inline void SpriteParticleRenderer::set_final_y_scale(PN_stdfloat final_y_scale);
+
+616 21 set_nonanimated_theta 0 4 710 45 SpriteParticleRenderer::set_nonanimated_theta 0 1 286 8
+/**
+
+ */
+77
+inline void SpriteParticleRenderer::set_nonanimated_theta(PN_stdfloat theta);
+
+617 22 set_alpha_blend_method 0 4 710 46 SpriteParticleRenderer::set_alpha_blend_method 0 1 287 8
+/**
+
+ */
+113
+inline void SpriteParticleRenderer::set_alpha_blend_method(BaseParticleRenderer::ParticleRendererBlendMethod bm);
+
+618 17 set_alpha_disable 0 4 710 41 SpriteParticleRenderer::set_alpha_disable 0 1 288 8
+/**
+
+ */
+63
+inline void SpriteParticleRenderer::set_alpha_disable(bool ad);
+
+619 25 set_animate_frames_enable 0 4 710 49 SpriteParticleRenderer::set_animate_frames_enable 0 1 289 8
+/**
+
+ */
+71
+inline void SpriteParticleRenderer::set_animate_frames_enable(bool an);
+
+620 23 set_animate_frames_rate 0 4 710 47 SpriteParticleRenderer::set_animate_frames_rate 0 1 290 8
+/**
+
+ */
+75
+inline void SpriteParticleRenderer::set_animate_frames_rate(PN_stdfloat r);
+
+621 24 set_animate_frames_index 0 4 710 48 SpriteParticleRenderer::set_animate_frames_index 0 1 291 8
+/**
+
+ */
+68
+inline void SpriteParticleRenderer::set_animate_frames_index(int i);
+
+622 11 get_texture 0 4 710 35 SpriteParticleRenderer::get_texture 0 2 292 293 18
+/**
+
+ */
+
+/**
+
+ */
+156
+inline Texture *SpriteParticleRenderer::get_texture(void) const;
+inline Texture *SpriteParticleRenderer::get_texture(int const anim, int const frame) const;
+
+623 13 get_num_anims 0 4 710 37 SpriteParticleRenderer::get_num_anims 0 1 294 0
+61
+inline int SpriteParticleRenderer::get_num_anims(void) const;
+
+624 8 get_anim 0 4 710 32 SpriteParticleRenderer::get_anim 0 1 295 0
+71
+inline SpriteAnim *SpriteParticleRenderer::get_anim(int const n) const;
+
+625 13 get_last_anim 0 4 710 37 SpriteParticleRenderer::get_last_anim 0 1 296 0
+69
+inline SpriteAnim *SpriteParticleRenderer::get_last_anim(void) const;
+
+626 31 get_color_interpolation_manager 0 4 710 55 SpriteParticleRenderer::get_color_interpolation_manager 0 1 297 8
+/**
+
+ */
+102
+inline ColorInterpolationManager *SpriteParticleRenderer::get_color_interpolation_manager(void) const;
+
+627 9 get_ll_uv 0 4 710 33 SpriteParticleRenderer::get_ll_uv 0 2 298 299 160
+/**
+ * Returns the UV coordinate of the lower-left corner; see set_ll_uv().
+ */
+
+/**
+ * Returns the UV coordinate of the lower-left corner; see set_ll_uv().
+ */
+154
+inline LTexCoord SpriteParticleRenderer::get_ll_uv(void) const;
+inline LTexCoord SpriteParticleRenderer::get_ll_uv(int const anim, int const frame) const;
+
+628 9 get_ur_uv 0 4 710 33 SpriteParticleRenderer::get_ur_uv 0 2 300 301 161
+/**
+ * Returns the UV coordinate of the lower-left corner; see set_ur_uv().
+ */
+
+/**
+ * Returns the UV coordinate of the upper-right corner; see set_ur_uv().
+ */
+154
+inline LTexCoord SpriteParticleRenderer::get_ur_uv(void) const;
+inline LTexCoord SpriteParticleRenderer::get_ur_uv(int const anim, int const frame) const;
+
+629 9 get_width 0 4 710 33 SpriteParticleRenderer::get_width 0 1 302 61
+/**
+ * Returns the width of each particle in world units.
+ */
+65
+inline PN_stdfloat SpriteParticleRenderer::get_width(void) const;
+
+630 10 get_height 0 4 710 34 SpriteParticleRenderer::get_height 0 1 303 62
+/**
+ * Returns the height of each particle in world units.
+ */
+66
+inline PN_stdfloat SpriteParticleRenderer::get_height(void) const;
+
+631 9 get_color 0 4 710 33 SpriteParticleRenderer::get_color 0 1 304 8
+/**
+
+ */
+60
+inline LColor SpriteParticleRenderer::get_color(void) const;
+
+632 16 get_x_scale_flag 0 4 710 40 SpriteParticleRenderer::get_x_scale_flag 0 1 305 8
+/**
+
+ */
+65
+inline bool SpriteParticleRenderer::get_x_scale_flag(void) const;
+
+633 16 get_y_scale_flag 0 4 710 40 SpriteParticleRenderer::get_y_scale_flag 0 1 306 8
+/**
+
+ */
+65
+inline bool SpriteParticleRenderer::get_y_scale_flag(void) const;
+
+634 19 get_anim_angle_flag 0 4 710 43 SpriteParticleRenderer::get_anim_angle_flag 0 1 307 8
+/**
+
+ */
+68
+inline bool SpriteParticleRenderer::get_anim_angle_flag(void) const;
+
+635 19 get_initial_x_scale 0 4 710 43 SpriteParticleRenderer::get_initial_x_scale 0 1 308 8
+/**
+
+ */
+75
+inline PN_stdfloat SpriteParticleRenderer::get_initial_x_scale(void) const;
+
+636 17 get_final_x_scale 0 4 710 41 SpriteParticleRenderer::get_final_x_scale 0 1 309 8
+/**
+
+ */
+73
+inline PN_stdfloat SpriteParticleRenderer::get_final_x_scale(void) const;
+
+637 19 get_initial_y_scale 0 4 710 43 SpriteParticleRenderer::get_initial_y_scale 0 1 310 8
+/**
+
+ */
+75
+inline PN_stdfloat SpriteParticleRenderer::get_initial_y_scale(void) const;
+
+638 17 get_final_y_scale 0 4 710 41 SpriteParticleRenderer::get_final_y_scale 0 1 311 8
+/**
+
+ */
+73
+inline PN_stdfloat SpriteParticleRenderer::get_final_y_scale(void) const;
+
+639 21 get_nonanimated_theta 0 4 710 45 SpriteParticleRenderer::get_nonanimated_theta 0 1 312 8
+/**
+
+ */
+77
+inline PN_stdfloat SpriteParticleRenderer::get_nonanimated_theta(void) const;
+
+640 22 get_alpha_blend_method 0 4 710 46 SpriteParticleRenderer::get_alpha_blend_method 0 1 313 8
+/**
+
+ */
+116
+inline BaseParticleRenderer::ParticleRendererBlendMethod SpriteParticleRenderer::get_alpha_blend_method(void) const;
+
+641 17 get_alpha_disable 0 4 710 41 SpriteParticleRenderer::get_alpha_disable 0 1 314 8
+/**
+
+ */
+66
+inline bool SpriteParticleRenderer::get_alpha_disable(void) const;
+
+642 25 get_animate_frames_enable 0 4 710 49 SpriteParticleRenderer::get_animate_frames_enable 0 1 315 8
+/**
+
+ */
+74
+inline bool SpriteParticleRenderer::get_animate_frames_enable(void) const;
+
+643 23 get_animate_frames_rate 0 4 710 47 SpriteParticleRenderer::get_animate_frames_rate 0 1 316 8
+/**
+
+ */
+79
+inline PN_stdfloat SpriteParticleRenderer::get_animate_frames_rate(void) const;
+
+644 24 get_animate_frames_index 0 4 710 48 SpriteParticleRenderer::get_animate_frames_index 0 1 317 8
+/**
+
+ */
+72
+inline int SpriteParticleRenderer::get_animate_frames_index(void) const;
+
+645 18 TangentRingEmitter 0 4 711 38 TangentRingEmitter::TangentRingEmitter 0 2 318 319 51
+/**
+ * constructor
+ */
+
+/**
+ * copy constructor
+ */
+117
+TangentRingEmitter::TangentRingEmitter(void);
+TangentRingEmitter::TangentRingEmitter(TangentRingEmitter const &copy);
+
+646 10 set_radius 0 4 711 30 TangentRingEmitter::set_radius 0 1 320 8
+/**
+
+ */
+58
+inline void TangentRingEmitter::set_radius(PN_stdfloat r);
+
+647 17 set_radius_spread 0 4 711 37 TangentRingEmitter::set_radius_spread 0 1 321 8
+/**
+
+ */
+70
+inline void TangentRingEmitter::set_radius_spread(PN_stdfloat spread);
+
+648 10 get_radius 0 4 711 30 TangentRingEmitter::get_radius 0 1 322 8
+/**
+
+ */
+62
+inline PN_stdfloat TangentRingEmitter::get_radius(void) const;
+
+649 17 get_radius_spread 0 4 711 37 TangentRingEmitter::get_radius_spread 0 1 323 8
+/**
+
+ */
+69
+inline PN_stdfloat TangentRingEmitter::get_radius_spread(void) const;
+
+650 20 ZSpinParticleFactory 0 4 712 42 ZSpinParticleFactory::ZSpinParticleFactory 0 2 324 325 51
+/**
+ * constructor
+ */
+
+/**
+ * copy constructor
+ */
+127
+ZSpinParticleFactory::ZSpinParticleFactory(void);
+ZSpinParticleFactory::ZSpinParticleFactory(ZSpinParticleFactory const &copy);
+
+651 17 set_initial_angle 0 4 712 39 ZSpinParticleFactory::set_initial_angle 0 1 326 8
+/**
+
+ */
+71
+inline void ZSpinParticleFactory::set_initial_angle(PN_stdfloat angle);
+
+652 15 set_final_angle 0 4 712 37 ZSpinParticleFactory::set_final_angle 0 1 327 8
+/**
+
+ */
+69
+inline void ZSpinParticleFactory::set_final_angle(PN_stdfloat angle);
+
+653 24 set_initial_angle_spread 0 4 712 46 ZSpinParticleFactory::set_initial_angle_spread 0 1 328 8
+/**
+
+ */
+79
+inline void ZSpinParticleFactory::set_initial_angle_spread(PN_stdfloat spread);
+
+654 22 set_final_angle_spread 0 4 712 44 ZSpinParticleFactory::set_final_angle_spread 0 1 329 8
+/**
+
+ */
+77
+inline void ZSpinParticleFactory::set_final_angle_spread(PN_stdfloat spread);
+
+655 17 get_initial_angle 0 4 712 39 ZSpinParticleFactory::get_initial_angle 0 1 330 8
+/**
+
+ */
+71
+inline PN_stdfloat ZSpinParticleFactory::get_initial_angle(void) const;
+
+656 15 get_final_angle 0 4 712 37 ZSpinParticleFactory::get_final_angle 0 1 331 8
+/**
+
+ */
+69
+inline PN_stdfloat ZSpinParticleFactory::get_final_angle(void) const;
+
+657 24 get_initial_angle_spread 0 4 712 46 ZSpinParticleFactory::get_initial_angle_spread 0 1 332 8
+/**
+
+ */
+78
+inline PN_stdfloat ZSpinParticleFactory::get_initial_angle_spread(void) const;
+
+658 22 get_final_angle_spread 0 4 712 44 ZSpinParticleFactory::get_final_angle_spread 0 1 333 8
+/**
+
+ */
+76
+inline PN_stdfloat ZSpinParticleFactory::get_final_angle_spread(void) const;
+
+659 20 set_angular_velocity 0 4 712 42 ZSpinParticleFactory::set_angular_velocity 0 1 334 0
+70
+inline void ZSpinParticleFactory::set_angular_velocity(PN_stdfloat v);
+
+660 20 get_angular_velocity 0 4 712 42 ZSpinParticleFactory::get_angular_velocity 0 1 335 8
+/**
+
+ */
+74
+inline PN_stdfloat ZSpinParticleFactory::get_angular_velocity(void) const;
+
+661 27 set_angular_velocity_spread 0 4 712 49 ZSpinParticleFactory::set_angular_velocity_spread 0 1 336 0
+82
+inline void ZSpinParticleFactory::set_angular_velocity_spread(PN_stdfloat spread);
+
+662 27 get_angular_velocity_spread 0 4 712 49 ZSpinParticleFactory::get_angular_velocity_spread 0 1 337 0
+81
+inline PN_stdfloat ZSpinParticleFactory::get_angular_velocity_spread(void) const;
+
+663 23 enable_angular_velocity 0 4 712 45 ZSpinParticleFactory::enable_angular_velocity 0 1 338 0
+73
+inline void ZSpinParticleFactory::enable_angular_velocity(bool bEnabled);
+
+664 28 get_angular_velocity_enabled 0 4 712 50 ZSpinParticleFactory::get_angular_velocity_enabled 0 1 339 0
+75
+inline bool ZSpinParticleFactory::get_angular_velocity_enabled(void) const;
+
+665 21 ParticleSystemManager 0 4 713 44 ParticleSystemManager::ParticleSystemManager 0 2 340 341 30
+/**
+ * default constructor
+ */
+173
+explicit ParticleSystemManager::ParticleSystemManager(int every_nth_frame = 1);
+inline ParticleSystemManager::ParticleSystemManager(ParticleSystemManager const &) = default;
+
+666 22 ~ParticleSystemManager 0 6 713 45 ParticleSystemManager::~ParticleSystemManager 0 0 21
+/**
+ * Destructor
+ */
+60
+virtual ParticleSystemManager::~ParticleSystemManager(void);
+
+667 18 set_frame_stepping 0 4 713 41 ParticleSystemManager::set_frame_stepping 0 1 342 0
+75
+inline void ParticleSystemManager::set_frame_stepping(int every_nth_frame);
+
+668 18 get_frame_stepping 0 4 713 41 ParticleSystemManager::get_frame_stepping 0 1 343 0
+65
+inline int ParticleSystemManager::get_frame_stepping(void) const;
+
+669 21 attach_particlesystem 0 4 713 44 ParticleSystemManager::attach_particlesystem 0 1 344 0
+77
+inline void ParticleSystemManager::attach_particlesystem(ParticleSystem *ps);
+
+670 21 remove_particlesystem 0 4 713 44 ParticleSystemManager::remove_particlesystem 0 1 345 49
+/**
+ * removes a ps from the maintenance list
+ */
+70
+void ParticleSystemManager::remove_particlesystem(ParticleSystem *ps);
+
+671 5 clear 0 4 713 28 ParticleSystemManager::clear 0 1 346 0
+47
+inline void ParticleSystemManager::clear(void);
+
+672 12 do_particles 0 4 713 35 ParticleSystemManager::do_particles 0 2 347 348 449
+/**
+ * does an update and render for each ps in the list.  this is probably the
+ * one you want to use.  Rendering is the expensive operation, and particles
+ * REALLY should at least be updated every frame, so nth_frame stepping
+ * applies only to rendering.
+ */
+
+/**
+ * does an update and an optional render for a specific ps.  Since rendering
+ * is the expensive operation, multiple updates could be applied before
+ * calling the final render.
+ */
+158
+void ParticleSystemManager::do_particles(PN_stdfloat dt);
+void ParticleSystemManager::do_particles(PN_stdfloat dt, ParticleSystem *ps, bool do_render = true);
+
+673 6 output 0 6 713 29 ParticleSystemManager::output 0 1 349 67
+/**
+ * Write a string representation of this instance to <out>.
+ */
+68
+virtual void ParticleSystemManager::output(std::ostream &out) const;
+
+674 13 write_ps_list 0 6 713 36 ParticleSystemManager::write_ps_list 0 1 350 67
+/**
+ * Write a string representation of this instance to <out>.
+ */
+91
+virtual void ParticleSystemManager::write_ps_list(std::ostream &out, int indent = 0) const;
+
+675 5 write 0 6 713 28 ParticleSystemManager::write 0 1 351 67
+/**
+ * Write a string representation of this instance to <out>.
+ */
+83
+virtual void ParticleSystemManager::write(std::ostream &out, int indent = 0) const;
+
+351
+1 0 0 7 4 714 0 0 0 1 4 this 3 714  
+2 0 0 4 5 721 0 0 37 /**
+ * parent generation function
+ */ 3 4 this 3 714  3 pos 1 715  3 vel 1 718  
+3 0 0 4 6 721 0 0 35 /**
+ * emission type assignment
+ */ 2 4 this 3 714  2 et 1 678  
+4 0 0 4 7 721 0 0 31 /**
+ * amplitude assignment
+ */ 2 4 this 3 714  1 a 1 722  
+5 0 0 4 8 721 0 0 38 /**
+ * amplitude spread assignment
+ */ 2 4 this 3 714  2 as 1 722  
+6 0 0 4 9 721 0 0 52 // this is a constant force applied to all particles 2 4 this 3 714  2 of 1 724  
+7 0 0 4 10 721 0 0 56 /**
+ * assignment of explicit emission launch vector
+ */ 2 4 this 3 714  3 elv 1 724  
+8 0 0 4 11 721 0 0 54 /**
+ * assignment of radiate emission origin point
+ */ 2 4 this 3 714  2 ro 1 726  
+9 0 0 6 12 678 0 0 30 /**
+ * emission type query
+ */ 1 4 this 3 728  
+10 0 0 6 13 722 0 0 26 /**
+ * amplitude query
+ */ 1 4 this 3 728  
+11 0 0 6 14 722 0 0 33 /**
+ * amplitude spread query
+ */ 1 4 this 3 728  
+12 0 0 7 15 718 0 0 29 /**
+ * user-defined force
+ */ 1 4 this 3 728  
+13 0 0 7 16 718 0 0 52 /**
+ * query for explicit emission launch vector
+ */ 1 4 this 3 728  
+14 0 0 7 17 715 0 0 52 /**
+ * query for explicit emission launch vector
+ */ 1 4 this 3 728  
+15 0 0 4 18 721 0 0 67 /**
+ * Write a string representation of this instance to <out>.
+ */ 2 4 this 3 728  3 out 1 730  
+16 0 0 4 19 721 0 0 67 /**
+ * Write a string representation of this instance to <out>.
+ */ 3 4 this 3 728  3 out 1 730  6 indent 1 732  
+17 0 0 7 21 733 0 0 22 /**
+ * constructor
+ */ 0 
+18 0 0 7 21 733 0 0 27 /**
+ * copy constructor
+ */ 1 4 copy 1 734  
+19 0 0 4 22 721 0 0 0 2 4 this 3 733  1 r 1 722  
+20 0 0 4 23 721 0 0 0 2 4 this 3 733  5 angle 1 722  
+21 0 0 4 24 721 0 0 0 2 4 this 3 733  6 spread 1 722  
+22 0 0 4 25 721 0 0 0 2 4 this 3 733  16 uniform_emission 1 732  
+23 0 0 6 26 722 0 0 0 1 4 this 3 734  
+24 0 0 6 27 722 0 0 0 1 4 this 3 734  
+25 0 0 6 28 722 0 0 0 1 4 this 3 734  
+26 0 0 6 29 732 0 0 0 1 4 this 3 734  
+27 0 0 7 31 736 0 0 22 /**
+ * constructor
+ */ 0 
+28 0 0 7 31 736 0 0 27 /**
+ * copy constructor
+ */ 1 4 copy 1 737  
+29 0 0 4 32 721 0 0 0 2 4 this 3 736  5 angle 1 722  
+30 0 0 4 33 721 0 0 0 2 4 this 3 736  5 angle 1 722  
+31 0 0 4 34 721 0 0 0 3 4 this 3 736  10 startAngle 1 722  8 endAngle 1 722  
+32 0 0 6 35 722 0 0 0 1 4 this 3 736  
+33 0 0 6 36 722 0 0 0 1 4 this 3 736  
+34 0 0 4 38 721 0 0 17 /**
+ * public
+ */ 2 4 this 3 739  2 lb 1 722  
+35 0 0 4 39 721 0 0 17 /**
+ * public
+ */ 2 4 this 3 739  2 ls 1 722  
+36 0 0 4 40 721 0 0 17 /**
+ * public
+ */ 2 4 this 3 739  2 mb 1 722  
+37 0 0 4 41 721 0 0 17 /**
+ * public
+ */ 2 4 this 3 739  2 ms 1 722  
+38 0 0 4 42 721 0 0 17 /**
+ * public
+ */ 2 4 this 3 739  3 tvb 1 722  
+39 0 0 4 43 721 0 0 17 /**
+ * public
+ */ 2 4 this 3 739  3 tvs 1 722  
+40 0 0 6 44 722 0 0 17 /**
+ * public
+ */ 1 4 this 3 740  
+41 0 0 6 45 722 0 0 17 /**
+ * public
+ */ 1 4 this 3 740  
+42 0 0 6 46 722 0 0 17 /**
+ * public
+ */ 1 4 this 3 740  
+43 0 0 6 47 722 0 0 17 /**
+ * public
+ */ 1 4 this 3 740  
+44 0 0 6 48 722 0 0 17 /**
+ * public
+ */ 1 4 this 3 740  
+45 0 0 6 49 722 0 0 17 /**
+ * public
+ */ 1 4 this 3 740  
+46 0 0 6 50 742 0 0 0 1 4 this 3 740  
+47 0 0 4 51 721 0 0 17 /**
+ * public
+ */ 2 4 this 3 739  2 bp 1 742  
+48 0 0 4 52 721 0 0 67 /**
+ * Write a string representation of this instance to <out>.
+ */ 2 4 this 3 740  3 out 1 730  
+49 0 0 4 53 721 0 0 67 /**
+ * Write a string representation of this instance to <out>.
+ */ 3 4 this 3 740  3 out 1 730  6 indent 1 732  
+50 0 0 7 57 747 0 0 37 /**
+ * Query the geomnode pointer
+ */ 1 4 this 3 745  
+51 0 0 7 58 749 0 0 37 /**
+ * Query the geomnode pointer
+ */ 1 4 this 3 745  
+52 0 0 4 59 721 0 0 8 /**
+
+ */ 2 4 this 3 750  2 am 1 683  
+53 0 0 6 60 683 0 0 8 /**
+
+ */ 1 4 this 3 745  
+54 0 0 4 61 721 0 0 43 /**
+ * sets alpha for "user" alpha mode
+ */ 2 4 this 3 750  2 ua 1 722  
+55 0 0 6 62 722 0 0 43 /**
+ * gets alpha for "user" alpha mode
+ */ 1 4 this 3 745  
+56 0 0 4 63 721 0 0 56 /**
+ * sets the ColorBlendAttrib on the _render_node
+ */ 4 4 this 3 750  2 bm 1 751  2 oa 1 753  2 ob 1 753  
+57 0 0 4 64 721 0 0 411 /**
+ * Sets the "ignore scale" flag.  When this is true, particles will be drawn
+ * as if they had no scale, regardless of whatever scale might be inherited
+ * from above the render node in the scene graph.
+ *
+ * This flag is mainly useful to support legacy code that was written for a
+ * very early version of Panda, whose sprite particle renderer had a bug that
+ * incorrectly ignored the inherited scale.
+ */ 2 4 this 3 750  12 ignore_scale 1 754  
+58 0 0 6 65 754 0 0 68 /**
+ * Returns the "ignore scale" flag.  See set_ignore_scale().
+ */ 1 4 this 3 745  
+59 0 0 4 66 721 0 0 67 /**
+ * Write a string representation of this instance to <out>.
+ */ 2 4 this 3 745  3 out 1 730  
+60 0 0 4 67 721 0 0 67 /**
+ * Write a string representation of this instance to <out>.
+ */ 3 4 this 3 745  3 out 1 730  6 indent 1 732  
+61 0 0 7 69 755 0 0 22 /**
+ * constructor
+ */ 0 
+62 0 0 7 69 755 0 0 27 /**
+ * copy constructor
+ */ 1 4 copy 1 756  
+63 0 0 4 70 721 0 0 30 /**
+ * boundary assignment
+ */ 2 4 this 3 755  4 vmin 1 726  
+64 0 0 4 71 721 0 0 30 /**
+ * boundary assignment
+ */ 2 4 this 3 755  4 vmax 1 726  
+65 0 0 7 72 715 0 0 28 /**
+ * boundary accessor
+ */ 1 4 this 3 756  
+66 0 0 7 73 715 0 0 28 /**
+ * boundary accessor
+ */ 1 4 this 3 756  
+67 0 0 7 76 763 0 0 0 1 4 this 3 761  
+68 0 0 4 77 721 0 0 0 2 4 this 3 764  1 c 1 765  
+69 0 0 7 78 768 0 0 0 0 
+70 0 0 7 81 763 0 0 0 1 4 this 3 769  
+71 0 0 4 82 721 0 0 0 2 4 this 3 771  1 c 1 765  
+72 0 0 7 83 768 0 0 0 0 
+73 0 0 6 86 722 0 0 0 1 4 this 3 772  
+74 0 0 6 87 722 0 0 0 1 4 this 3 772  
+75 0 0 4 88 721 0 0 0 2 4 this 3 774  1 w 1 775  
+76 0 0 4 89 721 0 0 0 2 4 this 3 774  1 w 1 775  
+77 0 0 7 90 768 0 0 0 0 
+78 0 0 6 93 722 0 0 0 1 4 this 3 776  
+79 0 0 4 94 721 0 0 0 2 4 this 3 778  1 p 1 775  
+80 0 0 7 95 768 0 0 0 0 
+81 0 0 7 98 781 0 0 0 1 1 s 1 779  
+82 0 0 7 99 783 0 0 59 // INLINE ColorInterpolationFunction* get_function() const; 1 4 this 3 779  
+83 0 0 6 100 722 0 0 0 1 4 this 3 779  
+84 0 0 6 101 722 0 0 0 1 4 this 3 779  
+85 0 0 6 102 754 0 0 0 1 4 this 3 779  
+86 0 0 6 103 732 0 0 0 1 4 this 3 779  
+87 0 0 6 104 754 0 0 0 1 4 this 3 779  
+88 0 0 4 105 721 0 0 0 2 4 this 3 781  8 function 1 784  
+89 0 0 4 106 721 0 0 0 2 4 this 3 781  4 time 1 775  
+90 0 0 4 107 721 0 0 0 2 4 this 3 781  4 time 1 775  
+91 0 0 4 108 721 0 0 0 2 4 this 3 781  4 flag 1 785  
+92 0 0 4 109 721 0 0 0 2 4 this 3 781  7 enabled 1 785  
+93 0 0 7 111 786 0 0 0 0 
+94 0 0 7 111 786 0 0 0 1 4 copy 1 787  
+95 0 0 7 111 786 0 0 0 1 1 c 1 765  
+96 0 0 6 112 732 0 0 0 5 4 this 3 786  10 time_begin 1 775  8 time_end 1 775  5 color 1 765  12 is_modulated 1 785  
+97 0 0 6 113 732 0 0 0 6 4 this 3 786  10 time_begin 1 775  8 time_end 1 775  7 color_a 1 765  7 color_b 1 765  12 is_modulated 1 785  
+98 0 0 6 114 732 0 0 0 8 4 this 3 786  10 time_begin 1 775  8 time_end 1 775  7 color_a 1 765  7 color_b 1 765  7 width_a 1 775  7 width_b 1 775  12 is_modulated 1 785  
+99 0 0 6 115 732 0 0 0 7 4 this 3 786  10 time_begin 1 775  8 time_end 1 775  7 color_a 1 765  7 color_b 1 765  6 period 1 775  12 is_modulated 1 785  
+100 0 0 4 116 721 0 0 0 2 4 this 3 786  1 c 1 765  
+101 0 0 7 117 781 0 0 0 2 4 this 3 786  6 seg_id 1 789  
+102 0 0 6 118 790 0 0 0 1 4 this 3 786  
+103 0 0 4 119 721 0 0 0 2 4 this 3 786  6 seg_id 1 789  
+104 0 0 4 120 721 0 0 0 1 4 this 3 786  
+105 0 0 7 122 791 0 0 22 /**
+ * constructor
+ */ 0 
+106 0 0 7 122 791 0 0 27 /**
+ * copy constructor
+ */ 1 4 copy 1 792  
+107 0 0 4 123 721 0 0 0 2 4 this 3 791  1 r 1 722  
+108 0 0 4 124 721 0 0 0 2 4 this 3 791  7 o_angle 1 722  
+109 0 0 4 125 721 0 0 0 2 4 this 3 791  7 i_angle 1 722  
+110 0 0 4 126 721 0 0 0 2 4 this 3 791  5 o_mag 1 722  
+111 0 0 4 127 721 0 0 0 2 4 this 3 791  5 i_mag 1 722  
+112 0 0 4 128 721 0 0 0 2 4 this 3 791  5 clerp 1 754  
+113 0 0 6 129 722 0 0 0 1 4 this 3 792  
+114 0 0 6 130 722 0 0 0 1 4 this 3 792  
+115 0 0 6 131 722 0 0 0 1 4 this 3 792  
+116 0 0 6 132 722 0 0 0 1 4 this 3 792  
+117 0 0 6 133 722 0 0 0 1 4 this 3 792  
+118 0 0 6 134 754 0 0 0 1 4 this 3 792  
+119 0 0 7 136 796 0 0 0 2 2 am 1 683  9 geom_node 1 794  
+120 0 0 7 136 796 0 0 0 1 4 copy 1 797  
+121 0 0 4 137 721 0 0 0 2 4 this 3 796  4 node 1 794  
+122 0 0 7 138 794 0 0 8 /**
+
+ */ 1 4 this 3 796  
+123 0 0 7 139 786 0 0 8 /**
+
+ */ 1 4 this 3 797  
+124 0 0 4 140 721 0 0 8 /**
+
+ */ 2 4 this 3 796  15 animate_x_ratio 1 754  
+125 0 0 4 141 721 0 0 8 /**
+
+ */ 2 4 this 3 796  15 animate_y_ratio 1 754  
+126 0 0 4 142 721 0 0 8 /**
+
+ */ 2 4 this 3 796  15 animate_z_ratio 1 754  
+127 0 0 4 143 721 0 0 8 /**
+
+ */ 2 4 this 3 796  15 initial_x_scale 1 722  
+128 0 0 4 144 721 0 0 8 /**
+
+ */ 2 4 this 3 796  13 final_x_scale 1 722  
+129 0 0 4 145 721 0 0 8 /**
+
+ */ 2 4 this 3 796  15 initial_y_scale 1 722  
+130 0 0 4 146 721 0 0 8 /**
+
+ */ 2 4 this 3 796  13 final_y_scale 1 722  
+131 0 0 4 147 721 0 0 8 /**
+
+ */ 2 4 this 3 796  15 initial_z_scale 1 722  
+132 0 0 4 148 721 0 0 8 /**
+
+ */ 2 4 this 3 796  13 final_z_scale 1 722  
+133 0 0 6 149 754 0 0 8 /**
+
+ */ 1 4 this 3 797  
+134 0 0 6 150 754 0 0 8 /**
+
+ */ 1 4 this 3 797  
+135 0 0 6 151 754 0 0 8 /**
+
+ */ 1 4 this 3 797  
+136 0 0 6 152 722 0 0 8 /**
+
+ */ 1 4 this 3 797  
+137 0 0 6 153 722 0 0 8 /**
+
+ */ 1 4 this 3 797  
+138 0 0 6 154 722 0 0 8 /**
+
+ */ 1 4 this 3 797  
+139 0 0 6 155 722 0 0 8 /**
+
+ */ 1 4 this 3 797  
+140 0 0 6 156 722 0 0 8 /**
+
+ */ 1 4 this 3 797  
+141 0 0 6 157 722 0 0 8 /**
+
+ */ 1 4 this 3 797  
+142 0 0 7 159 799 0 0 22 /**
+ * constructor
+ */ 0 
+143 0 0 7 159 799 0 0 22 /**
+ * constructor
+ */ 1 4 copy 1 800  
+144 0 0 4 160 721 0 0 30 /**
+ * endpoint assignment
+ */ 2 4 this 3 799  5 point 1 726  
+145 0 0 4 161 721 0 0 30 /**
+ * endpoint assignment
+ */ 2 4 this 3 799  5 point 1 726  
+146 0 0 7 162 715 0 0 28 /**
+ * endpoint accessor
+ */ 1 4 this 3 800  
+147 0 0 7 163 715 0 0 28 /**
+ * endpoint accessor
+ */ 1 4 this 3 800  
+148 0 0 7 165 802 0 0 0 0 
+149 0 0 7 165 802 0 0 0 3 4 head 1 765  4 tail 1 765  10 alpha_mode 1 683  
+150 0 0 7 165 802 0 0 0 1 4 copy 1 803  
+151 0 0 4 166 721 0 0 8 /**
+
+ */ 2 4 this 3 802  1 c 1 765  
+152 0 0 4 167 721 0 0 8 /**
+
+ */ 2 4 this 3 802  1 c 1 765  
+153 0 0 6 168 765 0 0 8 /**
+
+ */ 1 4 this 3 803  
+154 0 0 6 169 765 0 0 8 /**
+
+ */ 1 4 this 3 803  
+155 0 0 4 170 721 0 0 19 /**
+ * accessor
+ */ 2 4 this 3 802  2 sf 1 722  
+156 0 0 6 171 722 0 0 19 /**
+ * accessor
+ */ 1 4 this 3 803  
+157 0 0 7 174 807 0 0 28 /**
+ * Copy Constructor.
+ */ 1 4 copy 1 805  
+158 0 0 7 174 807 0 0 31 /**
+ * Default Constructor.
+ */ 1 9 pool_size 1 732  
+159 0 0 4 175 721 0 0 16 // accessqueries 2 4 this 3 807  4 size 1 732  
+160 0 0 4 176 721 0 0 8 /**
+
+ */ 2 4 this 3 807  6 new_br 1 722  
+161 0 0 4 177 721 0 0 8 /**
+
+ */ 2 4 this 3 807  6 new_br 1 722  
+162 0 0 4 178 721 0 0 8 /**
+
+ */ 2 4 this 3 807  6 new_ls 1 732  
+163 0 0 4 179 721 0 0 8 /**
+
+ */ 2 4 this 3 807  6 new_ls 1 732  
+164 0 0 4 180 721 0 0 8 /**
+
+ */ 2 4 this 3 807  2 lv 1 754  
+165 0 0 4 181 721 0 0 8 /**
+
+ */ 2 4 this 3 807  3 sgo 1 754  
+166 0 0 4 182 721 0 0 8 /**
+
+ */ 2 4 this 3 807  2 sl 1 722  
+167 0 0 4 183 721 0 0 8 /**
+
+ */ 2 4 this 3 807  3 age 1 722  
+168 0 0 4 184 721 0 0 8 /**
+
+ */ 2 4 this 3 807  1 a 1 754  
+169 0 0 4 185 721 0 0 8 /**
+
+ */ 2 4 this 3 807  3 sod 1 754  
+170 0 0 4 186 721 0 0 8 /**
+
+ */ 2 4 this 3 807  4 node 1 794  
+171 0 0 4 187 721 0 0 8 /**
+
+ */ 2 4 this 3 807  4 node 1 808  
+172 0 0 4 188 721 0 0 8 /**
+
+ */ 2 4 this 3 807  3 tsf 1 754  
+173 0 0 4 189 721 0 0 8 /**
+
+ */ 2 4 this 3 807  4 node 1 808  
+174 0 0 4 189 721 0 0 8 /**
+
+ */ 2 4 this 3 807  4 node 1 794  
+175 0 0 4 190 721 0 0 8 /**
+
+ */ 2 4 this 3 807  1 r 1 750  
+176 0 0 4 191 721 0 0 8 /**
+
+ */ 2 4 this 3 807  1 e 1 714  
+177 0 0 4 192 721 0 0 8 /**
+
+ */ 2 4 this 3 807  1 f 1 739  
+178 0 0 4 193 721 0 0 8 /**
+
+ */ 2 4 this 3 807  1 z 1 722  
+179 0 0 4 194 721 0 0 8 /**
+
+ */ 1 4 this 3 807  
+180 0 0 6 195 732 0 0 8 /**
+
+ */ 1 4 this 3 805  
+181 0 0 6 196 722 0 0 8 /**
+
+ */ 1 4 this 3 805  
+182 0 0 6 197 722 0 0 8 /**
+
+ */ 1 4 this 3 805  
+183 0 0 6 198 732 0 0 8 /**
+
+ */ 1 4 this 3 805  
+184 0 0 6 199 732 0 0 8 /**
+
+ */ 1 4 this 3 805  
+185 0 0 6 200 754 0 0 8 /**
+
+ */ 1 4 this 3 805  
+186 0 0 6 201 754 0 0 8 /**
+
+ */ 1 4 this 3 805  
+187 0 0 6 202 722 0 0 8 /**
+
+ */ 1 4 this 3 805  
+188 0 0 6 203 722 0 0 8 /**
+
+ */ 1 4 this 3 805  
+189 0 0 6 204 754 0 0 8 /**
+
+ */ 1 4 this 3 805  
+190 0 0 6 205 754 0 0 8 /**
+
+ */ 1 4 this 3 805  
+191 0 0 7 206 794 0 0 8 /**
+
+ */ 1 4 this 3 805  
+192 0 0 7 207 749 0 0 8 /**
+
+ */ 1 4 this 3 805  
+193 0 0 6 208 754 0 0 8 /**
+
+ */ 1 4 this 3 805  
+194 0 0 6 209 732 0 0 8 /**
+
+ */ 1 4 this 3 805  
+195 0 0 7 210 749 0 0 8 /**
+
+ */ 1 4 this 3 805  
+196 0 0 7 211 750 0 0 8 /**
+
+ */ 1 4 this 3 805  
+197 0 0 7 212 714 0 0 8 /**
+
+ */ 1 4 this 3 805  
+198 0 0 7 213 739 0 0 8 /**
+
+ */ 1 4 this 3 805  
+199 0 0 6 214 722 0 0 8 /**
+
+ */ 1 4 this 3 805  
+200 0 0 4 215 721 0 0 8 /**
+
+ */ 2 4 this 3 807  2 ps 1 807  
+201 0 0 4 216 721 0 0 8 /**
+
+ */ 1 4 this 3 807  
+202 0 0 4 217 721 0 0 134 /**
+ * Populates an attached GeomNode structure with the particle geometry for
+ * rendering.  This is a wrapper for accessability.
+ */ 1 4 this 3 807  
+203 0 0 4 218 721 0 0 93 /**
+ * Forces the birth of a particle litter this frame by resetting
+ * _tics_since_birth
+ */ 1 4 this 3 807  
+204 0 0 4 219 721 0 0 104 /**
+ * Resets the system to its start state by resizing to 0, then resizing back
+ * to current size.
+ */ 1 4 this 3 807  
+205 0 0 4 220 721 0 0 71 /**
+ * Causes system to use birth rate set by set_soft_birth_rate()
+ */ 2 4 this 3 807  2 br 1 722  
+206 0 0 4 221 721 0 0 66 /**
+ * Causes system to use birth rate set by set_birth_rate()
+ */ 2 4 this 3 807  2 br 1 722  
+207 0 0 4 222 721 0 0 0 2 4 this 3 807  2 dt 1 722  
+208 0 0 4 223 721 0 0 67 /**
+ * Write a string representation of this instance to <out>.
+ */ 3 4 this 3 805  3 out 1 730  6 indent 1 732  
+209 0 0 4 224 721 0 0 67 /**
+ * Write a string representation of this instance to <out>.
+ */ 3 4 this 3 805  3 out 1 730  6 indent 1 732  
+210 0 0 7 225 768 0 0 0 0 
+211 0 0 7 227 810 0 0 22 /**
+ * constructor
+ */ 0 
+212 0 0 7 227 810 0 0 27 /**
+ * copy constructor
+ */ 1 4 copy 1 811  
+213 0 0 4 228 721 0 0 24 /**
+ * point setting
+ */ 2 4 this 3 810  1 p 1 726  
+214 0 0 7 229 715 0 0 0 1 4 this 3 811  
+215 0 0 7 231 813 0 0 30 /**
+ * default constructor
+ */ 0 
+216 0 0 7 231 813 0 0 27 /**
+ * copy constructor
+ */ 1 4 copy 1 814  
+217 0 0 7 234 816 0 0 30 /**
+ * special constructor
+ */ 6 2 ad 1 683  10 point_size 1 722  2 bt 1 702  2 bm 1 684  2 sc 1 765  2 ec 1 765  
+218 0 0 7 234 816 0 0 27 /**
+ * Copy constructor
+ */ 1 4 copy 1 817  
+219 0 0 4 235 721 0 0 8 /**
+
+ */ 2 4 this 3 816  10 point_size 1 722  
+220 0 0 4 236 721 0 0 8 /**
+
+ */ 2 4 this 3 816  2 sc 1 765  
+221 0 0 4 237 721 0 0 8 /**
+
+ */ 2 4 this 3 816  2 ec 1 765  
+222 0 0 4 238 721 0 0 8 /**
+
+ */ 2 4 this 3 816  2 bt 1 702  
+223 0 0 4 239 721 0 0 8 /**
+
+ */ 2 4 this 3 816  2 bm 1 684  
+224 0 0 6 240 722 0 0 8 /**
+
+ */ 1 4 this 3 817  
+225 0 0 6 241 765 0 0 8 /**
+
+ */ 1 4 this 3 817  
+226 0 0 6 242 765 0 0 8 /**
+
+ */ 1 4 this 3 817  
+227 0 0 6 243 702 0 0 8 /**
+
+ */ 1 4 this 3 817  
+228 0 0 6 244 684 0 0 8 /**
+
+ */ 1 4 this 3 817  
+229 0 0 7 246 819 0 0 22 /**
+ * constructor
+ */ 0 
+230 0 0 7 246 819 0 0 27 /**
+ * copy constructor
+ */ 1 4 copy 1 820  
+231 0 0 4 247 721 0 0 23 /**
+ * boundary set
+ */ 2 4 this 3 819  4 vmin 1 822  
+232 0 0 4 248 721 0 0 23 /**
+ * boundary set
+ */ 2 4 this 3 819  4 vmax 1 822  
+233 0 0 7 249 826 0 0 23 /**
+ * boundary get
+ */ 1 4 this 3 820  
+234 0 0 7 250 826 0 0 23 /**
+ * boundary get
+ */ 1 4 this 3 820  
+235 0 0 7 253 827 0 0 30 /**
+ * Default Constructor
+ */ 0 
+236 0 0 7 253 827 0 0 0 6 6 center 1 765  4 edge 1 765  12 birth_radius 1 722  12 death_radius 1 722  10 life_scale 1 705  10 alpha_mode 1 683  
+237 0 0 7 253 827 0 0 27 /**
+ * Copy Constructor
+ */ 1 4 copy 1 828  
+238 0 0 4 254 721 0 0 8 /**
+
+ */ 2 4 this 3 827  1 c 1 765  
+239 0 0 4 255 721 0 0 8 /**
+
+ */ 2 4 this 3 827  1 c 1 765  
+240 0 0 4 256 721 0 0 8 /**
+
+ */ 2 4 this 3 827  6 radius 1 722  
+241 0 0 4 257 721 0 0 8 /**
+
+ */ 2 4 this 3 827  6 radius 1 722  
+242 0 0 4 258 721 0 0 8 /**
+
+ */ 2 4 this 3 827  6 param0 0 705  
+243 0 0 6 259 765 0 0 8 /**
+
+ */ 1 4 this 3 828  
+244 0 0 6 260 765 0 0 8 /**
+
+ */ 1 4 this 3 828  
+245 0 0 6 261 722 0 0 8 /**
+
+ */ 1 4 this 3 828  
+246 0 0 6 262 722 0 0 8 /**
+
+ */ 1 4 this 3 828  
+247 0 0 6 263 705 0 0 8 /**
+
+ */ 1 4 this 3 828  
+248 0 0 7 265 830 0 0 22 /**
+ * constructor
+ */ 0 
+249 0 0 7 265 830 0 0 27 /**
+ * copy constructor
+ */ 1 4 copy 1 831  
+250 0 0 4 266 721 0 0 0 2 4 this 3 830  1 r 1 722  
+251 0 0 6 267 722 0 0 0 1 4 this 3 831  
+252 0 0 7 269 833 0 0 22 /**
+ * constructor
+ */ 0 
+253 0 0 7 269 833 0 0 27 /**
+ * copy constructor
+ */ 1 4 copy 1 834  
+254 0 0 4 270 721 0 0 0 2 4 this 3 833  1 r 1 722  
+255 0 0 6 271 722 0 0 0 1 4 this 3 834  
+256 0 0 7 280 838 598 0 0 1 6 param0 0 836  
+257 0 0 4 274 721 0 0 0 2 4 this 3 838  3 tex 1 790  
+258 0 0 4 274 721 0 0 0 3 4 this 3 838  5 model 1 790  4 node 1 790  
+259 0 0 6 275 709 0 0 0 1 4 this 3 836  
+260 0 0 6 276 790 0 0 0 1 4 this 3 836  
+261 0 0 6 277 790 0 0 0 1 4 this 3 836  
+262 0 0 6 278 790 0 0 0 1 4 this 3 836  
+263 0 0 6 279 732 0 0 0 1 4 this 3 836  
+264 0 0 7 283 841 0 0 27 /**
+ * copy constructor
+ */ 1 4 copy 1 839  
+265 0 0 7 283 841 0 0 22 /**
+ * constructor
+ */ 1 3 tex 1 842  
+266 0 0 4 284 721 0 0 1118 /**
+ * Sets the properties on this renderer from the geometry referenced by the
+ * indicated NodePath.  This should be a reference to a GeomNode or a
+ * SequenceNode; it extracts out the texture and UV range from the node.
+ *
+ * This will remove all previously added textures and animations.  It will
+ * also resize the renderer to match this new geometry.
+ *
+ * If node_path refers to a GeomNode(or has one beneath it) the texture, its
+ * size, and UV data will be extracted from that.
+ *
+ * If node_path references a SequenceNode(or has one beneath it) with multiple
+ * GeomNodes beneath it, the size data will correspond only to the first
+ * GeomNode found with a valid texture, while the texture and UV information
+ * will be stored for each individual node.
+ *
+ * If size_from_texels is true, the particle size is based on the number of
+ * texels in the source image; otherwise, it is based on the size of the first
+ * polygon found in the node.
+ *
+ * model and node are the two items used to construct node_path.  If the
+ * source type is important, use set_from_node(NodePath,string,string,bool)
+ * instead.
+ */ 3 4 this 3 841  9 node_path 1 808  16 size_from_texels 1 754  
+267 0 0 4 284 721 0 0 269 /**
+ * If the source type is important, use this one.
+ *
+ * model and node should lead to node_path like this: node_path =
+ * loader.loadModel(model).find(node)
+ *
+ * This will remove all previously add textures and resize the renderer to
+ * match the new geometry.
+ */ 5 4 this 3 841  9 node_path 1 808  5 model 1 790  4 node 1 790  16 size_from_texels 1 754  
+268 0 0 4 285 721 0 0 308 /**
+ * This will allow the renderer to randomly choose from more than one texture
+ * or sequence at particle birth.
+ *
+ * If resize is true, or if there are no textures currently on the renderer,
+ * it will force the renderer to use the size information from this node from
+ * now on.  (Default is false)
+ */ 4 4 this 3 841  9 node_path 1 808  16 size_from_texels 1 754  6 resize 1 754  
+269 0 0 4 285 721 0 0 468 /**
+ * This will allow the renderer to randomly choose from more than one texture
+ * or sequence at particle birth.
+ *
+ * If the source type is important, use this one.
+ *
+ * model and node should lead to node_path like this: node_path =
+ * loader.loadModel(model).find(node)
+ *
+ * If resize is true, or if there are no textures currently on the renderer,
+ * it will force the renderer to use the size information from this node from
+ * now on.  (Default is false)
+ */ 6 4 this 3 841  9 node_path 1 808  5 model 1 790  4 node 1 790  16 size_from_texels 1 754  6 resize 1 754  
+270 0 0 4 286 721 0 0 292 /**
+ * Sets the renderer up to render the entire texture image.  The scale of each
+ * particle is based on the size of the texture in each dimension, modified by
+ * texels_per_unit.
+ *
+ * Used to set the size of the particles.  Will clear all previously loaded
+ * textures and animations.
+ */ 3 4 this 3 841  3 tex 1 842  15 texels_per_unit 1 722  
+271 0 0 4 287 721 0 0 198 /**
+ * Adds texture to image pool, effectively creating a single frame animation
+ * that can be selected at particle birth.  This should only be called after a
+ * previous call to set_texture().
+ */ 4 4 this 3 841  3 tex 1 842  15 texels_per_unit 1 722  6 resize 1 754  
+272 0 0 4 288 721 0 0 62 /**
+ * Removes an animation texture set from the renderer.
+ */ 2 4 this 3 841  1 n 1 789  
+273 0 0 4 289 721 0 0 213 /**
+ * Sets the UV coordinate of the lower-left corner of all the sprites
+ * generated by this renderer.  Normally this is (0, 0), but it might be set
+ * to something else to use only a portion of the texture.
+ */ 2 4 this 3 841  5 ll_uv 1 844  
+274 0 0 4 289 721 0 0 213 /**
+ * Sets the UV coordinate of the lower-left corner of all the sprites
+ * generated by this renderer.  Normally this is (0, 0), but it might be set
+ * to something else to use only a portion of the texture.
+ */ 4 4 this 3 841  5 ll_uv 1 844  4 anim 1 789  5 frame 1 789  
+275 0 0 4 290 721 0 0 214 /**
+ * Sets the UV coordinate of the upper-right corner of all the sprites
+ * generated by this renderer.  Normally this is (1, 1), but it might be set
+ * to something else to use only a portion of the texture.
+ */ 2 4 this 3 841  5 ur_uv 1 844  
+276 0 0 4 290 721 0 0 214 /**
+ * Sets the UV coordinate of the upper-right corner of all the sprites
+ * generated by this renderer.  Normally this is (1, 1), but it might be set
+ * to something else to use only a portion of the texture.
+ */ 4 4 this 3 841  5 ur_uv 1 844  4 anim 1 789  5 frame 1 789  
+277 0 0 4 291 721 0 0 57 /**
+ * Sets the size of each particle in world units.
+ */ 3 4 this 3 841  5 width 1 722  6 height 1 722  
+278 0 0 4 292 721 0 0 8 /**
+
+ */ 2 4 this 3 841  5 color 1 765  
+279 0 0 4 293 721 0 0 8 /**
+
+ */ 2 4 this 3 841  15 animate_x_ratio 1 754  
+280 0 0 4 294 721 0 0 8 /**
+
+ */ 2 4 this 3 841  15 animate_y_ratio 1 754  
+281 0 0 4 295 721 0 0 8 /**
+
+ */ 2 4 this 3 841  13 animate_theta 1 754  
+282 0 0 4 296 721 0 0 8 /**
+
+ */ 2 4 this 3 841  15 initial_x_scale 1 722  
+283 0 0 4 297 721 0 0 8 /**
+
+ */ 2 4 this 3 841  13 final_x_scale 1 722  
+284 0 0 4 298 721 0 0 8 /**
+
+ */ 2 4 this 3 841  15 initial_y_scale 1 722  
+285 0 0 4 299 721 0 0 8 /**
+
+ */ 2 4 this 3 841  13 final_y_scale 1 722  
+286 0 0 4 300 721 0 0 8 /**
+
+ */ 2 4 this 3 841  5 theta 1 722  
+287 0 0 4 301 721 0 0 8 /**
+
+ */ 2 4 this 3 841  2 bm 1 684  
+288 0 0 4 302 721 0 0 8 /**
+
+ */ 2 4 this 3 841  2 ad 1 754  
+289 0 0 4 303 721 0 0 8 /**
+
+ */ 2 4 this 3 841  2 an 1 754  
+290 0 0 4 304 721 0 0 8 /**
+
+ */ 2 4 this 3 841  1 r 1 722  
+291 0 0 4 305 721 0 0 8 /**
+
+ */ 2 4 this 3 841  1 i 1 732  
+292 0 0 7 306 842 0 0 8 /**
+
+ */ 1 4 this 3 839  
+293 0 0 7 306 842 0 0 8 /**
+
+ */ 3 4 this 3 839  4 anim 1 789  5 frame 1 789  
+294 0 0 6 307 732 0 0 0 1 4 this 3 839  
+295 0 0 7 308 838 598 0 0 2 4 this 3 839  1 n 1 789  
+296 0 0 7 310 838 598 0 0 1 4 this 3 839  
+297 0 0 7 311 786 0 0 8 /**
+
+ */ 1 4 this 3 839  
+298 0 0 7 312 848 0 0 79 /**
+ * Returns the UV coordinate of the lower-left corner; see set_ll_uv().
+ */ 1 4 this 3 839  
+299 0 0 7 312 848 0 0 79 /**
+ * Returns the UV coordinate of the lower-left corner; see set_ll_uv().
+ */ 3 4 this 3 839  4 anim 1 789  5 frame 1 789  
+300 0 0 7 313 848 0 0 79 /**
+ * Returns the UV coordinate of the lower-left corner; see set_ur_uv().
+ */ 1 4 this 3 839  
+301 0 0 7 313 848 0 0 80 /**
+ * Returns the UV coordinate of the upper-right corner; see set_ur_uv().
+ */ 3 4 this 3 839  4 anim 1 789  5 frame 1 789  
+302 0 0 6 314 722 0 0 61 /**
+ * Returns the width of each particle in world units.
+ */ 1 4 this 3 839  
+303 0 0 6 315 722 0 0 62 /**
+ * Returns the height of each particle in world units.
+ */ 1 4 this 3 839  
+304 0 0 7 316 763 0 0 8 /**
+
+ */ 1 4 this 3 839  
+305 0 0 6 317 754 0 0 8 /**
+
+ */ 1 4 this 3 839  
+306 0 0 6 318 754 0 0 8 /**
+
+ */ 1 4 this 3 839  
+307 0 0 6 319 754 0 0 8 /**
+
+ */ 1 4 this 3 839  
+308 0 0 6 320 722 0 0 8 /**
+
+ */ 1 4 this 3 839  
+309 0 0 6 321 722 0 0 8 /**
+
+ */ 1 4 this 3 839  
+310 0 0 6 322 722 0 0 8 /**
+
+ */ 1 4 this 3 839  
+311 0 0 6 323 722 0 0 8 /**
+
+ */ 1 4 this 3 839  
+312 0 0 6 324 722 0 0 8 /**
+
+ */ 1 4 this 3 839  
+313 0 0 6 325 684 0 0 8 /**
+
+ */ 1 4 this 3 839  
+314 0 0 6 326 754 0 0 8 /**
+
+ */ 1 4 this 3 839  
+315 0 0 6 327 754 0 0 8 /**
+
+ */ 1 4 this 3 839  
+316 0 0 6 328 722 0 0 8 /**
+
+ */ 1 4 this 3 839  
+317 0 0 6 329 732 0 0 8 /**
+
+ */ 1 4 this 3 839  
+318 0 0 7 331 849 0 0 22 /**
+ * constructor
+ */ 0 
+319 0 0 7 331 849 0 0 27 /**
+ * copy constructor
+ */ 1 4 copy 1 850  
+320 0 0 4 332 721 0 0 8 /**
+
+ */ 2 4 this 3 849  1 r 1 722  
+321 0 0 4 333 721 0 0 8 /**
+
+ */ 2 4 this 3 849  6 spread 1 722  
+322 0 0 6 334 722 0 0 8 /**
+
+ */ 1 4 this 3 850  
+323 0 0 6 335 722 0 0 8 /**
+
+ */ 1 4 this 3 850  
+324 0 0 7 337 852 0 0 22 /**
+ * constructor
+ */ 0 
+325 0 0 7 337 852 0 0 27 /**
+ * copy constructor
+ */ 1 4 copy 1 853  
+326 0 0 4 338 721 0 0 8 /**
+
+ */ 2 4 this 3 852  5 angle 1 722  
+327 0 0 4 339 721 0 0 8 /**
+
+ */ 2 4 this 3 852  5 angle 1 722  
+328 0 0 4 340 721 0 0 8 /**
+
+ */ 2 4 this 3 852  6 spread 1 722  
+329 0 0 4 341 721 0 0 8 /**
+
+ */ 2 4 this 3 852  6 spread 1 722  
+330 0 0 6 342 722 0 0 8 /**
+
+ */ 1 4 this 3 853  
+331 0 0 6 343 722 0 0 8 /**
+
+ */ 1 4 this 3 853  
+332 0 0 6 344 722 0 0 8 /**
+
+ */ 1 4 this 3 853  
+333 0 0 6 345 722 0 0 8 /**
+
+ */ 1 4 this 3 853  
+334 0 0 4 346 721 0 0 0 2 4 this 3 852  1 v 1 722  
+335 0 0 6 347 722 0 0 8 /**
+
+ */ 1 4 this 3 853  
+336 0 0 4 348 721 0 0 0 2 4 this 3 852  6 spread 1 722  
+337 0 0 6 349 722 0 0 0 1 4 this 3 853  
+338 0 0 4 350 721 0 0 0 2 4 this 3 852  8 bEnabled 1 754  
+339 0 0 6 351 754 0 0 0 1 4 this 3 853  
+340 0 0 7 353 857 666 0 0 1 6 param0 0 855  
+341 0 0 7 353 857 666 0 30 /**
+ * default constructor
+ */ 1 15 every_nth_frame 1 732  
+342 0 0 4 355 721 0 0 0 2 4 this 3 857  15 every_nth_frame 1 732  
+343 0 0 6 356 732 0 0 0 1 4 this 3 855  
+344 0 0 4 357 721 0 0 0 2 4 this 3 857  2 ps 1 807  
+345 0 0 4 358 721 0 0 49 /**
+ * removes a ps from the maintenance list
+ */ 2 4 this 3 857  2 ps 1 807  
+346 0 0 4 359 721 0 0 0 1 4 this 3 857  
+347 0 0 4 360 721 0 0 262 /**
+ * does an update and render for each ps in the list.  this is probably the
+ * one you want to use.  Rendering is the expensive operation, and particles
+ * REALLY should at least be updated every frame, so nth_frame stepping
+ * applies only to rendering.
+ */ 2 4 this 3 857  2 dt 1 722  
+348 0 0 4 360 721 0 0 185 /**
+ * does an update and an optional render for a specific ps.  Since rendering
+ * is the expensive operation, multiple updates could be applied before
+ * calling the final render.
+ */ 4 4 this 3 857  2 dt 1 722  2 ps 1 807  9 do_render 1 754  
+349 0 0 4 361 721 0 0 67 /**
+ * Write a string representation of this instance to <out>.
+ */ 2 4 this 3 855  3 out 1 730  
+350 0 0 4 362 721 0 0 67 /**
+ * Write a string representation of this instance to <out>.
+ */ 3 4 this 3 855  3 out 1 730  6 indent 1 732  
+351 0 0 4 363 721 0 0 67 /**
+ * Write a string representation of this instance to <out>.
+ */ 3 4 this 3 855  3 out 1 730  6 indent 1 732  
+182
+676 19 BaseParticleEmitter 0 75777 19 BaseParticleEmitter 19 BaseParticleEmitter 0 0 0 0 0 0 16 352 353 354 355 356 357 358 359 360 361 362 363 364 365 366 367 0 0 1 0 677 0 0 0 1 678 0
+
+677 14 ReferenceCount 0 2048 14 ReferenceCount 14 ReferenceCount 0 0 0 0 0 0 0 0 0 0 0 0 203
+/**
+ * A base class for all things that want to be reference-counted.
+ * ReferenceCount works in conjunction with PointerTo to automatically delete
+ * objects when the last pointer to them goes away.
+ */
+
+678 12 emissionType 0 794624 33 BaseParticleEmitter::emissionType 33 BaseParticleEmitter::emissionType 676 0 0 0 0 0 0 0 0 0 3 11 ET_EXPLICIT 32 BaseParticleEmitter::ET_EXPLICIT 62
+// all particles are emitted in parallel along the same vector
+0 10 ET_RADIATE 31 BaseParticleEmitter::ET_RADIATE 49
+// all particles radiate away from a single point
+1 9 ET_CUSTOM 30 BaseParticleEmitter::ET_CUSTOM 70
+// particle launch vectors are dependent on particular derived emitter
+2 0 0
+
+679 11 RingEmitter 0 75777 11 RingEmitter 11 RingEmitter 0 0 0 1 368 0 0 8 369 370 371 372 373 374 375 376 0 0 1 0 676 0 0 0 0 75
+/**
+ * Describes a planar ring region in which particles are generated.
+ */
+
+680 10 ArcEmitter 0 75777 10 ArcEmitter 10 ArcEmitter 0 0 0 1 377 0 0 5 378 379 380 381 382 0 0 1 0 679 0 0 0 0 75
+/**
+ * Describes a planar ring region in which particles are generated.
+ */
+
+681 19 BaseParticleFactory 0 75777 19 BaseParticleFactory 19 BaseParticleFactory 0 0 0 0 0 0 16 383 384 385 386 387 388 389 390 391 392 393 394 395 396 397 398 0 0 1 0 677 0 0 0 0 57
+/**
+ * Pure Virtual base class for creating particles
+ */
+
+682 20 BaseParticleRenderer 0 75777 20 BaseParticleRenderer 20 BaseParticleRenderer 0 0 0 0 0 0 11 399 400 401 402 403 404 405 406 407 408 409 0 0 1 0 677 0 0 0 2 683 684 52
+/**
+ * Pure virtual particle renderer base class
+ */
+
+683 25 ParticleRendererAlphaMode 0 794624 47 BaseParticleRenderer::ParticleRendererAlphaMode 47 BaseParticleRenderer::ParticleRendererAlphaMode 682 0 0 0 0 0 0 0 0 0 6 13 PR_ALPHA_NONE 35 BaseParticleRenderer::PR_ALPHA_NONE 0
+0 12 PR_ALPHA_OUT 34 BaseParticleRenderer::PR_ALPHA_OUT 0
+1 11 PR_ALPHA_IN 33 BaseParticleRenderer::PR_ALPHA_IN 0
+2 15 PR_ALPHA_IN_OUT 37 BaseParticleRenderer::PR_ALPHA_IN_OUT 0
+3 13 PR_ALPHA_USER 35 BaseParticleRenderer::PR_ALPHA_USER 0
+4 22 PR_NOT_INITIALIZED_YET 44 BaseParticleRenderer::PR_NOT_INITIALIZED_YET 0
+5 0 0
+
+684 27 ParticleRendererBlendMethod 0 794624 49 BaseParticleRenderer::ParticleRendererBlendMethod 49 BaseParticleRenderer::ParticleRendererBlendMethod 682 0 0 0 0 0 0 0 0 0 3 11 PP_NO_BLEND 33 BaseParticleRenderer::PP_NO_BLEND 0
+0 15 PP_BLEND_LINEAR 37 BaseParticleRenderer::PP_BLEND_LINEAR 0
+1 14 PP_BLEND_CUBIC 36 BaseParticleRenderer::PP_BLEND_CUBIC 0
+2 0 0
+
+685 10 BoxEmitter 0 75777 10 BoxEmitter 10 BoxEmitter 0 0 0 1 410 0 0 4 411 412 413 414 0 0 1 0 676 0 0 0 0 78
+/**
+ * Describes a voluminous box region in which particles are generated.
+ */
+
+686 34 ColorInterpolationFunctionConstant 0 141313 34 ColorInterpolationFunctionConstant 34 ColorInterpolationFunctionConstant 0 0 0 0 418 0 3 415 416 417 0 0 1 0 687 0 0 0 0 0
+
+687 26 ColorInterpolationFunction 0 1050624 26 ColorInterpolationFunction 26 ColorInterpolationFunction 0 0 0 0 0 0 0 0 0 0 0 0 0
+
+688 32 ColorInterpolationFunctionLinear 0 141313 32 ColorInterpolationFunctionLinear 32 ColorInterpolationFunctionLinear 0 0 0 0 422 0 3 419 420 421 0 0 1 0 686 0 0 0 0 0
+
+689 34 ColorInterpolationFunctionStepwave 0 141313 34 ColorInterpolationFunctionStepwave 34 ColorInterpolationFunctionStepwave 0 0 0 0 428 0 5 423 424 425 426 427 0 0 1 0 688 0 0 0 0 0
+
+690 34 ColorInterpolationFunctionSinusoid 0 141313 34 ColorInterpolationFunctionSinusoid 34 ColorInterpolationFunctionSinusoid 0 0 0 0 432 0 3 429 430 431 0 0 1 0 688 0 0 0 0 0
+
+691 25 ColorInterpolationSegment 0 75777 25 ColorInterpolationSegment 25 ColorInterpolationSegment 0 0 0 1 433 0 0 11 434 435 436 437 438 439 440 441 442 443 444 0 0 1 0 677 0 0 0 0 0
+
+692 25 ColorInterpolationManager 0 75777 25 ColorInterpolationManager 25 ColorInterpolationManager 0 0 0 1 445 0 0 9 446 447 448 449 450 451 452 453 454 0 0 1 0 677 0 0 0 0 0
+
+693 11 DiscEmitter 0 75777 11 DiscEmitter 11 DiscEmitter 0 0 0 1 455 0 0 12 456 457 458 459 460 461 462 463 464 465 466 467 0 0 1 0 676 0 0 0 0 76
+/**
+ * Describes a planar disc region from which particles are generated
+ */
+
+694 20 GeomParticleRenderer 0 75777 20 GeomParticleRenderer 20 GeomParticleRenderer 0 0 0 1 468 0 0 21 469 470 471 472 473 474 475 476 477 478 479 480 481 482 483 484 485 486 487 488 489 0 0 1 0 682 0 0 0 0 0
+
+695 11 LineEmitter 0 75777 11 LineEmitter 11 LineEmitter 0 0 0 1 490 0 0 4 491 492 493 494 0 0 1 0 676 0 0 0 0 70
+/**
+ * Describes a linear region in which particles are generated.
+ */
+
+696 20 LineParticleRenderer 0 75777 20 LineParticleRenderer 20 LineParticleRenderer 0 0 0 1 495 0 0 6 496 497 498 499 500 501 0 0 1 0 682 0 0 0 0 0
+
+697 14 ParticleSystem 0 75777 14 ParticleSystem 14 ParticleSystem 0 0 0 1 502 0 0 51 503 504 505 506 507 508 509 510 511 512 513 514 515 516 517 518 519 520 521 522 523 524 525 526 527 528 529 530 531 532 533 534 535 536 537 538 539 540 541 542 543 544 545 546 547 548 549 550 551 552 553 0 0 1 0 698 0 0 0 0 50
+/**
+ * Contains and manages a particle system.
+ */
+
+698 8 Physical 0 2048 8 Physical 8 Physical 0 0 0 0 0 0 0 0 0 0 0 0 126
+/**
+ * Defines a set of physically modeled attributes.  If you want physics
+ * applied to your class, derive it from this.
+ */
+
+699 12 PointEmitter 0 75777 12 PointEmitter 12 PointEmitter 0 0 0 1 554 0 0 2 555 556 0 0 1 0 676 0 0 0 0 75
+/**
+ * Describes a planar ring region in which particles are generated.
+ */
+
+700 20 PointParticleFactory 0 75777 20 PointParticleFactory 20 PointParticleFactory 0 0 0 1 557 0 0 0 0 0 1 0 681 0 0 0 0 0
+
+701 21 PointParticleRenderer 0 75777 21 PointParticleRenderer 21 PointParticleRenderer 0 0 0 1 558 0 0 10 559 560 561 562 563 564 565 566 567 568 0 0 1 0 682 0 0 0 1 702 0
+
+702 22 PointParticleBlendType 0 794624 45 PointParticleRenderer::PointParticleBlendType 45 PointParticleRenderer::PointParticleBlendType 701 0 0 0 0 0 0 0 0 0 3 12 PP_ONE_COLOR 35 PointParticleRenderer::PP_ONE_COLOR 0
+0 13 PP_BLEND_LIFE 36 PointParticleRenderer::PP_BLEND_LIFE 0
+1 12 PP_BLEND_VEL 35 PointParticleRenderer::PP_BLEND_VEL 0
+2 0 0
+
+703 16 RectangleEmitter 0 75777 16 RectangleEmitter 16 RectangleEmitter 0 0 0 1 569 0 0 4 570 571 572 573 0 0 1 0 676 0 0 0 0 77
+/**
+ * Describes a planar square region in which particles are generated.
+ */
+
+704 23 SparkleParticleRenderer 0 75777 23 SparkleParticleRenderer 23 SparkleParticleRenderer 0 0 0 1 574 0 0 10 575 576 577 578 579 580 581 582 583 584 0 0 1 0 682 0 0 0 1 705 33
+/**
+ * pretty sparkly things.
+ */
+
+705 24 SparkleParticleLifeScale 0 794624 49 SparkleParticleRenderer::SparkleParticleLifeScale 49 SparkleParticleRenderer::SparkleParticleLifeScale 704 0 0 0 0 0 0 0 0 0 2 11 SP_NO_SCALE 36 SparkleParticleRenderer::SP_NO_SCALE 0
+0 8 SP_SCALE 33 SparkleParticleRenderer::SP_SCALE 0
+1 0 0
+
+706 20 SphereSurfaceEmitter 0 75777 20 SphereSurfaceEmitter 20 SphereSurfaceEmitter 0 0 0 1 585 0 0 2 586 587 0 0 1 0 676 0 0 0 0 69
+/**
+ * Describes a curved space in which particles are generated.
+ */
+
+707 19 SphereVolumeEmitter 0 75777 19 SphereVolumeEmitter 19 SphereVolumeEmitter 0 0 0 1 588 0 0 2 589 590 0 0 1 0 676 0 0 0 0 84
+/**
+ * Describes a voluminous spherical region in which particles are generated.
+ */
+
+708 10 SpriteAnim 0 141313 10 SpriteAnim 10 SpriteAnim 0 0 0 1 597 598 0 6 591 592 593 594 595 596 0 0 1 0 677 0 0 0 1 709 130
+/**
+ * Helper class used by SpriteParticleRenderer to keep track of its textures
+ * and their respective UVs and source types.
+ */
+
+709 10 SourceType 0 794624 22 SpriteAnim::SourceType 22 SpriteAnim::SourceType 708 0 0 0 0 0 0 0 0 0 2 10 ST_texture 22 SpriteAnim::ST_texture 0
+0 12 ST_from_node 24 SpriteAnim::ST_from_node 0
+1 0 0
+
+710 22 SpriteParticleRenderer 0 75777 22 SpriteParticleRenderer 22 SpriteParticleRenderer 0 0 0 1 599 0 0 45 600 601 602 603 604 605 606 607 608 609 610 611 612 613 614 615 616 617 618 619 620 621 622 623 624 625 626 627 628 629 630 631 632 633 634 635 636 637 638 639 640 641 642 643 644 1 858 0 1 0 682 0 0 0 0 73
+/**
+ * Renders a particle system with high-speed nasty trick sprites.
+ */
+
+711 18 TangentRingEmitter 0 75777 18 TangentRingEmitter 18 TangentRingEmitter 0 0 0 1 645 0 0 4 646 647 648 649 0 0 1 0 676 0 0 0 0 132
+/**
+ * Describes a planar ring region in which tangent particles are generated,
+ * and particles fly off tangential to the ring.
+ */
+
+712 20 ZSpinParticleFactory 0 75777 20 ZSpinParticleFactory 20 ZSpinParticleFactory 0 0 0 1 650 0 0 14 651 652 653 654 655 656 657 658 659 660 661 662 663 664 0 0 1 0 681 0 0 0 0 10
+/**
+ *
+ */
+
+713 21 ParticleSystemManager 0 26625 21 ParticleSystemManager 21 ParticleSystemManager 0 0 0 1 665 666 0 9 667 668 669 670 671 672 673 674 675 0 0 0 0 0 185
+/**
+ * Manages a set of individual ParticleSystem objects, so that each individual
+ * one doesn't have to be updated and rendered every frame See Also :
+ * particleSystemManager.cxx
+ */
+
+714 21 BaseParticleEmitter * 0 8576 21 BaseParticleEmitter * 21 BaseParticleEmitter * 0 0 676 0 0 0 0 0 0 0 0 0 0
+
+715 9 LPoint3 * 0 8576 9 LPoint3 * 9 LPoint3 * 0 0 716 0 0 0 0 0 0 0 0 0 0
+
+716 7 LPoint3 0 2105344 7 LPoint3 7 LPoint3 0 0 717 0 0 0 0 0 0 0 0 0 0
+
+717 8 LPoint3f 0 2048 8 LPoint3f 8 LPoint3f 0 0 0 0 0 0 0 0 0 0 0 0 337
+/**
+ * This is a three-component point in space (as opposed to a three-component
+ * vector, which represents a direction and a distance).  Some of the methods
+ * are slightly different between LPoint3 and LVector3; in particular,
+ * subtraction of two points yields a vector, while addition of a vector and a
+ * point yields a point.
+ */
+
+718 10 LVector3 * 0 8576 10 LVector3 * 10 LVector3 * 0 0 719 0 0 0 0 0 0 0 0 0 0
+
+719 8 LVector3 0 2105344 8 LVector3 8 LVector3 0 0 720 0 0 0 0 0 0 0 0 0 0
+
+720 9 LVector3f 0 2048 9 LVector3f 9 LVector3f 0 0 0 0 0 0 0 0 0 0 0 0 338
+/**
+ * This is a three-component vector distance (as opposed to a three-component
+ * point, which represents a particular point in space).  Some of the methods
+ * are slightly different between LPoint3 and LVector3; in particular,
+ * subtraction of two points yields a vector, while addition of a vector and a
+ * point yields a point.
+ */
+
+721 4 void 0 8194 4 void 4 void 0 6 0 0 0 0 0 0 0 0 0 0 0
+
+722 11 PN_stdfloat 0 2105344 11 PN_stdfloat 11 PN_stdfloat 0 0 723 0 0 0 0 0 0 0 0 0 0
+
+723 5 float 0 8194 5 float 5 float 0 2 0 0 0 0 0 0 0 0 0 0 0
+
+724 16 LVector3 const * 0 8576 16 LVector3 const * 16 LVector3 const * 0 0 725 0 0 0 0 0 0 0 0 0 0
+
+725 14 LVector3 const 0 8832 14 LVector3 const 14 LVector3 const 0 0 719 0 0 0 0 0 0 0 0 0 0
+
+726 15 LPoint3 const * 0 8576 15 LPoint3 const * 15 LPoint3 const * 0 0 727 0 0 0 0 0 0 0 0 0 0
+
+727 13 LPoint3 const 0 8832 13 LPoint3 const 13 LPoint3 const 0 0 716 0 0 0 0 0 0 0 0 0 0
+
+728 27 BaseParticleEmitter const * 0 8576 27 BaseParticleEmitter const * 27 BaseParticleEmitter const * 0 0 729 0 0 0 0 0 0 0 0 0 0
+
+729 25 BaseParticleEmitter const 0 8832 25 BaseParticleEmitter const 25 BaseParticleEmitter const 0 0 676 0 0 0 0 0 0 0 0 0 0
+
+730 9 ostream * 0 8576 14 std::ostream * 14 std::ostream * 0 0 731 0 0 0 0 0 0 0 0 0 0
+
+731 7 ostream 0 2048 12 std::ostream 12 std::ostream 0 0 0 0 0 0 0 0 0 0 0 0 0
+
+732 3 int 0 8194 3 int 3 int 0 1 0 0 0 0 0 0 0 0 0 0 0
+
+733 13 RingEmitter * 0 8576 13 RingEmitter * 13 RingEmitter * 0 0 679 0 0 0 0 0 0 0 0 0 0
+
+734 19 RingEmitter const * 0 8576 19 RingEmitter const * 19 RingEmitter const * 0 0 735 0 0 0 0 0 0 0 0 0 0
+
+735 17 RingEmitter const 0 8832 17 RingEmitter const 17 RingEmitter const 0 0 679 0 0 0 0 0 0 0 0 0 0
+
+736 12 ArcEmitter * 0 8576 12 ArcEmitter * 12 ArcEmitter * 0 0 680 0 0 0 0 0 0 0 0 0 0
+
+737 18 ArcEmitter const * 0 8576 18 ArcEmitter const * 18 ArcEmitter const * 0 0 738 0 0 0 0 0 0 0 0 0 0
+
+738 16 ArcEmitter const 0 8832 16 ArcEmitter const 16 ArcEmitter const 0 0 680 0 0 0 0 0 0 0 0 0 0
+
+739 21 BaseParticleFactory * 0 8576 21 BaseParticleFactory * 21 BaseParticleFactory * 0 0 681 0 0 0 0 0 0 0 0 0 0
+
+740 27 BaseParticleFactory const * 0 8576 27 BaseParticleFactory const * 27 BaseParticleFactory const * 0 0 741 0 0 0 0 0 0 0 0 0 0
+
+741 25 BaseParticleFactory const 0 8832 25 BaseParticleFactory const 25 BaseParticleFactory const 0 0 681 0 0 0 0 0 0 0 0 0 0
+
+742 14 BaseParticle * 0 8576 14 BaseParticle * 14 BaseParticle * 0 0 743 0 0 0 0 0 0 0 0 0 0
+
+743 12 BaseParticle 0 1050624 12 BaseParticle 12 BaseParticle 0 0 0 0 0 0 0 0 0 0 0 0 76
+/**
+ * An individual, physically-modelable particle abstract base class.
+ */
+
+744 8 GeomNode 0 2048 8 GeomNode 8 GeomNode 0 0 0 0 0 0 0 0 0 0 0 0 208
+/**
+ * A node that holds Geom objects, renderable pieces of geometry.  This is the
+ * primary kind of leaf node in the scene graph; almost all visible objects
+ * will be contained in a GeomNode somewhere.
+ */
+
+745 28 BaseParticleRenderer const * 0 8576 28 BaseParticleRenderer const * 28 BaseParticleRenderer const * 0 0 746 0 0 0 0 0 0 0 0 0 0
+
+746 26 BaseParticleRenderer const 0 8832 26 BaseParticleRenderer const 26 BaseParticleRenderer const 0 0 682 0 0 0 0 0 0 0 0 0 0
+
+747 10 GeomNode * 0 8576 10 GeomNode * 10 GeomNode * 0 0 744 0 0 0 0 0 0 0 0 0 0
+
+748 8 NodePath 0 2048 8 NodePath 8 NodePath 0 0 0 0 0 0 0 0 0 0 0 0 762
+/**
+ * NodePath is the fundamental system for disambiguating instances, and also
+ * provides a higher-level interface for manipulating the scene graph.
+ *
+ * A NodePath is a list of connected nodes from the root of the graph to any
+ * sub-node.  Each NodePath therefore uniquely describes one instance of a
+ * node.
+ *
+ * NodePaths themselves are lightweight objects that may easily be copied and
+ * passed by value.  Their data is stored as a series of NodePathComponents
+ * that are stored on the nodes.  Holding a NodePath will keep a reference
+ * count to all the nodes in the path.  However, if any node in the path is
+ * removed or reparented (perhaps through a different NodePath), the NodePath
+ * will automatically be updated to reflect the changes.
+ */
+
+749 10 NodePath * 0 8576 10 NodePath * 10 NodePath * 0 0 748 0 0 0 0 0 0 0 0 0 0
+
+750 22 BaseParticleRenderer * 0 8576 22 BaseParticleRenderer * 22 BaseParticleRenderer * 0 0 682 0 0 0 0 0 0 0 0 0 0
+
+751 4 Mode 0 794624 22 ColorBlendAttrib::Mode 22 ColorBlendAttrib::Mode 752 0 0 0 0 0 0 0 0 0 6 6 M_none 24 ColorBlendAttrib::M_none 23
+// Blending is disabled
+0 5 M_add 23 ColorBlendAttrib::M_add 41
+// incoming color * A + fbuffer color * B
+1 10 M_subtract 28 ColorBlendAttrib::M_subtract 41
+// incoming color * A - fbuffer color * B
+2 14 M_inv_subtract 32 ColorBlendAttrib::M_inv_subtract 41
+// fbuffer color * B - incoming color * A
+3 5 M_min 23 ColorBlendAttrib::M_min 37
+// min(incoming color, fbuffer color)
+4 5 M_max 23 ColorBlendAttrib::M_max 37
+// max(incoming color, fbuffer color)
+5 0 0
+
+752 16 ColorBlendAttrib 0 2048 16 ColorBlendAttrib 16 ColorBlendAttrib 0 0 0 0 0 0 0 0 0 0 0 0 159
+/**
+ * This specifies how colors are blended into the frame buffer, for special
+ * effects.  This overrides transparency if transparency is also specified.
+ */
+
+753 7 Operand 0 794624 25 ColorBlendAttrib::Operand 25 ColorBlendAttrib::Operand 752 0 0 0 0 0 0 0 0 0 23 6 O_zero 24 ColorBlendAttrib::O_zero 0
+0 5 O_one 23 ColorBlendAttrib::O_one 0
+1 16 O_incoming_color 34 ColorBlendAttrib::O_incoming_color 0
+2 26 O_one_minus_incoming_color 44 ColorBlendAttrib::O_one_minus_incoming_color 0
+3 15 O_fbuffer_color 33 ColorBlendAttrib::O_fbuffer_color 0
+4 25 O_one_minus_fbuffer_color 43 ColorBlendAttrib::O_one_minus_fbuffer_color 0
+5 16 O_incoming_alpha 34 ColorBlendAttrib::O_incoming_alpha 0
+6 26 O_one_minus_incoming_alpha 44 ColorBlendAttrib::O_one_minus_incoming_alpha 0
+7 15 O_fbuffer_alpha 33 ColorBlendAttrib::O_fbuffer_alpha 0
+8 25 O_one_minus_fbuffer_alpha 43 ColorBlendAttrib::O_one_minus_fbuffer_alpha 0
+9 16 O_constant_color 34 ColorBlendAttrib::O_constant_color 0
+10 26 O_one_minus_constant_color 44 ColorBlendAttrib::O_one_minus_constant_color 0
+11 16 O_constant_alpha 34 ColorBlendAttrib::O_constant_alpha 0
+12 26 O_one_minus_constant_alpha 44 ColorBlendAttrib::O_one_minus_constant_alpha 0
+13 25 O_incoming_color_saturate 43 ColorBlendAttrib::O_incoming_color_saturate 27
+// valid only for operand a
+14 17 O_incoming1_color 35 ColorBlendAttrib::O_incoming1_color 135
+// The following are used for dual-source blending, where the fragment
+// shader outputs a second color that will be used for blending.
+15 27 O_one_minus_incoming1_color 45 ColorBlendAttrib::O_one_minus_incoming1_color 0
+16 17 O_incoming1_alpha 35 ColorBlendAttrib::O_incoming1_alpha 0
+17 27 O_one_minus_incoming1_alpha 45 ColorBlendAttrib::O_one_minus_incoming1_alpha 0
+18 13 O_color_scale 31 ColorBlendAttrib::O_color_scale 52
+// These modes are being considered for deprecation.
+19 23 O_one_minus_color_scale 41 ColorBlendAttrib::O_one_minus_color_scale 0
+20 13 O_alpha_scale 31 ColorBlendAttrib::O_alpha_scale 0
+21 23 O_one_minus_alpha_scale 41 ColorBlendAttrib::O_one_minus_alpha_scale 0
+22 0 0
+
+754 4 bool 0 8194 4 bool 4 bool 0 4 0 0 0 0 0 0 0 0 0 0 0
+
+755 12 BoxEmitter * 0 8576 12 BoxEmitter * 12 BoxEmitter * 0 0 685 0 0 0 0 0 0 0 0 0 0
+
+756 18 BoxEmitter const * 0 8576 18 BoxEmitter const * 18 BoxEmitter const * 0 0 757 0 0 0 0 0 0 0 0 0 0
+
+757 16 BoxEmitter const 0 8832 16 BoxEmitter const 16 BoxEmitter const 0 0 685 0 0 0 0 0 0 0 0 0 0
+
+758 6 LColor 0 2105344 6 LColor 6 LColor 0 0 759 0 0 0 0 0 0 0 0 0 0
+
+759 7 LColorf 0 2105344 7 LColorf 7 LColorf 0 0 760 0 0 0 0 0 0 0 0 0 0
+
+760 10 LVecBase4f 0 2048 10 LVecBase4f 10 LVecBase4f 0 0 0 0 0 0 0 0 0 0 0 0 77
+/**
+ * This is the base class for all three-component vectors and points.
+ */
+
+761 42 ColorInterpolationFunctionConstant const * 0 8576 42 ColorInterpolationFunctionConstant const * 42 ColorInterpolationFunctionConstant const * 0 0 762 0 0 0 0 0 0 0 0 0 0
+
+762 40 ColorInterpolationFunctionConstant const 0 8832 40 ColorInterpolationFunctionConstant const 40 ColorInterpolationFunctionConstant const 0 0 686 0 0 0 0 0 0 0 0 0 0
+
+763 8 LColor * 0 8576 8 LColor * 8 LColor * 0 0 758 0 0 0 0 0 0 0 0 0 0
+
+764 36 ColorInterpolationFunctionConstant * 0 8576 36 ColorInterpolationFunctionConstant * 36 ColorInterpolationFunctionConstant * 0 0 686 0 0 0 0 0 0 0 0 0 0
+
+765 14 LColor const * 0 8576 14 LColor const * 14 LColor const * 0 0 766 0 0 0 0 0 0 0 0 0 0
+
+766 12 LColor const 0 8832 12 LColor const 12 LColor const 0 0 758 0 0 0 0 0 0 0 0 0 0
+
+767 10 TypeHandle 0 16779264 10 TypeHandle 10 TypeHandle 0 0 0 0 0 0 0 0 0 0 0 0 732
+/**
+ * TypeHandle is the identifier used to differentiate C++ class types.  Any
+ * C++ classes that inherit from some base class, and must be differentiated
+ * at run time, should store a static TypeHandle object that can be queried
+ * through a static member function named get_class_type().  Most of the time,
+ * it is also desirable to inherit from TypedObject, which provides some
+ * virtual functions to return the TypeHandle for a particular instance.
+ *
+ * At its essence, a TypeHandle is simply a unique identifier that is assigned
+ * by the TypeRegistry.  The TypeRegistry stores a tree of TypeHandles, so
+ * that ancestry of a particular type may be queried, and the type name may be
+ * retrieved for run-time display.
+ */
+
+768 12 TypeHandle * 0 8576 12 TypeHandle * 12 TypeHandle * 0 0 767 0 0 0 0 0 0 0 0 0 0
+
+769 40 ColorInterpolationFunctionLinear const * 0 8576 40 ColorInterpolationFunctionLinear const * 40 ColorInterpolationFunctionLinear const * 0 0 770 0 0 0 0 0 0 0 0 0 0
+
+770 38 ColorInterpolationFunctionLinear const 0 8832 38 ColorInterpolationFunctionLinear const 38 ColorInterpolationFunctionLinear const 0 0 688 0 0 0 0 0 0 0 0 0 0
+
+771 34 ColorInterpolationFunctionLinear * 0 8576 34 ColorInterpolationFunctionLinear * 34 ColorInterpolationFunctionLinear * 0 0 688 0 0 0 0 0 0 0 0 0 0
+
+772 42 ColorInterpolationFunctionStepwave const * 0 8576 42 ColorInterpolationFunctionStepwave const * 42 ColorInterpolationFunctionStepwave const * 0 0 773 0 0 0 0 0 0 0 0 0 0
+
+773 40 ColorInterpolationFunctionStepwave const 0 8832 40 ColorInterpolationFunctionStepwave const 40 ColorInterpolationFunctionStepwave const 0 0 689 0 0 0 0 0 0 0 0 0 0
+
+774 36 ColorInterpolationFunctionStepwave * 0 8576 36 ColorInterpolationFunctionStepwave * 36 ColorInterpolationFunctionStepwave * 0 0 689 0 0 0 0 0 0 0 0 0 0
+
+775 17 PN_stdfloat const 0 8832 17 PN_stdfloat const 17 PN_stdfloat const 0 0 722 0 0 0 0 0 0 0 0 0 0
+
+776 42 ColorInterpolationFunctionSinusoid const * 0 8576 42 ColorInterpolationFunctionSinusoid const * 42 ColorInterpolationFunctionSinusoid const * 0 0 777 0 0 0 0 0 0 0 0 0 0
+
+777 40 ColorInterpolationFunctionSinusoid const 0 8832 40 ColorInterpolationFunctionSinusoid const 40 ColorInterpolationFunctionSinusoid const 0 0 690 0 0 0 0 0 0 0 0 0 0
+
+778 36 ColorInterpolationFunctionSinusoid * 0 8576 36 ColorInterpolationFunctionSinusoid * 36 ColorInterpolationFunctionSinusoid * 0 0 690 0 0 0 0 0 0 0 0 0 0
+
+779 33 ColorInterpolationSegment const * 0 8576 33 ColorInterpolationSegment const * 33 ColorInterpolationSegment const * 0 0 780 0 0 0 0 0 0 0 0 0 0
+
+780 31 ColorInterpolationSegment const 0 8832 31 ColorInterpolationSegment const 31 ColorInterpolationSegment const 0 0 691 0 0 0 0 0 0 0 0 0 0
+
+781 27 ColorInterpolationSegment * 0 8576 27 ColorInterpolationSegment * 27 ColorInterpolationSegment * 0 0 691 0 0 0 0 0 0 0 0 0 0
+
+782 19 TypedReferenceCount 0 2048 19 TypedReferenceCount 19 TypedReferenceCount 0 0 0 0 0 0 0 0 0 0 0 0 410
+/**
+ * A base class for things which need to inherit from both TypedObject and
+ * from ReferenceCount.  It's convenient to define this intermediate base
+ * class instead of multiply inheriting from the two classes each time they
+ * are needed, so that we can sensibly pass around pointers to things which
+ * are both TypedObjects and ReferenceCounters.
+ *
+ * See also TypedObject for detailed instructions.
+ */
+
+783 21 TypedReferenceCount * 0 8576 21 TypedReferenceCount * 21 TypedReferenceCount * 0 0 782 0 0 0 0 0 0 0 0 0 0
+
+784 28 ColorInterpolationFunction * 0 8576 28 ColorInterpolationFunction * 28 ColorInterpolationFunction * 0 0 687 0 0 0 0 0 0 0 0 0 0
+
+785 10 bool const 0 8832 10 bool const 10 bool const 0 0 754 0 0 0 0 0 0 0 0 0 0
+
+786 27 ColorInterpolationManager * 0 8576 27 ColorInterpolationManager * 27 ColorInterpolationManager * 0 0 692 0 0 0 0 0 0 0 0 0 0
+
+787 33 ColorInterpolationManager const * 0 8576 33 ColorInterpolationManager const * 33 ColorInterpolationManager const * 0 0 788 0 0 0 0 0 0 0 0 0 0
+
+788 31 ColorInterpolationManager const 0 8832 31 ColorInterpolationManager const 31 ColorInterpolationManager const 0 0 692 0 0 0 0 0 0 0 0 0 0
+
+789 9 int const 0 8832 9 int const 9 int const 0 0 732 0 0 0 0 0 0 0 0 0 0
+
+790 13 atomic string 0 2 13 atomic string 13 atomic string 0 7 0 0 0 0 0 0 0 0 0 0 0
+
+791 13 DiscEmitter * 0 8576 13 DiscEmitter * 13 DiscEmitter * 0 0 693 0 0 0 0 0 0 0 0 0 0
+
+792 19 DiscEmitter const * 0 8576 19 DiscEmitter const * 19 DiscEmitter const * 0 0 793 0 0 0 0 0 0 0 0 0 0
+
+793 17 DiscEmitter const 0 8832 17 DiscEmitter const 17 DiscEmitter const 0 0 693 0 0 0 0 0 0 0 0 0 0
+
+794 11 PandaNode * 0 8576 11 PandaNode * 11 PandaNode * 0 0 795 0 0 0 0 0 0 0 0 0 0
+
+795 9 PandaNode 0 2048 9 PandaNode 9 PandaNode 0 0 0 0 0 0 0 0 0 0 0 0 175
+/**
+ * A basic node of the scene graph or data graph.  This is the base class of
+ * all specialized nodes, and also serves as a generic node with no special
+ * properties.
+ */
+
+796 22 GeomParticleRenderer * 0 8576 22 GeomParticleRenderer * 22 GeomParticleRenderer * 0 0 694 0 0 0 0 0 0 0 0 0 0
+
+797 28 GeomParticleRenderer const * 0 8576 28 GeomParticleRenderer const * 28 GeomParticleRenderer const * 0 0 798 0 0 0 0 0 0 0 0 0 0
+
+798 26 GeomParticleRenderer const 0 8832 26 GeomParticleRenderer const 26 GeomParticleRenderer const 0 0 694 0 0 0 0 0 0 0 0 0 0
+
+799 13 LineEmitter * 0 8576 13 LineEmitter * 13 LineEmitter * 0 0 695 0 0 0 0 0 0 0 0 0 0
+
+800 19 LineEmitter const * 0 8576 19 LineEmitter const * 19 LineEmitter const * 0 0 801 0 0 0 0 0 0 0 0 0 0
+
+801 17 LineEmitter const 0 8832 17 LineEmitter const 17 LineEmitter const 0 0 695 0 0 0 0 0 0 0 0 0 0
+
+802 22 LineParticleRenderer * 0 8576 22 LineParticleRenderer * 22 LineParticleRenderer * 0 0 696 0 0 0 0 0 0 0 0 0 0
+
+803 28 LineParticleRenderer const * 0 8576 28 LineParticleRenderer const * 28 LineParticleRenderer const * 0 0 804 0 0 0 0 0 0 0 0 0 0
+
+804 26 LineParticleRenderer const 0 8832 26 LineParticleRenderer const 26 LineParticleRenderer const 0 0 696 0 0 0 0 0 0 0 0 0 0
+
+805 22 ParticleSystem const * 0 8576 22 ParticleSystem const * 22 ParticleSystem const * 0 0 806 0 0 0 0 0 0 0 0 0 0
+
+806 20 ParticleSystem const 0 8832 20 ParticleSystem const 20 ParticleSystem const 0 0 697 0 0 0 0 0 0 0 0 0 0
+
+807 16 ParticleSystem * 0 8576 16 ParticleSystem * 16 ParticleSystem * 0 0 697 0 0 0 0 0 0 0 0 0 0
+
+808 16 NodePath const * 0 8576 16 NodePath const * 16 NodePath const * 0 0 809 0 0 0 0 0 0 0 0 0 0
+
+809 14 NodePath const 0 8832 14 NodePath const 14 NodePath const 0 0 748 0 0 0 0 0 0 0 0 0 0
+
+810 14 PointEmitter * 0 8576 14 PointEmitter * 14 PointEmitter * 0 0 699 0 0 0 0 0 0 0 0 0 0
+
+811 20 PointEmitter const * 0 8576 20 PointEmitter const * 20 PointEmitter const * 0 0 812 0 0 0 0 0 0 0 0 0 0
+
+812 18 PointEmitter const 0 8832 18 PointEmitter const 18 PointEmitter const 0 0 699 0 0 0 0 0 0 0 0 0 0
+
+813 22 PointParticleFactory * 0 8576 22 PointParticleFactory * 22 PointParticleFactory * 0 0 700 0 0 0 0 0 0 0 0 0 0
+
+814 28 PointParticleFactory const * 0 8576 28 PointParticleFactory const * 28 PointParticleFactory const * 0 0 815 0 0 0 0 0 0 0 0 0 0
+
+815 26 PointParticleFactory const 0 8832 26 PointParticleFactory const 26 PointParticleFactory const 0 0 700 0 0 0 0 0 0 0 0 0 0
+
+816 23 PointParticleRenderer * 0 8576 23 PointParticleRenderer * 23 PointParticleRenderer * 0 0 701 0 0 0 0 0 0 0 0 0 0
+
+817 29 PointParticleRenderer const * 0 8576 29 PointParticleRenderer const * 29 PointParticleRenderer const * 0 0 818 0 0 0 0 0 0 0 0 0 0
+
+818 27 PointParticleRenderer const 0 8832 27 PointParticleRenderer const 27 PointParticleRenderer const 0 0 701 0 0 0 0 0 0 0 0 0 0
+
+819 18 RectangleEmitter * 0 8576 18 RectangleEmitter * 18 RectangleEmitter * 0 0 703 0 0 0 0 0 0 0 0 0 0
+
+820 24 RectangleEmitter const * 0 8576 24 RectangleEmitter const * 24 RectangleEmitter const * 0 0 821 0 0 0 0 0 0 0 0 0 0
+
+821 22 RectangleEmitter const 0 8832 22 RectangleEmitter const 22 RectangleEmitter const 0 0 703 0 0 0 0 0 0 0 0 0 0
+
+822 15 LPoint2 const * 0 8576 15 LPoint2 const * 15 LPoint2 const * 0 0 823 0 0 0 0 0 0 0 0 0 0
+
+823 13 LPoint2 const 0 8832 13 LPoint2 const 13 LPoint2 const 0 0 824 0 0 0 0 0 0 0 0 0 0
+
+824 7 LPoint2 0 2105344 7 LPoint2 7 LPoint2 0 0 825 0 0 0 0 0 0 0 0 0 0
+
+825 8 LPoint2f 0 2048 8 LPoint2f 8 LPoint2f 0 0 0 0 0 0 0 0 0 0 0 0 50
+/**
+ * This is a two-component point in space.
+ */
+
+826 9 LPoint2 * 0 8576 9 LPoint2 * 9 LPoint2 * 0 0 824 0 0 0 0 0 0 0 0 0 0
+
+827 25 SparkleParticleRenderer * 0 8576 25 SparkleParticleRenderer * 25 SparkleParticleRenderer * 0 0 704 0 0 0 0 0 0 0 0 0 0
+
+828 31 SparkleParticleRenderer const * 0 8576 31 SparkleParticleRenderer const * 31 SparkleParticleRenderer const * 0 0 829 0 0 0 0 0 0 0 0 0 0
+
+829 29 SparkleParticleRenderer const 0 8832 29 SparkleParticleRenderer const 29 SparkleParticleRenderer const 0 0 704 0 0 0 0 0 0 0 0 0 0
+
+830 22 SphereSurfaceEmitter * 0 8576 22 SphereSurfaceEmitter * 22 SphereSurfaceEmitter * 0 0 706 0 0 0 0 0 0 0 0 0 0
+
+831 28 SphereSurfaceEmitter const * 0 8576 28 SphereSurfaceEmitter const * 28 SphereSurfaceEmitter const * 0 0 832 0 0 0 0 0 0 0 0 0 0
+
+832 26 SphereSurfaceEmitter const 0 8832 26 SphereSurfaceEmitter const 26 SphereSurfaceEmitter const 0 0 706 0 0 0 0 0 0 0 0 0 0
+
+833 21 SphereVolumeEmitter * 0 8576 21 SphereVolumeEmitter * 21 SphereVolumeEmitter * 0 0 707 0 0 0 0 0 0 0 0 0 0
+
+834 27 SphereVolumeEmitter const * 0 8576 27 SphereVolumeEmitter const * 27 SphereVolumeEmitter const * 0 0 835 0 0 0 0 0 0 0 0 0 0
+
+835 25 SphereVolumeEmitter const 0 8832 25 SphereVolumeEmitter const 25 SphereVolumeEmitter const 0 0 707 0 0 0 0 0 0 0 0 0 0
+
+836 18 SpriteAnim const * 0 8576 18 SpriteAnim const * 18 SpriteAnim const * 0 0 837 0 0 0 0 0 0 0 0 0 0
+
+837 16 SpriteAnim const 0 8832 16 SpriteAnim const 16 SpriteAnim const 0 0 708 0 0 0 0 0 0 0 0 0 0
+
+838 12 SpriteAnim * 0 8576 12 SpriteAnim * 12 SpriteAnim * 0 0 708 0 0 0 0 0 0 0 0 0 0
+
+839 30 SpriteParticleRenderer const * 0 8576 30 SpriteParticleRenderer const * 30 SpriteParticleRenderer const * 0 0 840 0 0 0 0 0 0 0 0 0 0
+
+840 28 SpriteParticleRenderer const 0 8832 28 SpriteParticleRenderer const 28 SpriteParticleRenderer const 0 0 710 0 0 0 0 0 0 0 0 0 0
+
+841 24 SpriteParticleRenderer * 0 8576 24 SpriteParticleRenderer * 24 SpriteParticleRenderer * 0 0 710 0 0 0 0 0 0 0 0 0 0
+
+842 9 Texture * 0 8576 9 Texture * 9 Texture * 0 0 843 0 0 0 0 0 0 0 0 0 0
+
+843 7 Texture 0 2048 7 Texture 7 Texture 0 0 0 0 0 0 0 0 0 0 0 0 688
+/**
+ * Represents a texture object, which is typically a single 2-d image but may
+ * also represent a 1-d or 3-d texture image, or the six 2-d faces of a cube
+ * map texture.
+ *
+ * A texture's image data might be stored in system RAM (see get_ram_image())
+ * or its image may be represented in texture memory on one or more
+ * GraphicsStateGuardians (see prepare()), or both.  The typical usage pattern
+ * is that a texture is loaded from an image file on disk, which copies its
+ * image data into system RAM; then the first time the texture is rendered its
+ * image data is copied to texture memory (actually, to the graphics API), and
+ * the system RAM image is automatically freed.
+ */
+
+844 17 LTexCoord const * 0 8576 17 LTexCoord const * 17 LTexCoord const * 0 0 845 0 0 0 0 0 0 0 0 0 0
+
+845 15 LTexCoord const 0 8832 15 LTexCoord const 15 LTexCoord const 0 0 846 0 0 0 0 0 0 0 0 0 0
+
+846 9 LTexCoord 0 2105344 9 LTexCoord 9 LTexCoord 0 0 847 0 0 0 0 0 0 0 0 0 0
+
+847 10 LTexCoordf 0 2105344 10 LTexCoordf 10 LTexCoordf 0 0 825 0 0 0 0 0 0 0 0 0 0
+
+848 11 LTexCoord * 0 8576 11 LTexCoord * 11 LTexCoord * 0 0 846 0 0 0 0 0 0 0 0 0 0
+
+849 20 TangentRingEmitter * 0 8576 20 TangentRingEmitter * 20 TangentRingEmitter * 0 0 711 0 0 0 0 0 0 0 0 0 0
+
+850 26 TangentRingEmitter const * 0 8576 26 TangentRingEmitter const * 26 TangentRingEmitter const * 0 0 851 0 0 0 0 0 0 0 0 0 0
+
+851 24 TangentRingEmitter const 0 8832 24 TangentRingEmitter const 24 TangentRingEmitter const 0 0 711 0 0 0 0 0 0 0 0 0 0
+
+852 22 ZSpinParticleFactory * 0 8576 22 ZSpinParticleFactory * 22 ZSpinParticleFactory * 0 0 712 0 0 0 0 0 0 0 0 0 0
+
+853 28 ZSpinParticleFactory const * 0 8576 28 ZSpinParticleFactory const * 28 ZSpinParticleFactory const * 0 0 854 0 0 0 0 0 0 0 0 0 0
+
+854 26 ZSpinParticleFactory const 0 8832 26 ZSpinParticleFactory const 26 ZSpinParticleFactory const 0 0 712 0 0 0 0 0 0 0 0 0 0
+
+855 29 ParticleSystemManager const * 0 8576 29 ParticleSystemManager const * 29 ParticleSystemManager const * 0 0 856 0 0 0 0 0 0 0 0 0 0
+
+856 27 ParticleSystemManager const 0 8832 27 ParticleSystemManager const 27 ParticleSystemManager const 0 0 713 0 0 0 0 0 0 0 0 0 0
+
+857 23 ParticleSystemManager * 0 8576 23 ParticleSystemManager * 23 ParticleSystemManager * 0 0 713 0 0 0 0 0 0 0 0 0 0
+
+0
+0
+1
+858 9 get_anims 0 623 624 33 SpriteParticleRenderer::get_anims 0
+

@@ -1,9 +1,10 @@
 
-from pandac.PandaModules import *
-
+from panda3d.core import *
+from panda3d.direct import *
+from direct.directnotify.DirectNotifyGlobal import directNotify
 from direct.task import Task
-from DistributedNodeAI import DistributedNodeAI
-from CartesianGridBase import CartesianGridBase
+from .DistributedNodeAI import DistributedNodeAI
+from .CartesianGridBase import CartesianGridBase
 
 class DistributedCartesianGridAI(DistributedNodeAI, CartesianGridBase):
     notify = directNotify.newCategory("DistributedCartesianGridAI")
@@ -65,7 +66,7 @@ class DistributedCartesianGridAI(DistributedNodeAI, CartesianGridBase):
 
         # Remove grid parent for this av
         avId = av.doId
-        if self.gridObjects.has_key(avId):
+        if avId in self.gridObjects:
             del self.gridObjects[avId]
 
         # Stop task if there are no more av's being managed
@@ -141,3 +142,4 @@ class DistributedCartesianGridAI(DistributedNodeAI, CartesianGridBase):
             # to see if avatar's named area location information
             # changed
             #av.requestRegionUpdateTask(regionegionUid)
+

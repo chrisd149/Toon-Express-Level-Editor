@@ -9,10 +9,17 @@ __all__ = ['AnimPanel', 'ActorControl']
 # Import Tkinter, Pmw, and the floater code from this directory tree.
 from direct.tkwidgets.AppShell import *
 from direct.showbase.TkGlobal import *
-from tkSimpleDialog import askfloat
-from Tkinter import *
-import Pmw, string, math, types
+import Pmw, sys, os
 from direct.task import Task
+from panda3d.core import Filename, getModelPath
+
+if sys.version_info >= (3, 0):
+    from tkinter.simpledialog import askfloat
+    from tkinter.filedialog import askopenfilename
+else:
+    from tkSimpleDialog import askfloat
+    from tkFileDialog import askopenfilename
+
 
 FRAMES = 0
 SECONDS = 1
@@ -28,8 +35,7 @@ class AnimPanel(AppShell):
 
     def __init__(self, aList =  [], parent = None, session = None, **kw):
         INITOPT = Pmw.INITOPT
-        if ((type(aList) == types.ListType) or
-            (type(aList) == types.TupleType)):
+        if isinstance(aList, (list, tuple)):
             kw['actorList'] = aList
         else:
             kw['actorList'] = [aList]
@@ -201,7 +207,7 @@ class AnimPanel(AppShell):
         self.actorControlList = []
         for actor in self['actorList']:
             anims = actor.getAnimNames()
-            print "actor animnames: %s"%anims
+            print("actor animnames: %s"%anims)
             topAnims = []
             if 'neutral' in anims:
                 i = anims.index('neutral')
@@ -270,7 +276,7 @@ class AnimPanel(AppShell):
             title = 'Load Animation',
             parent = self.component('hull')
             )
-        if (animFilename == ''):
+        if not animFilename:
             # no file selected, canceled
             return
 
@@ -366,8 +372,9 @@ class AnimPanel(AppShell):
     def destroy(self):
         # First clean up
         taskMgr.remove(self.id + '_UpdateTask')
-        self.destroyCallBack()
-        self.destroyCallBack = None
+        if self.destroyCallBack is not None:
+            self.destroyCallBack()
+            self.destroyCallBack = None
         AppShell.destroy(self)
 
 class ActorControl(Pmw.MegaWidget):
@@ -518,7 +525,7 @@ class ActorControl(Pmw.MegaWidget):
         if (self.fps == None):
             # there was probably a problem loading the
             # active animation, set default anim properties
-            print "unable to get animation fps, zeroing out animation info"
+            print("unable to get animation fps, zeroing out animation info")
             self.fps = 24
             self.duration = 0
             self.maxFrame = 0
@@ -624,7 +631,7 @@ class ActorControl(Pmw.MegaWidget):
 
     def goTo(self, t):
         # Convert scale value to float
-        t = string.atof(t)
+        t = float(t)
         # Now convert t to seconds for offset calculations
         if self.unitsVar.get() == FRAMES:
             t = t / self.fps

@@ -1,27 +1,24 @@
-"""Undocumented Module"""
+"""Finite State Machine module: contains the ClassicFSM class.
+
+.. note::
+
+   This module and class exist only for backward compatibility with
+   existing code.  New code should use the :mod:`.FSM` module instead.
+"""
 
 __all__ = ['ClassicFSM']
 
-"""Finite State Machine module: contains the ClassicFSM class.
-
-This module and class exist only for backward compatibility with
-existing code.  New code should use the FSM module instead.
-"""
-
 from direct.directnotify.DirectNotifyGlobal import directNotify
 from direct.showbase.DirectObject import DirectObject
-import types
 import weakref
 
 if __debug__:
-    _debugFsms={}
+    _debugFsms = {}
     def printDebugFsmList():
         global _debugFsms
-        keys=_debugFsms.keys()
-        keys.sort()
-        for k in keys:
-            print k, _debugFsms[k]()
-    __builtins__['debugFsmList']=printDebugFsmList
+        for k in sorted(_debugFsms.keys()):
+            print("%s %s" % (k, _debugFsms[k]()))
+    __builtins__['debugFsmList'] = printDebugFsmList
 
 class ClassicFSM(DirectObject):
     """
@@ -123,7 +120,7 @@ class ClassicFSM(DirectObject):
         self.__name = name
 
     def getStates(self):
-        return self.__states.values()
+        return list(self.__states.values())
 
     def setStates(self, states):
         """setStates(self, State[])"""
@@ -251,7 +248,7 @@ class ClassicFSM(DirectObject):
                                (self.__name))
             self.__currentState = self.__initialState
 
-        if isinstance(aStateName, types.StringType):
+        if isinstance(aStateName, str):
             aState = self.getStateNamed(aStateName)
         else:
             # Allow the caller to pass in a state in itself, not just
@@ -342,7 +339,7 @@ class ClassicFSM(DirectObject):
                                (self.__name))
             self.__currentState = self.__initialState
 
-        if isinstance(aStateName, types.StringType):
+        if isinstance(aStateName, str):
             aState = self.getStateNamed(aStateName)
         else:
             # Allow the caller to pass in a state in itself, not just
@@ -369,8 +366,19 @@ class ClassicFSM(DirectObject):
             return 0
 
     def view(self):
-        from direct.tkpanels import FSMInspector
+        # Don't use a regular import, to prevent ModuleFinder from picking
+        # it up as a dependency when building a .p3d package.
+        import importlib
+        FSMInspector = importlib.import_module('direct.tkpanels.FSMInspector')
         FSMInspector.FSMInspector(self)
 
     def isInternalStateInFlux(self):
         return self.__internalStateInFlux
+
+
+
+
+
+
+
+

@@ -3,13 +3,12 @@
 __all__ = ['Placer', 'place']
 
 # Import Tkinter, Pmw, and the dial code from this directory tree.
-from pandac.PandaModules import *
+from panda3d.core import *
 from direct.showbase.TkGlobal import *
 from direct.tkwidgets.AppShell import *
 from direct.tkwidgets import Dial
 from direct.tkwidgets import Floater
 from direct.directtools.DirectGlobals import ZERO_VEC, UNIT_VEC
-from Tkinter import *
 import Pmw
 
 """
@@ -429,7 +428,7 @@ class Placer(AppShell):
                 background = self.nodePathMenuBG)
             # Check to see if node path and ref node path are the same
             if ((self.refCS != None) and
-                (self.refCS.id() == self['nodePath'].id())):
+                (self.refCS == self['nodePath'])):
                 # Yes they are, use temp CS as ref
                 # This calls updatePlacer
                 self.setReferenceNodePath(self.tempCS)
@@ -474,7 +473,7 @@ class Placer(AppShell):
                     listbox = self.refNodePathMenu.component('scrolledlist')
                     listbox.setlist(self.refNodePathNames)
         # Check to see if node path and ref node path are the same
-        if (nodePath != None) and (nodePath.id() == self['nodePath'].id()):
+        if (nodePath != None) and (nodePath == self['nodePath']):
             # Yes they are, use temp CS and update listbox accordingly
             nodePath = self.tempCS
             self.refNodePathMenu.selectitem('parent')
@@ -509,8 +508,8 @@ class Placer(AppShell):
             dictName = name
         else:
             # Generate a unique name for the dict
-            dictName = name + '-' + repr(nodePath.id())
-        if not dict.has_key(dictName):
+            dictName = name + '-' + repr(hash(nodePath))
+        if dictName not in dict:
             # Update combo box to include new item
             names.append(dictName)
             listbox = menu.component('scrolledlist')
@@ -770,12 +769,12 @@ class Placer(AppShell):
             posString = '%.2f, %.2f, %.2f' % (pos[0], pos[1], pos[2])
             hprString = '%.2f, %.2f, %.2f' % (hpr[0], hpr[1], hpr[2])
             scaleString = '%.2f, %.2f, %.2f' % (scale[0], scale[1], scale[2])
-            print 'NodePath: %s' % name
-            print 'Pos: %s' % posString
-            print 'Hpr: %s' % hprString
-            print 'Scale: %s' % scaleString
-            print ('%s.setPosHprScale(%s, %s, %s)' %
-                   (name, posString, hprString, scaleString))
+            print('NodePath: %s' % name)
+            print('Pos: %s' % posString)
+            print('Hpr: %s' % hprString)
+            print('Scale: %s' % scaleString)
+            print(('%s.setPosHprScale(%s, %s, %s)' %
+                   (name, posString, hprString, scaleString)))
 
     def onDestroy(self, event):
         # Remove hooks

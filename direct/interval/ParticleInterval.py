@@ -1,16 +1,14 @@
-"""Undocumented Module"""
-
-__all__ = ['ParticleInterval']
-
 """
 Contains the ParticleInterval class
 """
 
-from pandac.PandaModules import *
-from direct.directnotify.DirectNotifyGlobal import directNotify
-from Interval import Interval
+__all__ = ['ParticleInterval']
 
-from direct.particles import ParticleEffect
+from panda3d.core import *
+from panda3d.direct import *
+from direct.directnotify.DirectNotifyGlobal import directNotify
+from .Interval import Interval
+
 
 class ParticleInterval(Interval):
     """
@@ -138,3 +136,4 @@ class ParticleInterval(Interval):
         if self.cleanup and self.particleEffect:
             self.particleEffect.cleanup()
             self.particleEffect = None
+

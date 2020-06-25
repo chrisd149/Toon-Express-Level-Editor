@@ -3,10 +3,11 @@
 # class variable FuncDict and so we can import DCSubatomicType at the top
 # of the file rather than every time we call the putArg function.
 
-from pandac.PandaModules import *
+from panda3d.core import Datagram
+from panda3d.direct import *
 # Import the type numbers
 
-#from otp.ai.AIMsgTypes import *
+from direct.distributed.MsgTypes import *
 
 class PyDatagram(Datagram):
 
@@ -24,8 +25,8 @@ class PyDatagram(Datagram):
         STUint64: (Datagram.addUint64, int),
         STFloat64: (Datagram.addFloat64, None),
         STString: (Datagram.addString, None),
-        STBlob: (Datagram.addString, None),
-        STBlob32: (Datagram.addString32, None),
+        STBlob: (Datagram.addBlob, None),
+        STBlob32: (Datagram.addBlob32, None),
         }
 
     #def addChannel(self, channelId):
@@ -46,13 +47,10 @@ class PyDatagram(Datagram):
         self.addUint16(code)
 
 
-#    def addServerControlHeader(self,   code):
-#        self.addInt8(1)
-#        self.addChannel(CONTROL_MESSAGE)
-#        self.addUint16(code)
-#    def addOldServerControlHeader(self,   code):
-#        self.addChannel(CONTROL_MESSAGE)
-#        self.addUint16(code)
+    def addServerControlHeader(self, code):
+        self.addInt8(1)
+        self.addChannel(CONTROL_CHANNEL)
+        self.addUint16(code)
 
     def putArg(self, arg, subatomicType, divisor=1):
         if (divisor == 1):

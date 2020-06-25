@@ -1,17 +1,14 @@
 """ Class used to create and control vrpn devices """
 
 from direct.showbase.DirectObject import DirectObject
-from pandac.PandaModules import *
+from panda3d.core import *
+from panda3d.vrpn import *
 
 ANALOG_MIN = -0.95
 ANALOG_MAX = 0.95
 ANALOG_DEADBAND = 0.125
 ANALOG_CENTER = 0.0
 
-try:
-    myBase = base
-except:
-    myBase = simbase
 
 class DirectDeviceManager(VrpnClient, DirectObject):
     def __init__(self, server = None):
@@ -22,7 +19,7 @@ class DirectDeviceManager(VrpnClient, DirectObject):
             self.server = server
         else:
             # Check config file, if that fails, use default
-            self.server = myBase.config.GetString('vrpn-server', 'spacedyne')
+            self.server = ConfigVariableString('vrpn-server', 'spacedyne').getValue()
 
         # Create a vrpn client
         VrpnClient.__init__(self, self.server)
@@ -47,12 +44,17 @@ class DirectButtons(ButtonNode, DirectObject):
     def __init__(self, vrpnClient, device):
         # Keep track of number of buttons created
         DirectButtons.buttonCount += 1
-        # Create a unique name for this button object
-        self.name = 'DirectButtons-' + repr(DirectButtons.buttonCount)
         # Create a new button node for the given device
         ButtonNode.__init__(self, vrpnClient, device)
+        # Create a unique name for this button object
+        self.name = 'DirectButtons-' + repr(DirectButtons.buttonCount)
+
         # Attach node to data graph
-        self.nodePath = myBase.dataRoot.attachNewNode(self)
+        try:
+            self._base = base
+        except:
+            self._base = simbase
+        self.nodePath = self._base.dataRoot.attachNewNode(self)
 
     def __getitem__(self, index):
         if (index < 0) or (index >= self.getNumButtons()):
@@ -63,10 +65,10 @@ class DirectButtons(ButtonNode, DirectObject):
         return self.getNumButtons()
 
     def enable(self):
-        self.nodePath.reparentTo(myBase.dataRoot)
+        self.nodePath.reparentTo(self._base.dataRoot)
 
     def disable(self):
-        self.nodePath.reparentTo(myBase.dataUnused)
+        self.nodePath.reparentTo(self._base.dataUnused)
 
     def getName(self):
         return self.name
@@ -82,26 +84,33 @@ class DirectButtons(ButtonNode, DirectObject):
 
 class DirectAnalogs(AnalogNode, DirectObject):
     analogCount = 0
+
+    _analogDeadband = ConfigVariableDouble('vrpn-analog-deadband', ANALOG_DEADBAND)
+    _analogMin = ConfigVariableDouble('vrpn-analog-min', ANALOG_MIN)
+    _analogMax = ConfigVariableDouble('vrpn-analog-max', ANALOG_MAX)
+    _analogCenter = ConfigVariableDouble('vrpn-analog-center', ANALOG_CENTER)
+
     def __init__(self, vrpnClient, device):
         # Keep track of number of analogs created
         DirectAnalogs.analogCount += 1
-        # Create a unique name for this analog object
-        self.name = 'DirectAnalogs-' + repr(DirectAnalogs.analogCount)
         # Create a new analog node for the given device
         AnalogNode.__init__(self, vrpnClient, device)
-        # Attach node to data graph
-        self.nodePath = myBase.dataRoot.attachNewNode(self)
-        # See if any of the general analog parameters are dconfig'd
-        self.analogDeadband = myBase.config.GetFloat('vrpn-analog-deadband',
-                                                     ANALOG_DEADBAND)
-        self.analogMin = myBase.config.GetFloat('vrpn-analog-min',
-                                                ANALOG_MIN)
-        self.analogMax = myBase.config.GetFloat('vrpn-analog-max',
-                                                ANALOG_MAX)
-        self.analogCenter = myBase.config.GetFloat('vrpn-analog-center',
-                                                   ANALOG_CENTER)
-        self.analogRange = self.analogMax - self.analogMin
+        # Create a unique name for this analog object
+        self.name = 'DirectAnalogs-' + repr(DirectAnalogs.analogCount)
 
+        # Attach node to data graph
+        try:
+            self._base = base
+        except:
+            self._base = simbase
+        self.nodePath = self._base.dataRoot.attachNewNode(self)
+
+        # See if any of the general analog parameters are dconfig'd
+        self.analogDeadband = self._analogDeadband.getValue()
+        self.analogMin = self._analogMin.getValue()
+        self.analogMax = self._analogMax.getValue()
+        self.analogCenter = self._analogCenter.getValue()
+        self.analogRange = self.analogMax - self.analogMin
 
     def __getitem__(self, index):
         if (index < 0) or (index >= self.getNumControls()):
@@ -112,10 +121,10 @@ class DirectAnalogs(AnalogNode, DirectObject):
         return self.getNumControls()
 
     def enable(self):
-        self.nodePath.reparentTo(myBase.dataRoot)
+        self.nodePath.reparentTo(self._base.dataRoot)
 
     def disable(self):
-        self.nodePath.reparentTo(myBase.dataUnused)
+        self.nodePath.reparentTo(self._base.dataUnused)
 
     def normalizeWithoutCentering(self, val, minVal = -1, maxVal = 1):
         #
@@ -181,18 +190,23 @@ class DirectTracker(TrackerNode, DirectObject):
     def __init__(self, vrpnClient, device):
         # Keep track of number of trackers created
         DirectTracker.trackerCount += 1
-        # Create a unique name for this tracker object
-        self.name = 'DirectTracker-' + repr(DirectTracker.trackerCount)
         # Create a new tracker node for the given device
         TrackerNode.__init__(self, vrpnClient, device)
+        # Create a unique name for this tracker object
+        self.name = 'DirectTracker-' + repr(DirectTracker.trackerCount)
+
         # Attach node to data graph
-        self.nodePath = myBase.dataRoot.attachNewNode(self)
+        try:
+            self._base = base
+        except:
+            self._base = simbase
+        self.nodePath = self._base.dataRoot.attachNewNode(self)
 
     def enable(self):
-        self.nodePath.reparentTo(myBase.dataRoot)
+        self.nodePath.reparentTo(self._base.dataRoot)
 
     def disable(self):
-        self.nodePath.reparentTo(myBase.dataUnused)
+        self.nodePath.reparentTo(self._base.dataUnused)
 
     def getName(self):
         return self.name
@@ -208,12 +222,17 @@ class DirectDials(DialNode, DirectObject):
     def __init__(self, vrpnClient, device):
         # Keep track of number of dials created
         DirectDials.dialCount += 1
-        # Create a unique name for this dial object
-        self.name = 'DirectDials-' + repr(DirectDials.dialCount)
         # Create a new dial node for the given device
         DialNode.__init__(self, vrpnClient, device)
+        # Create a unique name for this dial object
+        self.name = 'DirectDials-' + repr(DirectDials.dialCount)
+
         # Attach node to data graph
-        self.nodePath = myBase.dataRoot.attachNewNode(self)
+        try:
+            self._base = base
+        except:
+            self._base = simbase
+        self.nodePath = self._base.dataRoot.attachNewNode(self)
 
     def __getitem__(self, index):
         """
@@ -226,10 +245,10 @@ class DirectDials(DialNode, DirectObject):
         return self.getNumDials()
 
     def enable(self):
-        self.nodePath.reparentTo(myBase.dataRoot)
+        self.nodePath.reparentTo(self._base.dataRoot)
 
     def disable(self):
-        self.nodePath.reparentTo(myBase.dataUnused)
+        self.nodePath.reparentTo(self._base.dataUnused)
 
     def getName(self):
         return self.name
@@ -248,6 +267,8 @@ class DirectTimecodeReader(AnalogNode, DirectObject):
     def __init__(self, vrpnClient, device):
         # Keep track of number of timecodeReader created
         DirectTimecodeReader.timecodeReaderCount += 1
+        # Create a new dial node for the given device
+        AnalogNode.__init__(self, vrpnClient, device)
         # Create a unique name for this dial object
         self.name = ('DirectTimecodeReader-' +
                      repr(DirectTimecodeReader.timecodeReaderCount))
@@ -256,16 +277,19 @@ class DirectTimecodeReader(AnalogNode, DirectObject):
         self.seconds = 0
         self.minutes = 0
         self.hours = 0
-        # Create a new dial node for the given device
-        AnalogNode.__init__(self, vrpnClient, device)
+
         # Attach node to data graph
-        self.nodePath = myBase.dataRoot.attachNewNode(self)
+        try:
+            self._base = base
+        except:
+            self._base = simbase
+        self.nodePath = self._base.dataRoot.attachNewNode(self)
 
     def enable(self):
-        self.nodePath.reparentTo(myBase.dataRoot)
+        self.nodePath.reparentTo(self._base.dataRoot)
 
     def disable(self):
-        self.nodePath.reparentTo(myBase.dataUnused)
+        self.nodePath.reparentTo(self._base.dataUnused)
 
     def getName(self):
         return self.name

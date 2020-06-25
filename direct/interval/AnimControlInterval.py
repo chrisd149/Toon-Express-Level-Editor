@@ -2,11 +2,11 @@
 
 __all__ = ['AnimControlInterval']
 
-from pandac.PandaModules import *
+from panda3d.core import *
+from panda3d.direct import *
 from direct.directnotify.DirectNotifyGlobal import *
-import Interval
+from . import Interval
 import math
-from direct.showbase import LerpBlendHelpers
 
 class AnimControlInterval(Interval.Interval):
 
@@ -180,3 +180,4 @@ class AnimControlInterval(Interval.Interval):
 
         self.state = CInterval.SFinal
         self.intervalDone()
+

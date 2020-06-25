@@ -1,7 +1,6 @@
 from direct.showbase.DirectObject import DirectObject
 from direct.showbase.TkGlobal import *
-from Tkinter import *
-from Tree import *
+from .Tree import *
 import Pmw
 
 #--------------------------------------------------------------------------
@@ -15,7 +14,10 @@ class MemoryExplorer(Pmw.MegaWidget, DirectObject):
     #--------------------------------------------------------------------------
     # Init
     #--------------------------------------------------------------------------
-    def __init__(self, parent = None, nodePath = render, **kw):
+    def __init__(self, parent = None, nodePath = None, **kw):
+        if nodePath is None:
+            nodePath = render
+
         optiondefs = (('menuItems',   [],   Pmw.INITOPT),)
         self.defineoptions(kw, optiondefs)
         Pmw.MegaWidget.__init__(self, parent)
@@ -282,7 +284,7 @@ class MemoryExplorerItem:
     def getNumChildren(self):
         return len(self.children)
 
-    def getChildrenAsList(self):
+    def getChildren(self):
         return self.children
 
     def getName(self):

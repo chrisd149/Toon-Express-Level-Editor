@@ -2,11 +2,11 @@
 
 __all__ = ['ActorInterval', 'LerpAnimInterval']
 
-from pandac.PandaModules import *
+from panda3d.core import *
+from panda3d.direct import *
 from direct.directnotify.DirectNotifyGlobal import *
-import Interval
+from . import Interval
 import math
-from direct.showbase import LerpBlendHelpers
 
 class ActorInterval(Interval.Interval):
 
@@ -83,7 +83,7 @@ class ActorInterval(Interval.Interval):
                 if startTime == None:
                     startTime = float(self.startFrame) / float(self.frameRate)
                 endTime = startTime + duration
-                self.endFrame = duration * self.frameRate
+                self.endFrame = endTime * self.frameRate
             else:
                 # No end frame specified.  Choose the maximum of all
                 # of the controls' numbers of frames.

@@ -1,11 +1,14 @@
-"""Undocumented Module"""
+"""A DirectRadioButton is a type of button that, similar to a
+DirectCheckButton, has a separate indicator and can be toggled between
+two states.  However, only one DirectRadioButton in a group can be enabled
+at a particular time."""
 
 __all__ = ['DirectRadioButton']
 
-from pandac.PandaModules import *
-import DirectGuiGlobals as DGG
-from DirectButton import *
-from DirectLabel import *
+from panda3d.core import *
+from . import DirectGuiGlobals as DGG
+from .DirectButton import *
+from .DirectLabel import *
 
 class DirectRadioButton(DirectButton):
     """
@@ -43,7 +46,7 @@ class DirectRadioButton(DirectButton):
             ('boxGeom', None, None),
             ('boxGeomColor', None, None),
             ('boxGeomScale', 1.0, None),
-            ('boxImage', loader.loadModel('models/gui/radio_button_gui'), None),
+            ('boxImage', None, None),
             ('boxImageScale', 1.0, None),
             ('boxImageColor', VBase4(1, 1, 1, 1), None),
             ('boxRelief', None, None),
@@ -69,9 +72,11 @@ class DirectRadioButton(DirectButton):
         # Call option initialization functions
         self.initialiseoptions(DirectRadioButton)
         # After initialization with X giving it the correct size, put back space
-        if self['boxGeom'] ==  None:
+        if self['boxGeom'] is None:
+            if not 'boxRelief' in kw and self['boxImage'] is None:
+                self.indicator['relief'] = DGG.SUNKEN
             self.indicator['text'] = (' ', '*')
-            self.indicator['text_pos'] = (0, -.5)
+            self.indicator['text_pos'] = (0, -.25)
         else:
             self.indicator['text'] = (' ', ' ')
 
@@ -203,7 +208,7 @@ class DirectRadioButton(DirectButton):
 
         if self['command']:
             # Pass any extra args to command
-            apply(self['command'], self['extraArgs'])
+            self['command'](*self['extraArgs'])
 
     def setOthers(self, others):
         self['others'] = others

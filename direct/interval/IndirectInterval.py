@@ -2,10 +2,11 @@
 
 __all__ = ['IndirectInterval']
 
-from pandac.PandaModules import *
+from panda3d.core import *
+from panda3d.direct import *
 from direct.directnotify.DirectNotifyGlobal import *
-import Interval
-from direct.showbase import LerpBlendHelpers
+from . import Interval
+from . import LerpBlendHelpers
 
 class IndirectInterval(Interval.Interval):
     """

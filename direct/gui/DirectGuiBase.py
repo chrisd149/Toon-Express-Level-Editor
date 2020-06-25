@@ -1,29 +1,7 @@
-"""Undocumented Module"""
-
-__all__ = ['DirectGuiBase', 'DirectGuiWidget']
-
-
-from pandac.PandaModules import *
-import DirectGuiGlobals as DGG
-from OnscreenText import *
-from OnscreenGeom import *
-from OnscreenImage import *
-from direct.directtools.DirectUtil import ROUND_TO
-from direct.showbase import DirectObject
-from direct.task import Task
-from direct.showbase import ShowBase
-from direct.showbase.PythonUtil import recordCreationStackStr
-from pandac.PandaModules import PStatCollector
-import string, types
-
-guiObjectCollector = PStatCollector("Client::GuiObjects")
-
 """
 Base class for all Direct Gui items.  Handles composite widgets and
 command line argument parsing.
-"""
 
-"""
 Code Overview:
 
 1   Each widget defines a set of options (optiondefs) as a list of tuples
@@ -98,7 +76,32 @@ Code Overview:
     are left unused.  If so, an error is raised.
 """
 
+__all__ = ['DirectGuiBase', 'DirectGuiWidget']
+
+
+from panda3d.core import *
+from direct.showbase import ShowBaseGlobal
+from direct.showbase.ShowBase import ShowBase
+from . import DirectGuiGlobals as DGG
+from .OnscreenText import *
+from .OnscreenGeom import *
+from .OnscreenImage import *
+from direct.directtools.DirectUtil import ROUND_TO
+from direct.showbase import DirectObject
+from direct.task import Task
+import sys
+
+if sys.version_info >= (3, 0):
+    stringType = str
+else:
+    stringType = basestring
+
+guiObjectCollector = PStatCollector("Client::GuiObjects")
+
+
 class DirectGuiBase(DirectObject.DirectObject):
+    """Base class of all DirectGUI widgets."""
+
     def __init__(self):
         # Default id of all gui object, subclasses should override this
         self.guiId = 'guiObject'
@@ -192,9 +195,9 @@ class DirectGuiBase(DirectObject.DirectObject):
 
         # optimisations:
         optionInfo = self._optionInfo
-        optionInfo_has_key = optionInfo.has_key
+        optionInfo_has_key = optionInfo.__contains__
         keywords = self._constructorKeywords
-        keywords_has_key = keywords.has_key
+        keywords_has_key = keywords.__contains__
         FUNCTION = DGG._OPT_FUNCTION
 
         for name, default, function in optionDefs:
@@ -245,13 +248,13 @@ class DirectGuiBase(DirectObject.DirectObject):
             # Now check if anything is left over
             unusedOptions = []
             keywords = self._constructorKeywords
-            for name in keywords.keys():
+            for name in keywords:
                 used = keywords[name][1]
                 if not used:
                     # This keyword argument has not been used.  If it
                     # does not refer to a dynamic group, mark it as
                     # unused.
-                    index = string.find(name, '_')
+                    index = name.find('_')
                     if index < 0 or name[:index] not in self._dynamicGroups:
                         unusedOptions.append(name)
             self._constructorKeywords = {}
@@ -260,8 +263,8 @@ class DirectGuiBase(DirectObject.DirectObject):
                     text = 'Unknown option "'
                 else:
                     text = 'Unknown options "'
-                raise KeyError, text + string.join(unusedOptions, ', ') + \
-                        '" for ' + myClass.__name__
+                raise KeyError(text + ', '.join(unusedOptions) + \
+                        '" for ' + myClass.__name__)
             # Can now call post init func
             self.postInitialiseFunc()
 
@@ -326,11 +329,11 @@ class DirectGuiBase(DirectObject.DirectObject):
 
         # optimizations:
         optionInfo = self._optionInfo
-        optionInfo_has_key = optionInfo.has_key
+        optionInfo_has_key = optionInfo.__contains__
         componentInfo = self.__componentInfo
-        componentInfo_has_key = componentInfo.has_key
+        componentInfo_has_key = componentInfo.__contains__
         componentAliases = self.__componentAliases
-        componentAliases_has_key = componentAliases.has_key
+        componentAliases_has_key = componentAliases.__contains__
         VALUE = DGG._OPT_VALUE
         FUNCTION = DGG._OPT_FUNCTION
 
@@ -345,15 +348,15 @@ class DirectGuiBase(DirectObject.DirectObject):
         # component and whose values are a dictionary of options and
         # values for the component.
         indirectOptions = {}
-        indirectOptions_has_key = indirectOptions.has_key
+        indirectOptions_has_key = indirectOptions.__contains__
 
         for option, value in kw.items():
             if optionInfo_has_key(option):
                 # This is one of the options of this gui item.
                 # Check it is an initialisation option.
                 if optionInfo[option][FUNCTION] is DGG.INITOPT:
-                    print 'Cannot configure initialisation option "' \
-                          + option + '" for ' + self.__class__.__name__
+                    print('Cannot configure initialisation option "' \
+                          + option + '" for ' + self.__class__.__name__)
                     break
                     #raise KeyError, \
                 #           'Cannot configure initialisation option "' \
@@ -361,7 +364,7 @@ class DirectGuiBase(DirectObject.DirectObject):
                 optionInfo[option][VALUE] = value
                 directOptions.append(option)
             else:
-                index = string.find(option, '_')
+                index = option.find('_')
                 if index >= 0:
                     # This option may be of the form <component>_<option>.
                     # e.g. if alias ('efEntry', 'entryField_entry')
@@ -401,8 +404,8 @@ class DirectGuiBase(DirectObject.DirectObject):
 
                         if len(componentConfigFuncs) == 0 and \
                                 component not in self._dynamicGroups:
-                            raise KeyError, 'Unknown option "' + option + \
-                                    '" for ' + self.__class__.__name__
+                            raise KeyError('Unknown option "' + option + \
+                                    '" for ' + self.__class__.__name__)
 
                     # Add the configure method(s) (may be more than
                     # one if this is configuring a component group)
@@ -415,40 +418,40 @@ class DirectGuiBase(DirectObject.DirectObject):
                         indirectOptions[componentConfigFunc][componentOption] \
                                 = value
                 else:
-                    raise KeyError, 'Unknown option "' + option + \
-                            '" for ' + self.__class__.__name__
+                    raise KeyError('Unknown option "' + option + \
+                            '" for ' + self.__class__.__name__)
 
         # Call the configure methods for any components.
         # Pass in the dictionary of keyword/values created above
-        map(apply, indirectOptions.keys(),
-                ((),) * len(indirectOptions), indirectOptions.values())
+        for func, options in indirectOptions.items():
+            func(**options)
 
         # Call the configuration callback function for each option.
         for option in directOptions:
             info = optionInfo[option]
             func = info[DGG._OPT_FUNCTION]
             if func is not None:
-                func()
+              func()
 
     # Allow index style references
     def __setitem__(self, key, value):
-        apply(self.configure, (), {key: value})
+        self.configure(**{key: value})
 
     def cget(self, option):
         """
         Get current configuration setting for this option
         """
         # Return the value of an option, for example myWidget['font'].
-        if self._optionInfo.has_key(option):
+        if option in self._optionInfo:
             return self._optionInfo[option][DGG._OPT_VALUE]
         else:
-            index = string.find(option, '_')
+            index = option.find('_')
             if index >= 0:
                 component = option[:index]
                 componentOption = option[(index + 1):]
 
                 # Expand component alias
-                if self.__componentAliases.has_key(component):
+                if component in self.__componentAliases:
                     component, subComponent = self.__componentAliases[
                         component]
                     if subComponent is not None:
@@ -457,7 +460,7 @@ class DirectGuiBase(DirectObject.DirectObject):
                     # Expand option string to write on error
                     option = component + '_' + componentOption
 
-                if self.__componentInfo.has_key(component):
+                if component in self.__componentInfo:
                     # Call cget on the component.
                     componentCget = self.__componentInfo[component][3]
                     return componentCget(componentOption)
@@ -470,8 +473,8 @@ class DirectGuiBase(DirectObject.DirectObject):
                             return componentCget(componentOption)
 
         # Option not found
-        raise KeyError, 'Unknown option "' + option + \
-                '" for ' + self.__class__.__name__
+        raise KeyError('Unknown option "' + option + \
+                '" for ' + self.__class__.__name__)
 
     # Allow index style refererences
     __getitem__ = cget
@@ -483,8 +486,7 @@ class DirectGuiBase(DirectObject.DirectObject):
         """
         # Check for invalid component name
         if '_' in componentName:
-            raise ValueError, \
-                    'Component name "%s" must not contain "_"' % componentName
+            raise ValueError('Component name "%s" must not contain "_"' % componentName)
 
         # Get construction keywords
         if hasattr(self, '_constructorKeywords'):
@@ -494,7 +496,7 @@ class DirectGuiBase(DirectObject.DirectObject):
 
         for alias, component in componentAliases:
             # Create aliases to the component and its sub-components.
-            index = string.find(component, '_')
+            index = component.find('_')
             if index < 0:
                 # Just a shorter name for one of this widget's components
                 self.__componentAliases[alias] = (component, None)
@@ -509,7 +511,7 @@ class DirectGuiBase(DirectObject.DirectObject):
             # with corresponding keys beginning with *component*.
             alias = alias + '_'
             aliasLen = len(alias)
-            for option in keywords.keys():
+            for option in keywords.copy():
                 if len(option) > aliasLen and option[:aliasLen] == alias:
                     newkey = component + '_' + option[aliasLen:]
                     keywords[newkey] = keywords[option]
@@ -522,14 +524,14 @@ class DirectGuiBase(DirectObject.DirectObject):
         # First, walk through the option list looking for arguments
         # than refer to this component's group.
 
-        for option in keywords.keys():
+        for option in keywords:
             # Check if this keyword argument refers to the group
             # of this component.  If so, add this to the options
             # to use when constructing the widget.  Mark the
             # keyword argument as being used, but do not remove it
             # since it may be required when creating another
             # component.
-            index = string.find(option, '_')
+            index = option.find('_')
             if index >= 0 and componentGroup == option[:index]:
                 rest = option[(index + 1):]
                 kw[rest] = keywords[option][0]
@@ -541,7 +543,7 @@ class DirectGuiBase(DirectObject.DirectObject):
         # specific than the group arguments, above; we walk through
         # the list afterwards so they will override.
 
-        for option in keywords.keys():
+        for option in keywords.copy():
             if len(option) > nameLen and option[:nameLen] == componentPrefix:
                 # The keyword argument refers to this component, so add
                 # this to the options to use when constructing the widget.
@@ -553,13 +555,13 @@ class DirectGuiBase(DirectObject.DirectObject):
         if widgetClass is None:
             return None
         # Get arguments for widget constructor
-        if len(widgetArgs) == 1 and type(widgetArgs[0]) == types.TupleType:
+        if len(widgetArgs) == 1 and type(widgetArgs[0]) == tuple:
             # Arguments to the constructor can be specified as either
             # multiple trailing arguments to createcomponent() or as a
             # single tuple argument.
             widgetArgs = widgetArgs[0]
         # Create the widget
-        widget = apply(widgetClass, widgetArgs, kw)
+        widget = widgetClass(*widgetArgs, **kw)
         componentClass = widget.__class__.__name__
         self.__componentInfo[componentName] = (widget, widget.configure,
                 componentClass, widget.cget, componentGroup)
@@ -572,7 +574,7 @@ class DirectGuiBase(DirectObject.DirectObject):
         # widget components directly.
 
         # Find the main component and any subcomponents
-        index = string.find(name, '_')
+        index = name.find('_')
         if index < 0:
             component = name
             remainingComponents = None
@@ -582,7 +584,7 @@ class DirectGuiBase(DirectObject.DirectObject):
 
         # Expand component alias
         # Example entry which is an alias for entryField_entry
-        if self.__componentAliases.has_key(component):
+        if component in self.__componentAliases:
             # component = entryField, subComponent = entry
             component, subComponent = self.__componentAliases[component]
             if subComponent is not None:
@@ -603,12 +605,12 @@ class DirectGuiBase(DirectObject.DirectObject):
 
     def components(self):
         # Return a list of all components.
-        names = self.__componentInfo.keys()
+        names = list(self.__componentInfo.keys())
         names.sort()
         return names
 
     def hascomponent(self, component):
-        return self.__componentInfo.has_key(component)
+        return component in self.__componentInfo
 
     def destroycomponent(self, name):
         # Remove a megawidget component.
@@ -632,10 +634,10 @@ class DirectGuiBase(DirectObject.DirectObject):
         """
         # Need to tack on gui item specific id
         gEvent = event + self.guiId
-        if base.config.GetBool('debug-directgui-msgs', False):
+        if ShowBaseGlobal.config.GetBool('debug-directgui-msgs', False):
             from direct.showbase.PythonUtil import StackTrace
-            print gEvent
-            print StackTrace()
+            print(gEvent)
+            print(StackTrace())
         self.accept(gEvent, command, extraArgs = extraArgs)
 
     def unbind(self, event):
@@ -652,13 +654,6 @@ def toggleGuiGridSnap():
 def setGuiGridSpacing(spacing):
     DirectGuiWidget.gridSpacing = spacing
 
-# this should trigger off of __dev__, but it's not available at this point.
-# __debug__ works because the production client is not __debug__ and the
-# production AI doesn't create any GUI.
-if config.GetBool('record-gui-creation-stack', __debug__):
-    # this will help track down the code that created DirectGui objects
-    # call obj.printCreationStackTrace() to figure out what code created it
-    DirectGuiBase = recordCreationStackStr(DirectGuiBase)
 
 class DirectGuiWidget(DirectGuiBase, NodePath):
     # Toggle if you wish widget's to snap to grid when draggin
@@ -668,8 +663,7 @@ class DirectGuiWidget(DirectGuiBase, NodePath):
     # Determine the default initial state for inactive (or
     # unclickable) components.  If we are in edit mode, these are
     # actually clickable by default.
-    #guiEdit = base.config.GetBool('direct-gui-edit', 0)
-    guiEdit = config.GetBool('direct-gui-edit', 0)
+    guiEdit = ShowBaseGlobal.config.GetBool('direct-gui-edit', False)
     if guiEdit:
         inactiveInitState = DGG.NORMAL
     else:
@@ -730,53 +724,34 @@ class DirectGuiWidget(DirectGuiBase, NodePath):
         if self['guiId']:
             self.guiItem.setId(self['guiId'])
         self.guiId = self.guiItem.getId()
-        if __dev__:
+
+        if ShowBaseGlobal.__dev__:
             guiObjectCollector.addLevel(1)
             guiObjectCollector.flushLevel()
             # track gui items by guiId for tracking down leaks
-            if hasattr(base, 'guiItems'):
-                if self.guiId in base.guiItems:
-                    base.notify.warning('duplicate guiId: %s (%s stomping %s)' %
-                                        (self.guiId, self,
-                                         base.guiItems[self.guiId]))
-                base.guiItems[self.guiId] = self
-                if hasattr(base, 'printGuiCreates'):
-                    printStack()
+            if ShowBaseGlobal.config.GetBool('track-gui-items', False):
+                if not hasattr(ShowBase, 'guiItems'):
+                    ShowBase.guiItems = {}
+                if self.guiId in ShowBase.guiItems:
+                    ShowBase.notify.warning('duplicate guiId: %s (%s stomping %s)' %
+                                            (self.guiId, self,
+                                             ShowBase.guiItems[self.guiId]))
+                ShowBase.guiItems[self.guiId] = self
+
         # Attach button to parent and make that self
-        if (parent == None):
-            parent = aspect2d
+        if parent is None:
+            parent = ShowBaseGlobal.aspect2d
+
         self.assign(parent.attachNewNode(self.guiItem, self['sortOrder']))
         # Update pose to initial values
         if self['pos']:
-            pos = self['pos']
-            # Can either be a VBase3 or a tuple of 3 values
-            if isinstance(pos, VBase3):
-                self.setPos(pos)
-            else:
-                apply(self.setPos, pos)
+            self.setPos(self['pos'])
         if self['hpr']:
-            hpr = self['hpr']
-            # Can either be a VBase3 or a tuple of 3 values
-            if isinstance(hpr, VBase3):
-                self.setHpr(hpr)
-            else:
-                apply(self.setHpr, hpr)
+            self.setHpr(self['hpr'])
         if self['scale']:
-            scale = self['scale']
-            # Can either be a VBase3 or a tuple of 3 values
-            if (isinstance(scale, VBase3) or
-                (type(scale) == types.IntType) or
-                (type(scale) == types.FloatType)):
-                self.setScale(scale)
-            else:
-                apply(self.setScale, scale)
+            self.setScale(self['scale'])
         if self['color']:
-            color = self['color']
-            # Can either be a VBase4 or a tuple of 4 values
-            if (isinstance(color, VBase4)):
-                self.setColor(color)
-            else:
-                apply(self.setColor, color)
+            self.setColor(self['color'])
         # Initialize names
         # Putting the class name in helps with debugging.
         self.setName("%s-%s" % (self.__class__.__name__, self.guiId))
@@ -931,6 +906,22 @@ class DirectGuiWidget(DirectGuiBase, NodePath):
     def getBounds(self, state = 0):
         self.stateNodePath[state].calcTightBounds(self.ll, self.ur)
         # Scale bounds to give a pad around graphics
+        vec_right = Vec3.right()
+        vec_up = Vec3.up()
+        left = (vec_right[0] * self.ll[0]
+              + vec_right[1] * self.ll[1]
+              + vec_right[2] * self.ll[2])
+        right = (vec_right[0] * self.ur[0]
+               + vec_right[1] * self.ur[1]
+               + vec_right[2] * self.ur[2])
+        bottom = (vec_up[0] * self.ll[0]
+                + vec_up[1] * self.ll[1]
+                + vec_up[2] * self.ll[2])
+        top = (vec_up[0] * self.ur[0]
+             + vec_up[1] * self.ur[1]
+             + vec_up[2] * self.ur[2])
+        self.ll = Point3(left, 0.0, bottom)
+        self.ur = Point3(right, 0.0, top)
         self.bounds = [self.ll[0] - self['pad'][0],
                        self.ur[0] + self['pad'][0],
                        self.ll[2] - self['pad'][1],
@@ -961,7 +952,7 @@ class DirectGuiWidget(DirectGuiBase, NodePath):
         # Convert None, and string arguments
         if relief == None:
             relief = PGFrameStyle.TNone
-        elif isinstance(relief, types.StringTypes):
+        elif isinstance(relief, stringType):
             # Convert string to frame style int
             relief = DGG.FrameStyleDict[relief]
         # Set style
@@ -986,8 +977,8 @@ class DirectGuiWidget(DirectGuiBase, NodePath):
     def setFrameColor(self):
         # this might be a single color or a list of colors
         colors = self['frameColor']
-        if type(colors[0]) == types.IntType or \
-           type(colors[0]) == types.FloatType:
+        if type(colors[0]) == int or \
+           type(colors[0]) == float:
             colors = (colors,)
         for i in range(self['numStates']):
             if i >= len(colors):
@@ -1002,14 +993,14 @@ class DirectGuiWidget(DirectGuiBase, NodePath):
         textures = self['frameTexture']
         if textures == None or \
            isinstance(textures, Texture) or \
-           isinstance(textures, types.StringTypes):
+           isinstance(textures, stringType):
             textures = (textures,) * self['numStates']
         for i in range(self['numStates']):
             if i >= len(textures):
                 texture = textures[-1]
             else:
                 texture = textures[i]
-            if isinstance(texture, types.StringTypes):
+            if isinstance(texture, stringType):
                 texture = loader.loadTexture(texture)
             if texture:
                 self.frameStyle[i].setTexture(texture)
@@ -1037,17 +1028,12 @@ class DirectGuiWidget(DirectGuiBase, NodePath):
 
     def destroy(self):
         if hasattr(self, "frameStyle"):
-            if __dev__:
+            if ShowBaseGlobal.__dev__:
                 guiObjectCollector.subLevel(1)
                 guiObjectCollector.flushLevel()
-                if hasattr(base, 'guiItems'):
-                    if self.guiId in base.guiItems:
-                        del base.guiItems[self.guiId]
-                    else:
-                        base.notify.warning(
-                            'DirectGuiWidget.destroy(): '
-                            'gui item %s not in base.guiItems' %
-                            self.guiId)
+                if hasattr(ShowBase, 'guiItems'):
+                    ShowBase.guiItems.pop(self.guiId, None)
+
             # Destroy children
             for child in self.getChildren():
                 childGui = self.guiDict.get(child.getName())
@@ -1074,9 +1060,9 @@ class DirectGuiWidget(DirectGuiBase, NodePath):
 
     def printConfig(self, indent = 0):
         space = ' ' * indent
-        print space + self.guiId, '-', self.__class__.__name__
-        print space + 'Pos:   ' + self.getPos().pPrintValues()
-        print space + 'Scale: ' + self.getScale().pPrintValues()
+        print('%s%s - %s' % (space, self.guiId, self.__class__.__name__))
+        print('%sPos:   %s' % (space, tuple(self.getPos())))
+        print('%sScale: %s' % (space, tuple(self.getScale())))
         # Print out children info
         for child in self.getChildren():
             messenger.send(DGG.PRINT + child.getName(), [indent + 2])

@@ -2,4 +2,4 @@
 
 import sys
 sys.setdefaultencoding('utf8')
-print "Encoding set to UTF8"
+print("Encoding set to UTF8")

@@ -1,7 +1,6 @@
 """Logger module: contains the logger class which creates and writes
    data to log files on disk"""
 
-import sys
 import time
 import math
 
@@ -88,3 +87,5 @@ class Logger:
             minutes = 0
         seconds = int(math.ceil(dt))
         return("%02d:%02d:%02d:%02d: " % (days, hours, minutes, seconds))
+
+

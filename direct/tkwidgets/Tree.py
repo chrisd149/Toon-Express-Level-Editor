@@ -1,4 +1,4 @@
-"""Undocumented Module"""
+"""Defines tree widgets for the tkinter GUI system."""
 
 __all__ = ['TreeNode', 'TreeItem']
 
@@ -19,20 +19,14 @@ __all__ = ['TreeNode', 'TreeItem']
 # - keep track of object ids to allow more careful cleaning
 # - optimize tree redraw after expand of subnode
 
-import os
-import sys
-import string
+import os, sys
 from direct.showbase.TkGlobal import *
-from Tkinter import *
-import Pmw
-from pandac.PandaModules import *
+from panda3d.core import *
 
-# Initialize icon directory
-ICONDIR = ConfigVariableSearchPath('model-path').findFile(Filename('icons')).toOsSpecific()
-if not ICONDIR: # Let's just force it.
-    ICONDIR = 'models/icons'
-if not os.path.isdir(ICONDIR):
-    raise RuntimeError, "can't find DIRECT icon directory (%s)" % repr(ICONDIR)
+
+if sys.version_info < (3, 0):
+    FileNotFoundError = IOError
+
 
 class TreeNode:
 
@@ -76,14 +70,14 @@ class TreeNode:
         self.parent = None
 
     def geticonimage(self, name):
-        try:
+        if name in self.iconimages:
             return self.iconimages[name]
-        except KeyError:
-            pass
-        file, ext = os.path.splitext(name)
-        ext = ext or ".gif"
-        fullname = os.path.join(ICONDIR, file + ext)
-        image = PhotoImage(master=self.canvas, file=fullname)
+
+        fn = Filename("icons", name)
+        if not fn.resolveFilename(getModelPath().value, "gif"):
+            raise FileNotFoundError("couldn't find \"%s\"" % (fn))
+
+        image = PhotoImage(master=self.canvas, file=fn.toOsSpecific())
         self.iconimages[name] = image
         return image
 
@@ -229,7 +223,7 @@ class TreeNode:
         self.kidKeys = []
         for item in sublist:
             key = item.GetKey()
-            if fUseCachedChildren and self.children.has_key(key):
+            if fUseCachedChildren and key in self.children:
                 child = self.children[key]
             else:
                 child = TreeNode(self.canvas, self, item, self.menuList)
@@ -238,7 +232,7 @@ class TreeNode:
             self.kidKeys.append(key)
 
         # Remove unused children
-        for key in self.children.keys():
+        for key in list(self.children.keys()):
             if key not in self.kidKeys:
                 del(self.children[key])
 
@@ -293,7 +287,7 @@ class TreeNode:
             sublist.sort(compareText)
         for item in sublist:
             key = item.GetKey()
-            if fUseCachedChildren and self.children.has_key(key):
+            if fUseCachedChildren and key in self.children:
                 child = self.children[key]
             else:
                 child = TreeNode(self.canvas, self, item, self.menuList)
@@ -309,14 +303,14 @@ class TreeNode:
             if self.fModeChildrenTag:
                 if self.childrenTag:
                     showThisItem = False
-                    for tagKey in self.childrenTag.keys():
+                    for tagKey in list(self.childrenTag.keys()):
                         if item.nodePath.hasTag(tagKey):
                             showThisItem = self.childrenTag[tagKey]
                     if not showThisItem:
                         self.kidKeys.remove(key)
 
         # Remove unused children
-        for key in self.children.keys():
+        for key in list(self.children.keys()):
             if key not in self.kidKeys:
                 del(self.children[key])
         cx = x+20
@@ -442,7 +436,7 @@ class TreeNode:
             if self.fModeChildrenTag:
                 if self.childrenTag:
                     showThisItem = False
-                    for tagKey in self.childrenTag.keys():
+                    for tagKey in list(self.childrenTag.keys()):
                         if self.item.nodePath.hasTag(tagKey):
                             showThisItem = self.childrenTag[tagKey]
                     if not showThisItem:
@@ -454,7 +448,7 @@ class TreeNode:
             key = item.GetKey()
 
             # Use existing child or create new TreeNode if none exists
-            if self.children.has_key(key):
+            if key in self.children:
                 child = self.children[key]
             else:
                 child = TreeNode(self.canvas, self, item, self.menuList)
@@ -526,3 +520,6 @@ class TreeItem:
 
     def OnSelect(self):
         """Called when item selected."""
+
+
+

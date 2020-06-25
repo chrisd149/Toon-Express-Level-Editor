@@ -1,7 +1,7 @@
 from direct.showbase.DirectObject import DirectObject
-from DirectGlobals import *
-from DirectUtil import *
-from DirectGeometry import *
+from .DirectGlobals import *
+from .DirectUtil import *
+from .DirectGeometry import *
 
 COA_ORIGIN = 0
 COA_CENTER = 1
@@ -68,7 +68,7 @@ class SelectedNodePaths(DirectObject):
         """ Select the specified node path.  Multiselect as required """
         # Do nothing if nothing selected
         if not nodePath:
-            print 'Nothing selected!!'
+            print('Nothing selected!!')
             return None
 
         # Reset selected objects and highlight if multiSelect is false
@@ -83,7 +83,7 @@ class SelectedNodePaths(DirectObject):
                     break
 
         # Get this pointer
-        id = nodePath.id()
+        id = nodePath.get_key()
         # First see if its already in the selected dictionary
         dnp = self.getSelectedDict(id)
         # If so, deselect it
@@ -104,7 +104,7 @@ class SelectedNodePaths(DirectObject):
                 # Show its bounding box
                 dnp.highlight(fRecompute = 0)
             # Add it to the selected dictionary
-            self.selectedDict[dnp.id()] = dnp
+            self.selectedDict[dnp.get_key()] = dnp
             self.selectedList.append(dnp) # [gjeon]
 
         # And update last
@@ -117,7 +117,7 @@ class SelectedNodePaths(DirectObject):
     def deselect(self, nodePath):
         """ Deselect the specified node path """
         # Get this pointer
-        id = nodePath.id()
+        id = nodePath.get_key()
         # See if it is in the selected dictionary
         dnp = self.getSelectedDict(id)
         if dnp:
@@ -160,7 +160,7 @@ class SelectedNodePaths(DirectObject):
             return None
 
     def getDeselectedAsList(self):
-        return self.deselectedDict.values()[:]
+        return list(self.deselectedDict.values())
 
     def getDeselectedDict(self, id):
         """
@@ -227,20 +227,31 @@ class SelectedNodePaths(DirectObject):
         selected = self.last
         # Toggle visibility of selected node paths
         if selected:
-            selected.toggleVis()
+            if selected.isHidden():
+                selected.show()
+            else:
+                selected.hide()
 
     def toggleVisAll(self):
         # Toggle viz for all selected node paths
-        self.forEachSelectedNodePathDo(NodePath.toggleVis)
+        selectedNodePaths = self.getSelectedAsList()
+        for nodePath in selectedNodePaths:
+            if nodePath.isHidden():
+                nodePath.show()
+            else:
+                nodePath.hide()
 
     def isolateSelected(self):
         selected = self.last
         if selected:
-            selected.isolate()
+            selected.showAllDescendents()
+            for sib in selected.getParent().getChildren():
+                if sib.node() != selected.node():
+                    sib.hide()
 
     def getDirectNodePath(self, nodePath):
         # Get this pointer
-        id = nodePath.id()
+        id = nodePath.get_key()
         # First check selected dict
         dnp = self.getSelectedDict(id)
         if dnp:
@@ -249,7 +260,7 @@ class SelectedNodePaths(DirectObject):
         return self.getDeselectedDict(id)
 
     def getNumSelected(self):
-        return len(self.selectedDict.keys())
+        return len(self.selectedDict)
 
 
 class DirectBoundingBox:
@@ -612,8 +623,8 @@ class SelectionRay(SelectionQueue):
     def pickBitMask(self, bitMask = BitMask32.allOff(),
                     targetNodePath = None,
                     skipFlags = SKIP_ALL):
-        if parentNodePath is None:
-            parentNodePath = render
+        if targetNodePath is None:
+            targetNodePath = render
         self.collideWithBitMask(bitMask)
         self.pick(targetNodePath)
         # Determine collision entry
@@ -782,3 +793,4 @@ class SelectionSphere(SelectionQueue):
             targetNodePath = render
         self.collideWithBitMask(bitMask)
         return self.pick(targetNodePath, skipFlags)
+

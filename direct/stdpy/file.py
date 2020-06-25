@@ -5,221 +5,274 @@ SIMPLE_THREADS model, by avoiding blocking all threads while waiting
 for I/O to complete. """
 
 __all__ = [
-    'file', 'open', 'listdir', 'walk', 'join',
+    'open', 'listdir', 'walk', 'join',
     'isfile', 'isdir', 'exists', 'lexists', 'getmtime', 'getsize',
+    'execfile',
     ]
 
-from pandac import PandaModules as pm
-import types
+from panda3d import core
+import sys
+import os
+import io
+import encodings
+from posixpath import join
 
-_vfs = pm.VirtualFileSystem.getGlobalPtr()
+_vfs = core.VirtualFileSystem.getGlobalPtr()
 
-class file:
-    def __init__(self, filename, mode = 'r', bufsize = None,
-                 autoUnwrap = False):
-        self.__stream = None
-        self.__needsVfsClose = False
-        self.__reader = None
-        self.__writer = None
-        self.closed = True
-        self.encoding = None
-        self.errors = None
-        self.__lastWrite = False
+if sys.version_info < (3, 0):
+    # Python 3 defines these subtypes of IOError, but Python 2 doesn't.
+    FileNotFoundError = IOError
+    IsADirectoryError = IOError
+    FileExistsError = IOError
+    PermissionError = IOError
 
-        self.mode = mode
-        self.name = None
-        self.filename = None
-        self.newlines = None
-        self.softspace = False
+    unicodeType = unicode
+    strType = str
+else:
+    unicodeType = str
+    strType = ()
 
-        readMode = False
-        writeMode = False
 
-        if isinstance(filename, pm.Istream) or isinstance(filename, pm.Ostream):
-            # If we were given a stream instead of a filename, assign
-            # it directly.
-            self.__stream = filename
-            readMode = isinstance(filename, pm.Istream)
-            writeMode = isinstance(filename, pm.Ostream)
+def open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None, closefd=True):
+    if sys.version_info >= (3, 0):
+        # Python 3 is much stricter than Python 2, which lets
+        # unknown flags fall through.
+        for ch in mode:
+            if ch not in 'rwxabt+U':
+                raise ValueError("invalid mode: '%s'" % (mode))
 
-        elif isinstance(filename, pm.VirtualFile):
+    creating = 'x' in mode
+    writing = 'w' in mode
+    appending = 'a' in mode
+    updating = '+' in mode
+    binary = 'b' in mode
+    universal = 'U' in mode
+    reading = universal or 'r' in mode
+
+    if binary and 't' in mode:
+        raise ValueError("can't have text and binary mode at once")
+
+    if creating + reading + writing + appending > 1:
+        raise ValueError("must have exactly one of create/read/write/append mode")
+
+    if binary:
+        if encoding:
+            raise ValueError("binary mode doesn't take an encoding argument")
+        if errors:
+            raise ValueError("binary mode doesn't take an errors argument")
+        if newline:
+            raise ValueError("binary mode doesn't take a newline argument")
+
+    if isinstance(file, core.Istream) or isinstance(file, core.Ostream):
+        # If we were given a stream instead of a filename, assign
+        # it directly.
+        raw = StreamIOWrapper(file)
+        raw.mode = mode
+
+    else:
+        vfile = None
+
+        if isinstance(file, core.VirtualFile):
             # We can also "open" a VirtualFile object for reading.
-            self.__stream = filename.openReadFile(autoUnwrap)
-            if not self.__stream:
-                message = 'Could not read virtual file %s' % (repr(filename))
-                raise IOError, message
-            self.__needsVfsClose = True
-            readMode = True
+            vfile = file
+            filename = vfile.getFilename()
+        elif isinstance(file, unicodeType):
+            # If a raw string is given, assume it's an os-specific
+            # filename.
+            filename = core.Filename.fromOsSpecificW(file)
+        elif isinstance(file, strType):
+            filename = core.Filename.fromOsSpecific(file)
+        else:
+            # It's either a Filename object or an os.PathLike.
+            # If a Filename is given, make a writable copy anyway.
+            filename = core.Filename(file)
+
+        if binary or sys.version_info >= (3, 0):
+            filename.setBinary()
+        else:
+            filename.setText()
+
+        if not vfile:
+            vfile = _vfs.getFile(filename)
+
+        if not vfile:
+            if reading:
+                raise FileNotFoundError("No such file or directory: '%s'" % (filename))
+
+            vfile = _vfs.createFile(filename)
+            if not vfile:
+                raise IOError("Failed to create file: '%s'" % (filename))
+
+        elif creating:
+            # In 'creating' mode, we have to raise FileExistsError
+            # if the file already exists.  Otherwise, it's the same
+            # as 'writing' mode.
+            raise FileExistsError("File exists: '%s'" % (filename))
+
+        elif vfile.isDirectory():
+            raise IsADirectoryError("Is a directory: '%s'" % (filename))
+
+        # Actually open the streams.
+        if reading:
+            if updating:
+                stream = vfile.openReadWriteFile(False)
+            else:
+                stream = vfile.openReadFile(False)
+
+            if not stream:
+                raise IOError("Could not open %s for reading" % (filename))
+
+        elif writing or creating:
+            if updating:
+                stream = vfile.openReadWriteFile(True)
+            else:
+                stream = vfile.openWriteFile(False, True)
+
+            if not stream:
+                raise IOError("Could not open %s for writing" % (filename))
+
+        elif appending:
+            if updating:
+                stream = vfile.openReadAppendFile()
+            else:
+                stream = vfile.openAppendFile()
+
+            if not stream:
+                raise IOError("Could not open %s for appending" % (filename))
 
         else:
-            # Otherwise, we must have been given a filename.  Open it.
-            if isinstance(filename, types.StringTypes):
-                # If a raw string is given, assume it's an os-specific
-                # filename.
-                filename = pm.Filename.fromOsSpecific(filename)
-            else:
-                # If a Filename is given, make a writable copy anyway.
-                filename = pm.Filename(filename)
+            raise ValueError("Must have exactly one of create/read/write/append mode and at most one plus")
 
-            self.filename = filename
-            self.name = filename.toOsSpecific()
+        raw = StreamIOWrapper(stream, needsVfsClose=True)
+        raw.mode = mode
+        raw.name = vfile.getFilename().toOsSpecific()
 
-            binary = False
-            if 'b' in mode:
-                # Strip 'b'.  This means a binary file.
-                i = mode.index('b')
-                mode = mode[:i] + mode[i + 1:]
-                binary = True
+    # If a binary stream was requested, return the stream we've created.
+    if binary:
+        return raw
 
-            if 'U' in mode:
-                # Strip 'U'.  We don't use it; universal-newline support
-                # is built into Panda, and can't be changed at runtime.
-                i = mode.index('U')
-                mode = mode[:i] + mode[i + 1:]
-                binary = False
+    # If we're in Python 2, we don't decode unicode strings by default.
+    if not encoding and sys.version_info < (3, 0):
+        return raw
 
-            if mode == '':
-                mode = 'r'
+    line_buffering = False
+    if buffering == 1:
+        line_buffering = True
+    elif buffering == 0:
+        raise ValueError("can't have unbuffered text I/O")
 
-            # Per Python docs, we insist this is true.
-            assert mode[0] in 'rwa'
+    # Otherwise, create a TextIOWrapper object to wrap it.
+    wrapper = io.TextIOWrapper(raw, encoding, errors, newline, line_buffering)
+    wrapper.mode = mode
+    return wrapper
 
-            if binary:
-                filename.setBinary()
-            else:
-                filename.setText()
 
-            # Actually open the streams.
-            if mode == 'w':
-                self.__stream = pm.OFileStream()
-                if not filename.openWrite(self.__stream, True):
-                    message = 'Could not open %s for writing' % (filename)
-                    raise IOError, message
-                writeMode = True
+if sys.version_info < (3, 0):
+    # Python 2 had an alias for open() called file().
+    __all__.append('file')
+    file = open
 
-            elif mode == 'a':
-                self.__stream = pm.OFileStream()
-                if not filename.openAppend(self.__stream):
-                    message = 'Could not open %s for writing' % (filename)
-                    raise IOError, message
-                writeMode = True
 
-            elif mode == 'w+':
-                self.__stream = pm.FileStream()
-                if not filename.openReadWrite(self.__stream, True):
-                    message = 'Could not open %s for writing' % (filename)
-                    raise IOError, message
-                readMode = True
-                writeMode = True
+class StreamIOWrapper(io.IOBase):
+    """ This is a file-like object that wraps around a C++ istream and/or
+    ostream object.  It only deals with binary data; to work with text I/O,
+    create an io.TextIOWrapper object around this, or use the open()
+    function that is also provided with this module. """
 
-            elif mode == 'a+':
-                self.__stream = pm.FileStream()
-                if not filename.openReadAppend(self.__stream):
-                    message = 'Could not open %s for writing' % (filename)
-                    raise IOError, message
-                readMode = True
-                writeMode = True
+    def __init__(self, stream, needsVfsClose=False):
+        self.__stream = stream
+        self.__needsVfsClose = needsVfsClose
+        self.__reader = None
+        self.__writer = None
+        self.__lastWrite = False
 
-            elif mode == 'r+':
-                self.__stream = pm.FileStream()
-                if not filename.exists():
-                    message = 'No such file: %s' % (filename)
-                    raise IOError, message
-                if not filename.openReadWrite(self.__stream, False):
-                    message = 'Could not open %s for writing' % (filename)
-                    raise IOError, message
-                readMode = True
-                writeMode = True
+        if isinstance(stream, core.Istream):
+            self.__reader = core.StreamReader(stream, False)
 
-            elif mode == 'r':
-                # For strictly read mode (not write or read-write
-                # mode), we use Panda's VirtualFileSystem.
-
-                self.__stream = _vfs.openReadFile(filename, autoUnwrap)
-                if not self.__stream:
-                    if not filename.exists():
-                        message = 'No such file: %s' % (filename)
-                    else:
-                        message = 'Could not open %s for reading' % (filename)
-                    raise IOError, message
-                self.__needsVfsClose = True
-                readMode = True
-
-        if readMode:
-            self.__reader = pm.StreamReader(self.__stream, False)
-        if writeMode:
-            self.__writer = pm.StreamWriter(self.__stream, False)
+        if isinstance(stream, core.Ostream):
+            self.__writer = core.StreamWriter(stream, False)
             self.__lastWrite = True
+            if sys.version_info >= (3, 0):
+                # In Python 3, we use appendData, which only accepts bytes.
+                self.__write = self.__writer.appendData
+            else:
+                # In Python 2.7, we also accept unicode objects, which are
+                # implicitly converted to C++ strings.
+                self.__write = self.__writer.write
 
-    def __del__(self):
-        self.close()
+    def __repr__(self):
+        s = "<direct.stdpy.file.StreamIOWrapper"
+        if hasattr(self, 'name'):
+            s += " name='%s'" % (self.name)
+        if hasattr(self, 'mode'):
+            s += " mode='%s'" % (self.mode)
+        s += ">"
+        return s
+
+    def readable(self):
+        return self.__reader is not None
+
+    def writable(self):
+        return self.__writer is not None
 
     def close(self):
         if self.__needsVfsClose:
-            _vfs.closeReadFile(self.__stream)
+            if self.__reader and self.__writer:
+                _vfs.closeReadWriteFile(self.__stream)
+            elif self.__reader:
+                _vfs.closeReadFile(self.__stream)
+            else:  # self.__writer:
+                _vfs.closeWriteFile(self.__stream)
+
             self.__needsVfsClose = False
+
         self.__stream = None
-        self.__needsVfsClose = False
         self.__reader = None
         self.__writer = None
 
     def flush(self):
-        if self.__stream:
+        if self.__writer:
+            self.__stream.clear()  # clear eof flag
             self.__stream.flush()
 
-    def __iter__(self):
-        return self
-
-    def next(self):
-        line = self.readline()
-        if line:
-            return line
-        raise StopIteration
-
-    def read(self, size = -1):
+    def read(self, size=-1):
         if not self.__reader:
             if not self.__writer:
                 # The stream is not even open at all.
-                message = 'I/O operation on closed file'
-                raise ValueError, message
-            # The stream is open only in write mode.
-            message = 'Attempt to read from write-only stream'
-            raise IOError, message
+                raise ValueError("I/O operation on closed file")
 
+            # The stream is open only in write mode.
+            raise IOError("Attempt to read from write-only stream")
+
+        self.__stream.clear()  # clear eof flag
         self.__lastWrite = False
-        if size >= 0:
-            return self.__reader.extractBytes(size)
+        if size is not None and size >= 0:
+            result = self.__reader.extractBytes(size)
         else:
             # Read to end-of-file.
-            result = ''
+            result = b''
             while not self.__stream.eof():
-                result += self.__reader.extractBytes(1024)
-            return result
+                result += self.__reader.extractBytes(512)
+        return result
 
-    def readline(self, size = -1):
+    read1 = read
+
+    def readline(self, size=-1):
         if not self.__reader:
             if not self.__writer:
                 # The stream is not even open at all.
-                message = 'I/O operation on closed file'
-                raise ValueError, message
-            # The stream is open only in write mode.
-            message = 'Attempt to read from write-only stream'
-            raise IOError, message
+                raise ValueError("I/O operation on closed file")
 
+            # The stream is open only in write mode.
+            raise IOError("Attempt to read from write-only stream")
+
+        self.__stream.clear()  # clear eof flag
         self.__lastWrite = False
         return self.__reader.readline()
 
-    def readlines(self, sizehint = -1):
-        lines = []
-        line = self.readline()
-        while line:
-            lines.append(line)
-            line = self.readline()
-        return lines
-
-    xreadlines = readlines
-
     def seek(self, offset, whence = 0):
+        if self.__stream:
+            self.__stream.clear()  # clear eof flag
         if self.__reader:
             self.__stream.seekg(offset, whence)
         if self.__writer:
@@ -232,54 +285,43 @@ class file:
         else:
             if self.__reader:
                 return self.__stream.tellg()
-        message = 'I/O operation on closed file'
-        raise ValueError, message
+        raise ValueError("I/O operation on closed file")
 
-    def truncate(self):
-        """ Sorry, this isn't supported by Panda's low-level I/O,
-        because it isn't supported by the standard C++ library. """
-        raise NotImplementedError
-
-    def write(self, str):
+    def write(self, b):
         if not self.__writer:
             if not self.__reader:
                 # The stream is not even open at all.
-                message = 'I/O operation on closed file'
-                raise ValueError, message
+                raise ValueError("I/O operation on closed file")
+
             # The stream is open only in read mode.
-            message = 'Attempt to write to read-only stream'
-            raise IOError, message
-        self.__writer.appendData(str)
+            raise IOError("Attempt to write to read-only stream")
+
+        self.__stream.clear()  # clear eof flag
+        self.__write(b)
         self.__lastWrite = True
 
     def writelines(self, lines):
         if not self.__writer:
             if not self.__reader:
                 # The stream is not even open at all.
-                message = 'I/O operation on closed file'
-                raise ValueError, message
+                raise ValueError("I/O operation on closed file")
+
             # The stream is open only in read mode.
-            message = 'Attempt to write to read-only stream'
-            raise IOError, message
+            raise IOError("Attempt to write to read-only stream")
+
+        self.__stream.clear()  # clear eof flag
         for line in lines:
-            self.__writer.appendData(line)
+            self.__write(line)
         self.__lastWrite = True
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, t, v, tb):
-        self.close()
-
-open = file
 
 def listdir(path):
     """ Implements os.listdir over vfs. """
     files = []
-    dirlist = _vfs.scanDirectory(pm.Filename.fromOsSpecific(path))
+    dirlist = _vfs.scanDirectory(core.Filename.fromOsSpecific(path))
     if dirlist is None:
-        message = 'No such file or directory: %s' % (path)
-        raise OSError, message
+        raise OSError("No such file or directory: '%s'" % (path))
+
     for file in dirlist:
         files.append(file.getFilename().getBasename())
     return files
@@ -312,29 +354,34 @@ def walk(top, topdown = True, onerror = None, followlinks = True):
     if not topdown:
         yield (top, dirnames, filenames)
 
-def join(a, b):
-    return '%s/%s' % (a, b)
-
 def isfile(path):
-    return _vfs.isRegularFile(pm.Filename.fromOsSpecific(path))
+    return _vfs.isRegularFile(core.Filename.fromOsSpecific(path))
 
 def isdir(path):
-    return _vfs.isDirectory(pm.Filename.fromOsSpecific(path))
+    return _vfs.isDirectory(core.Filename.fromOsSpecific(path))
 
 def exists(path):
-    return _vfs.exists(pm.Filename.fromOsSpecific(path))
+    return _vfs.exists(core.Filename.fromOsSpecific(path))
 
 def lexists(path):
-    return _vfs.exists(pm.Filename.fromOsSpecific(path))
+    return _vfs.exists(core.Filename.fromOsSpecific(path))
 
 def getmtime(path):
-    file = _vfs.getFile(pm.Filename.fromOsSpecific(path), True)
+    file = _vfs.getFile(core.Filename.fromOsSpecific(path), True)
     if not file:
         raise os.error
     return file.getTimestamp()
 
 def getsize(path):
-    file = _vfs.getFile(pm.Filename.fromOsSpecific(path), True)
+    file = _vfs.getFile(core.Filename.fromOsSpecific(path), True)
     if not file:
         raise os.error
     return file.getFileSize()
+
+def execfile(path, globals=None, locals=None):
+    file = _vfs.getFile(core.Filename.fromOsSpecific(path), True)
+    if not file:
+        raise os.error
+
+    data = file.readFile(False)
+    exec(data, globals, locals)

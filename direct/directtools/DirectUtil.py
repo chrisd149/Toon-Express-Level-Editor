@@ -1,5 +1,7 @@
 
-from DirectGlobals import *
+from .DirectGlobals import *
+from panda3d.core import VBase4
+from direct.task.Task import Task
 
 # Routines to adjust values
 def ROUND_TO(value, divisor):
@@ -79,6 +81,7 @@ def getFileData(filename, separator = ','):
         if l:
             # If its a valid line, split on separator and
             # strip leading/trailing whitespace from each element
-            data = map(lambda s: s.strip(), l.split(separator))
+            data = [s.strip() for s in l.split(separator)]
             fileData.append(data)
     return fileData
+

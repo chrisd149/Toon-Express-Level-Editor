@@ -2,8 +2,8 @@
 DirectNotify module: this module contains the DirectNotify class
 """
 
-import Notifier
-import Logger
+from . import Notifier
+from . import Logger
 
 class DirectNotify:
     """
@@ -35,7 +35,7 @@ class DirectNotify:
         """
         Return list of category dictionary keys
         """
-        return (self.__categories.keys())
+        return list(self.__categories.keys())
 
     def getCategory(self, categoryName):
         """getCategory(self, string)
@@ -59,21 +59,19 @@ class DirectNotify:
         to set the notify severity and then set that level. You cannot
         set these until config is set.
         """
-        # We cannot check dconfig variables until config has been
-        # set. Once config is set in ShowBase.py, it tries to set
-        # all the levels again in case some were created before config
-        # was created.
-        try:
-            config
-        except:
-            return 0
+
+        # We use ConfigVariableString instead of base.config, in case
+        # we're running before ShowBase has finished initializing
+        from panda3d.core import ConfigVariableString
 
         dconfigParam = ("notify-level-" + categoryName)
-        level = config.GetString(dconfigParam, "")
+        cvar = ConfigVariableString(dconfigParam, "")
+        level = cvar.getValue()
 
         if not level:
             # see if there's an override of the default config level
-            level = config.GetString('default-directnotify-level', 'info')
+            cvar2 = ConfigVariableString('default-directnotify-level', 'info')
+            level = cvar2.getValue()
         if not level:
             level = 'error'
 
@@ -99,7 +97,7 @@ class DirectNotify:
             category.setInfo(1)
             category.setDebug(1)
         else:
-            print ("DirectNotify: unknown notify level: " + str(level)
+            print("DirectNotify: unknown notify level: " + str(level)
                    + " for category: " + str(categoryName))
 
 
@@ -115,7 +113,10 @@ class DirectNotify:
             category.setDebug(1)
 
     def popupControls(self, tl = None):
-        from direct.tkpanels import NotifyPanel
+        # Don't use a regular import, to prevent ModuleFinder from picking
+        # it up as a dependency when building a .p3d package.
+        import importlib
+        NotifyPanel = importlib.import_module('direct.tkpanels.NotifyPanel')
         NotifyPanel.NotifyPanel(self, tl)
 
     def giveNotify(self,cls):

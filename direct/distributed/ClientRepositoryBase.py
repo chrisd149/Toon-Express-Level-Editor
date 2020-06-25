@@ -1,18 +1,17 @@
-from pandac.PandaModules import *
-from MsgTypes import *
+from panda3d.core import *
+from panda3d.direct import *
+from .MsgTypes import *
 from direct.task import Task
 from direct.directnotify import DirectNotifyGlobal
-import CRCache
+from . import CRCache
 from direct.distributed.CRDataCache import CRDataCache
 from direct.distributed.ConnectionRepository import ConnectionRepository
 from direct.showbase import PythonUtil
-import ParentMgr
-import RelatedObjectMgr
+from . import ParentMgr
+from . import RelatedObjectMgr
 import time
-from ClockDelta import *
-from PyDatagram import PyDatagram
-from PyDatagramIterator import PyDatagramIterator
-import types
+from .ClockDelta import *
+
 
 class ClientRepositoryBase(ConnectionRepository):
     """
@@ -176,7 +175,7 @@ class ClientRepositoryBase(ConnectionRepository):
         "generate" messages when they are replayed().
         """
 
-        if msgType == CLIENT_CREATE_OBJECT_REQUIRED_OTHER:
+        if msgType == CLIENT_ENTER_OBJECT_REQUIRED_OTHER:
             # It's a generate message.
             doId = extra
             if doId in self.deferredDoIds:
@@ -190,7 +189,7 @@ class ClientRepositoryBase(ConnectionRepository):
                 for dg, di in updates:
                     # non-DC updates that need to be played back in-order are
                     # stored as (msgType, (dg, di))
-                    if type(di) is types.TupleType:
+                    if type(di) is tuple:
                         msgType = dg
                         dg, di = di
                         self.replayDeferredGenerate(msgType, (dg, di))
@@ -221,7 +220,7 @@ class ClientRepositoryBase(ConnectionRepository):
         return Task.done
 
     def generateWithRequiredFields(self, dclass, doId, di, parentId, zoneId):
-        if self.doId2do.has_key(doId):
+        if doId in self.doId2do:
             # ...it is in our dictionary.
             # Just update it.
             distObj = self.doId2do[doId]
@@ -264,12 +263,12 @@ class ClientRepositoryBase(ConnectionRepository):
             distObj.setLocation(parentId, zoneId)
             distObj.updateRequiredFields(dclass, di)
             # updateRequiredFields calls announceGenerate
-            print "New DO:%s, dclass:%s"%(doId, dclass.getName())
+            self.notify.debug("New DO:%s, dclass:%s" % (doId, dclass.getName()))
         return distObj
 
     def generateWithRequiredOtherFields(self, dclass, doId, di,
                                         parentId = None, zoneId = None):
-        if self.doId2do.has_key(doId):
+        if doId in self.doId2do:
             # ...it is in our dictionary.
             # Just update it.
             distObj = self.doId2do[doId]
@@ -315,7 +314,7 @@ class ClientRepositoryBase(ConnectionRepository):
         return distObj
 
     def generateWithRequiredOtherFieldsOwner(self, dclass, doId, di):
-        if self.doId2ownerView.has_key(doId):
+        if doId in self.doId2ownerView:
             # ...it is in our dictionary.
             # Just update it.
             self.notify.error('duplicate owner generate for %s (%s)' % (
@@ -359,7 +358,7 @@ class ClientRepositoryBase(ConnectionRepository):
     def disableDoId(self, doId, ownerView=False):
         table, cache = self.getTables(ownerView)
         # Make sure the object exists
-        if table.has_key(doId):
+        if doId in table:
             # Look up the object
             distObj = table[doId]
             # remove the object from the dictionary
@@ -378,11 +377,11 @@ class ClientRepositoryBase(ConnectionRepository):
                     # make sure we're not leaking
                     distObj.detectLeaks()
 
-        elif self.deferredDoIds.has_key(doId):
+        elif doId in self.deferredDoIds:
             # The object had been deferred.  Great; we don't even have
             # to generate it now.
             del self.deferredDoIds[doId]
-            i = self.deferredGenerates.index((CLIENT_CREATE_OBJECT_REQUIRED_OTHER, doId))
+            i = self.deferredGenerates.index((CLIENT_ENTER_OBJECT_REQUIRED_OTHER, doId))
             del self.deferredGenerates[i]
             if len(self.deferredGenerates) == 0:
                 taskMgr.remove('deferredGenerate')
@@ -602,8 +601,8 @@ class ClientRepositoryBase(ConnectionRepository):
         del self._delayDeletedDOs[key]
 
     def printDelayDeletes(self):
-        print 'DelayDeletes:'
-        print '============='
-        for obj in self._delayDeletedDOs.itervalues():
-            print '%s\t%s (%s)\tdelayDeletes=%s' % (
-                obj.doId, safeRepr(obj), itype(obj), obj.getDelayDeleteNames())
+        print('DelayDeletes:')
+        print('=============')
+        for obj in self._delayDeletedDOs.values():
+            print('%s\t%s (%s)\tdelayDeletes=%s' % (
+                obj.doId, safeRepr(obj), itype(obj), obj.getDelayDeleteNames()))

@@ -11,19 +11,32 @@ __all__ = [
     'interrupt_main',
     'exit', 'allocate_lock', 'get_ident',
     'stack_size',
+    'force_yield', 'consider_yield',
     'forceYield', 'considerYield',
+    'TIMEOUT_MAX'
     ]
 
-# Import PandaModules as pm, so we don't have any namespace collisions.
-from pandac import PandaModules as pm
+from panda3d import core
+import sys
+
+if sys.platform == "win32":
+    TIMEOUT_MAX = float(0xffffffff // 1000)
+else:
+    TIMEOUT_MAX = float(0x7fffffffffffffff // 1000000000)
 
 # These methods are defined in Panda, and are particularly useful if
 # you may be running in Panda's SIMPLE_THREADS compilation mode.
-forceYield = pm.Thread.forceYield
-considerYield = pm.Thread.considerYield
+force_yield = core.Thread.force_yield
+consider_yield = core.Thread.consider_yield
 
-class error(StandardError):
-    pass
+forceYield = force_yield
+considerYield = consider_yield
+
+if sys.version_info >= (3, 3):
+    error = RuntimeError
+else:
+    class error(Exception):
+        pass
 
 class LockType:
     """ Implements a mutex lock.  Instead of directly subclassing
@@ -33,17 +46,22 @@ class LockType:
     acquired it. """
 
     def __init__(self):
-        self.__lock = pm.Mutex('PythonLock')
-        self.__cvar = pm.ConditionVar(self.__lock)
+        self.__lock = core.Mutex('PythonLock')
+        self.__cvar = core.ConditionVar(self.__lock)
         self.__locked = False
 
-    def acquire(self, waitflag = 1):
+    def acquire(self, waitflag = 1, timeout = -1):
         self.__lock.acquire()
         try:
             if self.__locked and not waitflag:
                 return False
-            while self.__locked:
-                self.__cvar.wait()
+
+            if timeout >= 0:
+                while self.__locked:
+                    self.__cvar.wait(timeout)
+            else:
+                while self.__locked:
+                    self.__cvar.wait()
 
             self.__locked = True
             return True
@@ -55,7 +73,7 @@ class LockType:
         self.__lock.acquire()
         try:
             if not self.__locked:
-                raise error, 'Releasing unheld lock.'
+                raise error('Releasing unheld lock.')
 
             self.__locked = False
             self.__cvar.notify()
@@ -71,9 +89,16 @@ class LockType:
     def __exit__(self, t, v, tb):
         self.release()
 
+# Helper to generate new thread names
+_counter = 0
+def _newname(template="Thread-%d"):
+    global _counter
+    _counter = _counter + 1
+    return template % _counter
+
 _threads = {}
 _nextThreadId = 0
-_threadsLock = pm.Mutex('thread._threadsLock')
+_threadsLock = core.Mutex('thread._threadsLock')
 
 def start_new_thread(function, args, kwargs = {}, name = None):
     def threadFunc(threadId, function = function, args = args, kwargs = kwargs):
@@ -95,18 +120,18 @@ def start_new_thread(function, args, kwargs = {}, name = None):
         if name is None:
             name = 'PythonThread-%s' % (threadId)
 
-        thread = pm.PythonThread(threadFunc, [threadId], name, name)
-        thread.setPythonData(threadId)
+        thread = core.PythonThread(threadFunc, [threadId], name, name)
+        thread.setPythonIndex(threadId)
         _threads[threadId] = (thread, {}, None)
 
-        thread.start(pm.TPNormal, False)
+        thread.start(core.TPNormal, False)
         return threadId
 
     finally:
         _threadsLock.release()
 
 def _add_thread(thread, wrapper):
-    """ Adds the indicated pm.Thread object, with the indicated Python
+    """ Adds the indicated core.Thread object, with the indicated Python
     wrapper, to the thread list.  Returns the new thread ID. """
 
     global _nextThreadId
@@ -115,7 +140,7 @@ def _add_thread(thread, wrapper):
         threadId = _nextThreadId
         _nextThreadId += 1
 
-        thread.setPythonData(threadId)
+        thread.setPythonIndex(threadId)
         _threads[threadId] = (thread, {}, wrapper)
         return threadId
 
@@ -127,8 +152,8 @@ def _get_thread_wrapper(thread, wrapperClass):
     is not one, creates an instance of the indicated wrapperClass
     instead. """
 
-    threadId = thread.getPythonData()
-    if threadId is None:
+    threadId = thread.getPythonIndex()
+    if threadId == -1:
         # The thread has never been assigned a threadId.  Go assign one.
 
         global _nextThreadId
@@ -137,7 +162,7 @@ def _get_thread_wrapper(thread, wrapperClass):
             threadId = _nextThreadId
             _nextThreadId += 1
 
-            thread.setPythonData(threadId)
+            thread.setPythonIndex(threadId)
             wrapper = wrapperClass(thread, threadId)
             _threads[threadId] = (thread, {}, wrapper)
             return wrapper
@@ -163,8 +188,8 @@ def _get_thread_locals(thread, i):
     """ Returns the locals dictionary for the indicated thread.  If
     there is not one, creates an empty dictionary. """
 
-    threadId = thread.getPythonData()
-    if threadId is None:
+    threadId = thread.getPythonIndex()
+    if threadId == -1:
         # The thread has never been assigned a threadId.  Go assign one.
 
         global _nextThreadId
@@ -173,7 +198,7 @@ def _get_thread_locals(thread, i):
             threadId = _nextThreadId
             _nextThreadId += 1
 
-            thread.setPythonData(threadId)
+            thread.setPythonIndex(threadId)
             locals = {}
             _threads[threadId] = (thread, locals, None)
             return locals.setdefault(i, {})
@@ -196,12 +221,17 @@ def _get_thread_locals(thread, i):
 def _remove_thread_id(threadId):
     """ Removes the thread with the indicated ID from the thread list. """
 
+    # On interpreter shutdown, Python may set module globals to None.
+    if _threadsLock is None or _threads is None:
+        return
+
     _threadsLock.acquire()
     try:
-        thread, locals, wrapper = _threads[threadId]
-        assert thread.getPythonData() == threadId
-        del _threads[threadId]
-        thread.setPythonData(None)
+        if threadId in _threads:
+            thread, locals, wrapper = _threads[threadId]
+            assert thread.getPythonIndex() == threadId
+            del _threads[threadId]
+            thread.setPythonIndex(-1)
 
     finally:
         _threadsLock.release()
@@ -218,7 +248,7 @@ def allocate_lock():
     return LockType()
 
 def get_ident():
-    return pm.Thread.getCurrentThread().this
+    return core.Thread.getCurrentThread().this
 
 def stack_size(size = 0):
     raise error
@@ -234,7 +264,7 @@ class _local(object):
         # Delete this key from all threads.
         _threadsLock.acquire()
         try:
-            for thread, locals, wrapper in _threads.values():
+            for thread, locals, wrapper in list(_threads.values()):
                 try:
                     del locals[i]
                 except KeyError:
@@ -244,18 +274,11 @@ class _local(object):
             _threadsLock.release()
 
     def __setattr__(self, key, value):
-        d = _get_thread_locals(pm.Thread.getCurrentThread(), id(self))
+        d = _get_thread_locals(core.Thread.getCurrentThread(), id(self))
         d[key] = value
 
-##     def __getattr__(self, key):
-##         d = _get_thread_locals(pm.Thread.getCurrentThread(), id(self))
-##         try:
-##             return d[key]
-##         except KeyError:
-##             raise AttributeError
-
     def __getattribute__(self, key):
-        d = _get_thread_locals(pm.Thread.getCurrentThread(), id(self))
+        d = _get_thread_locals(core.Thread.getCurrentThread(), id(self))
         if key == '__dict__':
             return d
         try:

@@ -2,7 +2,7 @@
 
 from direct.directnotify import DirectNotifyGlobal
 from direct.showbase.PythonUtil import isDefaultValue
-import types
+
 
 class ParentMgr:
     # This is now used on the AI as well.
@@ -57,7 +57,7 @@ class ParentMgr:
             self.pendingParentToken2children[parentToken].remove(child)
 
     def requestReparent(self, child, parentToken):
-        if self.token2nodepath.has_key(parentToken):
+        if parentToken in self.token2nodepath:
             # this parent has registered
             # this child may already be waiting on a different parent;
             # make sure they aren't any more
@@ -82,7 +82,7 @@ class ParentMgr:
             child.reparentTo(hidden)
 
     def registerParent(self, token, parent):
-        if self.token2nodepath.has_key(token):
+        if token in self.token2nodepath:
             self.notify.error(
                 "registerParent: token '%s' already registered, referencing %s" %
                 (token, repr(self.token2nodepath[token])))
@@ -90,7 +90,7 @@ class ParentMgr:
         if isDefaultValue(token):
             self.notify.error('parent token (for %s) cannot be a default value (%s)' % (repr(parent), token))
 
-        if type(token) is types.IntType:
+        if type(token) is int:
             if token > 0xFFFFFFFF:
                 self.notify.error('parent token %s (for %s) is out of uint32 range' % (token, repr(parent)))
 
@@ -141,7 +141,7 @@ class ParentMgr:
                 del self.pendingChild2parentToken[child]
 
     def unregisterParent(self, token):
-        if not self.token2nodepath.has_key(token):
+        if token not in self.token2nodepath:
             self.notify.warning("unregisterParent: unknown parent token '%s'" %
                                 token)
             return

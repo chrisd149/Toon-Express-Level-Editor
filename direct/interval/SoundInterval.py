@@ -2,9 +2,10 @@
 
 __all__ = ['SoundInterval']
 
-from pandac.PandaModules import *
+from panda3d.core import *
+from panda3d.direct import *
 from direct.directnotify.DirectNotifyGlobal import *
-import Interval
+from . import Interval
 import random
 
 class SoundInterval(Interval.Interval):
@@ -26,8 +27,7 @@ class SoundInterval(Interval.Interval):
     # than explicitly restarting the sound every time around. This
     # prevents a skip in the sound at every repetition (the gap in
     # the sound is caused by the delay between the end of the sound
-    # and the next taskMgr cycle). There still seems to be a skip
-    # in Miles when looping MP3s. =(
+    # and the next taskMgr cycle).
     # RAU 03/01/07 add listenerNode in case we don't want to
     # use base.camera as the listener, node must not be None
     def __init__(self, sound, loop = 0, duration = 0.0, name = None,
@@ -54,29 +54,13 @@ class SoundInterval(Interval.Interval):
         if self._seamlessLoop:
             self._fLoop = True
         self._soundPlaying = False
+        self._reverse = False
         # If no duration given use sound's duration as interval's duration
         if float(duration) == 0.0 and self.sound != None:
             duration = max(self.soundDuration - self.startTime, 0)
             #if (duration == 0):
             #    self.notify.warning('zero length duration!')
 
-            # MPG - hack for Miles bug
-            #duration += 1.5
-
-            # DCR - hack for Miles bug - adding 1.5 seconds caused
-            # problems for MG_neg_buzzer.wav
-
-            # DCR - what this is all about: Miles is under-reporting the
-            # length of MP3 files, and they're getting cut off too early.
-            # This is a temporary hack. We could:
-            # - hack Miles to fix its MP3 length calculation
-            # - complain louder about this to RAD
-            # - precompute MP3 durations and store them in a table
-
-            # drose - ok, I've put in a lower-level workaround in the
-            # MilesAudioManager.  This is no longer necessary up here,
-            # where it pollutes SoundInterval for everyone.
-            #duration += min(duration * 2.4, 1.5)
 
         # Generate unique name if necessary
         if (name == None):
@@ -87,6 +71,7 @@ class SoundInterval(Interval.Interval):
     def privInitialize(self, t):
         # If it's within a 10th of a second of the start,
         # start at the beginning
+        self._reverse = False
         t1 = t + self.startTime
         if (t1 < 0.1):
             t1 = 0.0
@@ -98,7 +83,14 @@ class SoundInterval(Interval.Interval):
         self.state = CInterval.SStarted
         self.currT = t
 
+    def privInstant(self):
+        pass
+
     def privStep(self, t):
+        ## if self._reverse:
+        ##     # Don't attempt to play the sound backwards.
+        ##     return
+
         if self.state == CInterval.SPaused:
             # Restarting from a pause.
             t1 = t + self.startTime
@@ -132,6 +124,16 @@ class SoundInterval(Interval.Interval):
             self._soundPlaying = False
         self.currT = self.getDuration()
         self.state = CInterval.SFinal
+
+    def privReverseInitialize(self, t):
+        self._reverse = True
+
+    def privReverseInstant(self):
+        self.state = CInterval.SInitial
+
+    def privReverseFinalize(self):
+        self._reverse = False
+        self.state = CInterval.SInitial
 
     def privInterrupt(self):
         if self.sound != None:

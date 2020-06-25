@@ -14,13 +14,14 @@
 
 load-display pandagl
 #load-display pandadx9
-#load-display pandadx8
 #load-display pandagles
-#load-display tinydisplay
+#load-display p3tinydisplay
 
 # These control the placement and size of the default rendering window.
+# A value of -2 for the origin means to center it on the screen,
+# while -1 lets the window manager choose the position.
 
-win-origin 50 50
+win-origin -2 -2
 win-size 800 600
 
 # Uncomment this line if you want to run Panda fullscreen instead of
@@ -30,7 +31,7 @@ fullscreen #f
 
 # The framebuffer-hardware flag forces it to use an accelerated driver.
 # The framebuffer-software flag forces it to use a software renderer.
-# If you don't set either, it will use whatever's available.
+# If you set both to false, it will use whatever's available.
 
 framebuffer-hardware #t
 framebuffer-software #f
@@ -40,7 +41,7 @@ framebuffer-software #f
 # consistent with the other framebuffer requirements.
 
 depth-bits 1
-color-bits 1
+color-bits 1 1 1
 alpha-bits 0
 stencil-bits 0
 multisamples 0
@@ -88,15 +89,12 @@ hardware-animated-vertices #f
 
 # Enable the model-cache, but only for models, not textures.
 
-model-cache-dir $USER_APPDATA/Panda3D-1.7/cache
+model-cache-dir $XDG_CACHE_HOME/panda3d
 model-cache-textures #f
 
 # This option specifies the default profiles for Cg shaders.
 # Setting it to #t makes them arbvp1 and arbfp1, since these
 # seem to be most reliable. Setting it to #f makes Panda use
 # the latest profile available.
-# This default profile can be overriden by any profile setting
-# from within the application.
 
-basic-shaders-only #t
-
+basic-shaders-only #f

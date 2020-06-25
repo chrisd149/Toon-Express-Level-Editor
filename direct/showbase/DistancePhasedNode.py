@@ -1,7 +1,7 @@
 from direct.showbase.DirectObject import DirectObject
-from direct.directnotify import DirectNotifyGlobal
-from pandac.PandaModules import *
-from PhasedObject import PhasedObject
+from direct.directnotify.DirectNotifyGlobal import directNotify
+from panda3d.core import *
+from .PhasedObject import PhasedObject
 
 class DistancePhasedNode(PhasedObject, DirectObject, NodePath):
     """
@@ -84,7 +84,7 @@ class DistancePhasedNode(PhasedObject, DirectObject, NodePath):
                  fromCollideNode = None):
         NodePath.__init__(self, name)
         self.phaseParamMap = phaseParamMap
-        self.phaseParamList = sorted(phaseParamMap.items(),
+        self.phaseParamList = sorted(list(phaseParamMap.items()),
                                      key = lambda x: x[1],
                                      reverse = True)
         PhasedObject.__init__(self,
@@ -106,10 +106,12 @@ class DistancePhasedNode(PhasedObject, DirectObject, NodePath):
 
     def __repr__(self):
         outStr = 'DistancePhasedObject('
-        outStr += '%s' % repr(self.getName())
+        outStr += repr(self.getName())
         for param, value in zip(('phaseParamMap', 'autoCleanup', 'enterPrefix', 'exitPrefix', 'phaseCollideMask', 'fromCollideNode'),
-                                ('{}', 'True','\'enter\'','\'exit\'','BitMask32.allOn()','None')):
-            outStr += eval('(\', ' + param + ' = %s\' % repr(self.' + param + '),\'\')[self.' + param + ' == ' + value + ']')
+                                ({}, True, 'enter', 'exit', BitMask32.allOn(), None)):
+            pv = getattr(self, param)
+            if pv != value:
+                outStr += ', %s = %r' % (param, pv)
         outStr += ')'
         return outStr
 
@@ -269,7 +271,7 @@ class BufferedDistancePhasedNode(DistancePhasedNode):
     def __init__(self, name, bufferParamMap = {}, autoCleanup = True,
                  enterPrefix = 'enter', exitPrefix = 'exit', phaseCollideMask = BitMask32.allOn(), fromCollideNode = None):
         self.bufferParamMap = bufferParamMap
-        self.bufferParamList = sorted(bufferParamMap.items(),
+        self.bufferParamList = sorted(list(bufferParamMap.items()),
                                       key = lambda x: x[1],
                                       reverse = True)
 
@@ -287,10 +289,12 @@ class BufferedDistancePhasedNode(DistancePhasedNode):
 
     def __repr__(self):
         outStr = 'BufferedDistancePhasedNode('
-        outStr += '%s' % repr(self.getName())
+        outStr += repr(self.getName())
         for param, value in zip(('bufferParamMap', 'autoCleanup', 'enterPrefix', 'exitPrefix', 'phaseCollideMask', 'fromCollideNode'),
-                                ('{}', 'True','\'enter\'','\'exit\'','BitMask32.allOn()', 'None')):
-            outStr += eval('(\', ' + param + ' = %s\' % repr(self.' + param + '),\'\')[self.' + param + ' == ' + value + ']')
+                                ({}, True, 'enter', 'exit', BitMask32.allOn(), None)):
+            pv = getattr(self, param)
+            if pv != value:
+                outStr += ', %s = %r' % (param, pv)
         outStr += ')'
         return outStr
 

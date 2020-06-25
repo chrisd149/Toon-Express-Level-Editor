@@ -1,7 +1,3 @@
-"""Undocumented Module"""
-
-__all__ = ['ShadowPlacer']
-
 """
 ShadowPlacer.py places a shadow.
 
@@ -10,10 +6,12 @@ Or it may do that later, right now it puts a node on the surface under
 the its parent node.
 """
 
+__all__ = ['ShadowPlacer']
+
 from direct.controls.ControlManager import CollisionHandlerRayStart
 from direct.directnotify import DirectNotifyGlobal
-from pandac.PandaModules import *
-import DirectObject
+from panda3d.core import *
+from . import DirectObject
 
 class ShadowPlacer(DirectObject.DirectObject):
     notify = DirectNotifyGlobal.directNotify.newCategory("ShadowPlacer")

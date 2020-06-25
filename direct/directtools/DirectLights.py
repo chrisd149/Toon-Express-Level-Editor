@@ -1,6 +1,5 @@
 
-from pandac.PandaModules import *
-from string import lower
+from panda3d.core import *
 
 class DirectLight(NodePath):
     def __init__(self, light, parent):
@@ -19,7 +18,10 @@ class DirectLight(NodePath):
         return self.light
 
 class DirectLights(NodePath):
-    def __init__(self, parent = render):
+    def __init__(self, parent = None):
+        if parent is None:
+            parent = base.render
+
         # Initialize the superclass
         NodePath.__init__(self)
         # Create a node for the lights
@@ -48,11 +50,11 @@ class DirectLights(NodePath):
             self.delete(light)
 
     def asList(self):
-        return map(lambda n, s=self: s[n], self.getNameList())
+        return [self[n] for n in self.getNameList()]
 
     def getNameList(self):
         # Return a sorted list of all lights in the light dict
-        nameList = map(lambda x: x.getName(), self.lightDict.values())
+        nameList = [x.getName() for x in self.lightDict.values()]
         nameList.sort()
         return nameList
 
@@ -76,7 +78,7 @@ class DirectLights(NodePath):
             light.setColor(VBase4(1))
             light.setLens(PerspectiveLens())
         else:
-            print 'Invalid light type'
+            print('Invalid light type')
             return None
         # Add the new light
         directLight = DirectLight(light, self)
@@ -128,3 +130,6 @@ class DirectLights(NodePath):
         Turn off the given directLight
         """
         render.clearLight(directLight)
+
+
+

@@ -90,3 +90,4 @@ class WxSlider(wx.Slider):
         if not self.textValue is None:
             self.textValue.Enable()
             self.textValue.Bind(wx.EVT_TEXT_ENTER, self.onEnter)
+

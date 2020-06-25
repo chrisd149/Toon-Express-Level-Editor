@@ -5,19 +5,27 @@ __all__ = ['ParticlePanel']
 # Import Tkinter, Pmw, and the floater code from this directory tree.
 from direct.tkwidgets.AppShell import *
 from direct.showbase.TkGlobal import *
-from tkFileDialog import *
-from tkSimpleDialog import askstring
 from direct.tkwidgets import Dial
 from direct.tkwidgets import Floater
 from direct.tkwidgets import Slider
 from direct.tkwidgets import VectorWidgets
+from direct.tkpanels import Placer
 from direct.particles import ForceGroup
 from direct.particles import Particles
 from direct.particles import ParticleEffect
-from Tkinter import *
-import Pmw, os,Placer
+import Pmw, os, sys
 
-from pandac.PandaModules import *
+if sys.version_info >= (3, 0):
+    from tkinter.filedialog import *
+    from tkinter.simpledialog import askstring
+else:
+    from tkFileDialog import *
+    from tkSimpleDialog import askstring
+
+from panda3d.core import *
+from panda3d.physics import *
+from panda3d.direct import getParticlePath
+
 
 class ParticlePanel(AppShell):
     # Override class variables
@@ -63,7 +71,7 @@ class ParticlePanel(AppShell):
         self.initialiseoptions(ParticlePanel)
 
         # Update panel values to reflect particle effect's state
-        self.selectEffectNamed(self.effectsDict.keys()[0])
+        self.selectEffectNamed(next(iter(self.effectsDict)))
         # Make sure labels/menus reflect current state
         self.updateMenusAndLabels()
         # Make sure there is a page for each forceGroup objects
@@ -88,22 +96,21 @@ class ParticlePanel(AppShell):
 
         ## MENUBAR ENTRIES ##
         # FILE MENU
-        # Get a handle on the file menu so commands can be inserted
-        # before quit item
-        fileMenu = self.menuBar.component('File-menu')
-        # MRM: Need to add load and save effects methods
-        fileMenu.insert_command(
-            fileMenu.index('Quit'),
-            label = 'Load Params',
-            command = self.loadParticleEffectFromFile)
-        fileMenu.insert_command(
-            fileMenu.index('Quit'),
-            label = 'Save Params',
-            command = self.saveParticleEffectToFile)
-        fileMenu.insert_command(
-            fileMenu.index('Quit'),
-            label = 'Print Params',
-            command = lambda s = self: s.particles.printParams())
+        # Get a handle on the file menu, and delete the Quit item that AppShell
+        # created so we can add it back after adding the other items.
+        self.menuBar.deletemenuitems('File', 0, 0)
+        self.menuBar.addmenuitem('File', 'command',
+                                 label='Load Params',
+                                 command=self.loadParticleEffectFromFile)
+        self.menuBar.addmenuitem('File', 'command',
+                                 label='Save Params',
+                                 command=self.saveParticleEffectToFile)
+        self.menuBar.addmenuitem('File', 'command',
+                                 label='Print Params',
+                                 command=lambda s=self:s.particles.printParams())
+        self.menuBar.addmenuitem('File', 'command', 'Quit this application',
+                                 label='Quit',
+                                 command=self.quit)
 
         # PARTICLE MANAGER MENU
         self.menuBar.addmenu('ParticleMgr', 'ParticleMgr Operations')
@@ -207,23 +214,23 @@ class ParticlePanel(AppShell):
             ('System', 'Pool Size',
              'Max number of simultaneous particles',
              self.setSystemPoolSize,
-             1.0, 1.0),
+             1.0, 2000000, 1.0),
             ('System', 'Birth Rate',
              'Seconds between particle births',
              self.setSystemBirthRate,
-             0.0, None),
+             0.0, None, None),
             ('System', 'Litter Size',
              'Number of particle created at each birth',
              self.setSystemLitterSize,
-             1.0, 1.0),
+             1.0, 0x7fffffff, 1.0),
             ('System', 'Litter Spread',
              'Variation in litter size',
              self.setSystemLitterSpread,
-             0.0, 1.0),
+             0.0, 0x7fffffff, 1.0),
             ('System', 'Lifespan',
              'Age in seconds at which the system (vs. particles) should die',
              self.setSystemLifespan,
-             0.0, None)
+             0.0, None, None)
             )
         self.createFloaters(systemPage, systemFloaterDefs)
 
@@ -255,33 +262,34 @@ class ParticlePanel(AppShell):
             'Factory', 'Factory Type',
             'Select type of particle factory',
             ('PointParticleFactory', 'ZSpinParticleFactory',
-             'OrientedParticleFactory'),
+             #'OrientedParticleFactory'
+             ),
             self.selectFactoryType)
         factoryWidgets = (
             ('Factory', 'Life Span',
              'Average particle lifespan in seconds',
              self.setFactoryLifeSpan,
-             0.0, None),
+             0.0, None, None),
             ('Factory', 'Life Span Spread',
              'Variation in lifespan',
              self.setFactoryLifeSpanSpread,
-             0.0, None),
+             0.0, None, None),
             ('Factory', 'Mass',
              'Average particle mass',
              self.setFactoryParticleMass,
-             0.001, None),
+             0.001, None, None),
             ('Factory', 'Mass Spread',
              'Variation in particle mass',
              self.setFactoryParticleMassSpread,
-             0.0, None),
+             0.0, None, None),
             ('Factory', 'Terminal Velocity',
              'Cap on average particle velocity',
              self.setFactoryTerminalVelocity,
-             0.0, None),
+             0.0, None, None),
             ('Factory', 'Terminal Vel. Spread',
              'Variation in terminal velocity',
              self.setFactoryTerminalVelocitySpread,
-             0.0, None),
+             0.0, None, None),
         )
         self.createFloaters(factoryPage, factoryWidgets)
 
@@ -958,21 +966,31 @@ class ParticlePanel(AppShell):
 
     def createFloaters(self, parent, widgetDefinitions):
         widgets = []
-        for category, label, balloonHelp, command, min, resolution in widgetDefinitions:
+        for category, label, balloonHelp, command, min, max, resolution in widgetDefinitions:
             widgets.append(
                 self.createFloater(parent, category, label, balloonHelp,
-                                   command, min, resolution)
+                                   command, min, max, resolution)
                 )
         return widgets
 
     def createFloater(self, parent, category, text, balloonHelp,
-                      command = None, min = 0.0, resolution = None,
-                      numDigits = 3, **kw):
+                      command = None, min = 0.0, max = None, resolution = None,
+                      numDigits = None, **kw):
         kw['text'] = text
         kw['min'] = min
+        if max is not None:
+            kw['max'] = max
         kw['resolution'] = resolution
+        if numDigits is None:
+            # If this is apparently an integer setting, show no decimals.
+            if resolution is not None and int(resolution) == resolution and \
+                (min is None or int(min) == min) and \
+                (max is None or int(max) == max):
+                numDigits = 0
+            else:
+                numDigits = 3
         kw['numDigits'] = numDigits
-        widget = apply(Floater.Floater, (parent,), kw)
+        widget = Floater.Floater(parent, **kw)
         # Do this after the widget so command isn't called on creation
         widget['command'] = command
         widget.pack(fill = X)
@@ -984,7 +1002,7 @@ class ParticlePanel(AppShell):
                         command = None, **kw):
         kw['text'] = text
         kw['style'] = 'mini'
-        widget = apply(Dial.AngleDial, (parent,), kw)
+        widget = Dial.AngleDial(parent, **kw)
         # Do this after the widget so command isn't called on creation
         widget['command'] = command
         widget.pack(fill = X)
@@ -999,7 +1017,7 @@ class ParticlePanel(AppShell):
         kw['min'] = min
         kw['max'] = max
         kw['resolution'] = resolution
-        widget = apply(Slider.Slider, (parent,), kw)
+        widget = Slider.Slider(parent, **kw)
         # Do this after the widget so command isn't called on creation
         widget['command'] = command
         widget.pack(fill = X)
@@ -1011,7 +1029,7 @@ class ParticlePanel(AppShell):
                            command = None, **kw):
         # Set label's text
         kw['text'] = text
-        widget = apply(VectorWidgets.Vector2Entry, (parent,), kw)
+        widget = VectorWidgets.Vector2Entry(parent, **kw)
         # Do this after the widget so command isn't called on creation
         widget['command'] = command
         widget.pack(fill = X)
@@ -1023,7 +1041,7 @@ class ParticlePanel(AppShell):
                            command = None, **kw):
         # Set label's text
         kw['text'] = text
-        widget = apply(VectorWidgets.Vector3Entry, (parent,), kw)
+        widget = VectorWidgets.Vector3Entry(parent, **kw)
         # Do this after the widget so command isn't called on creation
         widget['command'] = command
         widget.pack(fill = X)
@@ -1035,7 +1053,7 @@ class ParticlePanel(AppShell):
                          command = None, **kw):
         # Set label's text
         kw['text'] = text
-        widget = apply(VectorWidgets.ColorEntry, (parent,), kw)
+        widget = VectorWidgets.ColorEntry(parent, **kw)
         # Do this after the widget so command isn't called on creation
         widget['command'] = command
         widget.pack(fill = X)
@@ -1107,8 +1125,7 @@ class ParticlePanel(AppShell):
         self.effectsLabelMenu.delete(5, 'end')
         self.effectsLabelMenu.add_separator()
         # Add in a checkbutton for each effect (to toggle on/off)
-        keys = self.effectsDict.keys()
-        keys.sort()
+        keys = sorted(self.effectsDict.keys())
         for name in keys:
             effect = self.effectsDict[name]
             self.effectsLabelMenu.add_command(
@@ -1132,7 +1149,7 @@ class ParticlePanel(AppShell):
         self.particlesLabelMenu.add_separator()
         # Add in a checkbutton for each effect (to toggle on/off)
         particles = self.particleEffect.getParticlesList()
-        names = map(lambda x: x.getName(), particles)
+        names = [x.getName() for x in particles]
         names.sort()
         for name in names:
             particle = self.particleEffect.getParticlesNamed(name)
@@ -1157,7 +1174,7 @@ class ParticlePanel(AppShell):
         self.forceGroupLabelMenu.add_separator()
         # Add in a checkbutton for each effect (to toggle on/off)
         forceGroupList = self.particleEffect.getForceGroupList()
-        names = map(lambda x: x.getName(), forceGroupList)
+        names = [x.getName() for x in forceGroupList]
         names.sort()
         for name in names:
             force = self.particleEffect.getForceGroupNamed(name)
@@ -1190,7 +1207,7 @@ class ParticlePanel(AppShell):
             self.mainNotebook.selectpage('System')
             self.updateInfo('System')
         else:
-            print 'ParticlePanel: No effect named ' + name
+            print('ParticlePanel: No effect named ' + name)
 
     def toggleEffect(self, effect, var):
         if var.get():
@@ -1246,8 +1263,8 @@ class ParticlePanel(AppShell):
         else:
             path = '.'
         if not os.path.isdir(path):
-            print 'ParticlePanel Warning: Invalid default DNA directory!'
-            print 'Using current directory'
+            print('ParticlePanel Warning: Invalid default DNA directory!')
+            print('Using current directory')
             path = '.'
         particleFilename = askopenfilename(
             defaultextension = '.ptf',
@@ -1274,8 +1291,8 @@ class ParticlePanel(AppShell):
         else:
             path = '.'
         if not os.path.isdir(path):
-            print 'ParticlePanel Warning: Invalid default DNA directory!'
-            print 'Using current directory'
+            print('ParticlePanel Warning: Invalid default DNA directory!')
+            print('Using current directory')
             path = '.'
         particleFilename = asksaveasfilename(
             defaultextension = '.ptf',
@@ -1780,7 +1797,7 @@ class ParticlePanel(AppShell):
     def selectRendererPage(self):
         type = self.particles.renderer.__class__.__name__
         if(type == 'SpriteParticleRendererExt'):
-            type = 'SpriteParticleRenderer'
+           type = 'SpriteParticleRenderer'
         self.rendererNotebook.selectpage(type)
         self.getVariable('Renderer', 'Renderer Type').set(type)
 
@@ -1969,9 +1986,9 @@ class ParticlePanel(AppShell):
         self.particles.renderer.setAlphaDisable(
             self.getVariable('Sprite Renderer', 'Alpha Disable').get())
     def setRendererColorBlendAttrib(self, rendererName, blendMethodStr, incomingOperandStr, fbufferOperandStr):
-        self.particles.getRenderer().setColorBlendMode(eval('ColorBlendAttrib.'+blendMethodStr),
-                                                       eval('ColorBlendAttrib.'+incomingOperandStr),
-                                                       eval('ColorBlendAttrib.'+fbufferOperandStr))
+        self.particles.getRenderer().setColorBlendMode(getattr(ColorBlendAttrib, blendMethodStr),
+                                                       getattr(ColorBlendAttrib, incomingOperandStr),
+                                                       getattr(ColorBlendAttrib, fbufferOperandStr))
 
         if(blendMethodStr in ['MAdd','MSubtract','MInvSubtract']):
             self.getWidget(rendererName,'Incoming Op.').pack(fill = X)
@@ -2578,7 +2595,7 @@ class ParticlePanel(AppShell):
         # How many forces of the same type in the force group object
         count = 0
         for f in forceGroup:
-            if f.getClassType().eq(force.getClassType()):
+            if f.getClassType() == force.getClassType():
                 count += 1
         if isinstance(force, LinearVectorForce):
             self.createLinearVectorForceWidget(
@@ -2778,11 +2795,12 @@ if __name__ == '__main__':
     try:
         base
     except:
-        from direct.directbase import DirectStart
+        from direct.showbase.ShowBase import ShowBase
+        base = ShowBase()
 
     root = Pmw.initialise()
     pp = ParticlePanel()
     base.pp=pp
     #ve = VectorEntry(Toplevel(), relief = GROOVE)
     #ve.pack()
-    run()
+    base.run()

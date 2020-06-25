@@ -4,7 +4,6 @@ __all__ = ['State']
 
 from direct.directnotify.DirectNotifyGlobal import directNotify
 from direct.showbase.DirectObject import DirectObject
-import types
 
 
 class State(DirectObject):
@@ -23,7 +22,6 @@ class State(DirectObject):
 
         @classmethod
         def replaceMethod(self, oldFunction, newFunction):
-            import new
             import types
             count = 0
             for state in self.States:
@@ -32,18 +30,18 @@ class State(DirectObject):
                 exitFunc = state.getExitFunc()
                 # print 'testing: ', state, enterFunc, exitFunc, oldFunction
                 if type(enterFunc) == types.MethodType:
-                    if (enterFunc.im_func == oldFunction):
+                    if enterFunc.__func__ == oldFunction:
                         # print 'found: ', enterFunc, oldFunction
-                        state.setEnterFunc(new.instancemethod(newFunction,
-                                                              enterFunc.im_self,
-                                                              enterFunc.im_class))
+                        state.setEnterFunc(types.MethodType(newFunction,
+                                                            enterFunc.__self__,
+                                                            enterFunc.__self__.__class__))
                         count += 1
                 if type(exitFunc) == types.MethodType:
-                    if (exitFunc.im_func == oldFunction):
+                    if exitFunc.__func__ == oldFunction:
                         # print 'found: ', exitFunc, oldFunction
-                        state.setExitFunc(new.instancemethod(newFunction,
-                                                             exitFunc.im_self,
-                                                             exitFunc.im_class))
+                        state.setExitFunc(types.MethodType(newFunction,
+                                                           exitFunc.__self__,
+                                                           exitFunc.__self__.__class__))
                         count += 1
             return count
 
@@ -201,7 +199,7 @@ class State(DirectObject):
         self.__enterChildren(argList)
 
         if (self.__enterFunc != None):
-            apply(self.__enterFunc, argList)
+            self.__enterFunc(*argList)
 
     def exit(self, argList=[]):
         """
@@ -212,8 +210,23 @@ class State(DirectObject):
 
         # call exit function if it exists
         if (self.__exitFunc != None):
-            apply(self.__exitFunc, argList)
+            self.__exitFunc(*argList)
 
     def __str__(self):
         return "State: name = %s, enter = %s, exit = %s, trans = %s, children = %s" %\
                (self.__name, self.__enterFunc, self.__exitFunc, self.__transitions, self.__FSMList)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

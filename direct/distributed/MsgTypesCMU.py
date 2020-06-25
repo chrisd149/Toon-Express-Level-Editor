@@ -19,13 +19,11 @@ MsgName2Id = {
     'CLIENT_HEARTBEAT_CMU'                    : 9011,
     'CLIENT_OBJECT_UPDATE_FIELD_TARGETED_CMU'  : 9011,
 
-    'CLIENT_OBJECT_UPDATE_FIELD' : 24,  # Matches MsgTypes.CLIENT_OBJECT_UPDATE_FIELD
+    'CLIENT_OBJECT_UPDATE_FIELD' : 120,  # Matches MsgTypes.CLIENT_OBJECT_SET_FIELD
     }
 
 # create id->name table for debugging
 MsgId2Names = invertDictLossless(MsgName2Id)
 
 # put msg names in module scope, assigned to msg value
-for name, value in MsgName2Id.items():
-    exec '%s = %s' % (name, value)
-del name, value
+globals().update(MsgName2Id)

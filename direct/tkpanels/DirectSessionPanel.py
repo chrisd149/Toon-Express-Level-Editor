@@ -5,15 +5,14 @@ __all__ = ['DirectSessionPanel']
 # Import Tkinter, Pmw, and the dial code
 from direct.showbase.TkGlobal import *
 from direct.tkwidgets.AppShell import *
-from Tkinter import *
-from pandac.PandaModules import *
-import Pmw, string
+from panda3d.core import *
+import Pmw
 from direct.tkwidgets import Dial
 from direct.tkwidgets import Floater
 from direct.tkwidgets import Slider
 from direct.tkwidgets import VectorWidgets
 from direct.tkwidgets import SceneGraphExplorer
-from TaskManagerPanel import TaskManagerWidget
+from .TaskManagerPanel import TaskManagerWidget
 from direct.tkwidgets import MemoryExplorer
 
 """
@@ -178,8 +177,8 @@ class DirectSessionPanel(AppShell):
             sgeFrame, nodePath = render,
             scrolledCanvas_hull_width = 250,
             scrolledCanvas_hull_height = 300)
-        self.SGE.pack(fill = BOTH, expand = 0)
-        sgeFrame.pack(side = LEFT, fill = 'both', expand = 0)
+        self.SGE.pack(fill = BOTH, expand = 1)
+        sgeFrame.pack(side = LEFT, fill = 'both', expand = 1)
 
         # Create the notebook pages
         notebook = Pmw.NoteBook(notebookFrame)
@@ -216,8 +215,7 @@ class DirectSessionPanel(AppShell):
         Label(drFrame, text = 'Display Region',
               font=('MSSansSerif', 14, 'bold')).pack(expand = 0)
 
-        nameList = map(lambda x: 'Display Region ' + repr(x),
-                       range(len(base.direct.drList)))
+        nameList = ['Display Region ' + repr(x) for x in range(len(base.direct.drList))]
         self.drMenu = Pmw.ComboBox(
             drFrame, labelpos = W, label_text = 'Display Region:',
             entry_width = 20,
@@ -725,8 +723,8 @@ class DirectSessionPanel(AppShell):
             dictName = name
         else:
             # Generate a unique name for the dict
-            dictName = name + '-' + repr(nodePath.id())
-        if not dict.has_key(dictName):
+            dictName = name + '-' + repr(hash(nodePath))
+        if dictName not in dict:
             # Update combo box to include new item
             names.append(dictName)
             listbox = menu.component('scrolledlist')
@@ -745,8 +743,8 @@ class DirectSessionPanel(AppShell):
                                 color[2]/255.0)
 
     def selectDisplayRegionNamed(self, name):
-        if (string.find(name, 'Display Region ') >= 0):
-            drIndex = string.atoi(name[-1:])
+        if name.find('Display Region ') >= 0:
+            drIndex = int(name[-1:])
             self.activeDisplayRegion = base.direct.drList[drIndex]
         else:
             self.activeDisplayRegion = None

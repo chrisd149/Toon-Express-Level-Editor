@@ -1,32 +1,31 @@
-from pandac.PandaModules import *
+from panda3d.core import *
 
-from pandac.PandaModules import ParticleSystem
-from pandac.PandaModules import BaseParticleFactory
-from pandac.PandaModules import PointParticleFactory
-from pandac.PandaModules import ZSpinParticleFactory
-#from pandac.PandaModules import OrientedParticleFactory
-from pandac.PandaModules import BaseParticleRenderer
-from pandac.PandaModules import PointParticleRenderer
-from pandac.PandaModules import LineParticleRenderer
-from pandac.PandaModules import GeomParticleRenderer
-from pandac.PandaModules import SparkleParticleRenderer
-#from pandac.PandaModules import SpriteParticleRenderer
-from pandac.PandaModules import BaseParticleEmitter
-from pandac.PandaModules import ArcEmitter
-from pandac.PandaModules import BoxEmitter
-from pandac.PandaModules import DiscEmitter
-from pandac.PandaModules import LineEmitter
-from pandac.PandaModules import PointEmitter
-from pandac.PandaModules import RectangleEmitter
-from pandac.PandaModules import RingEmitter
-from pandac.PandaModules import SphereSurfaceEmitter
-from pandac.PandaModules import SphereVolumeEmitter
-from pandac.PandaModules import TangentRingEmitter
+from panda3d.physics import PhysicalNode
+from panda3d.physics import ParticleSystem
+from panda3d.physics import PointParticleFactory
+from panda3d.physics import ZSpinParticleFactory
+#from panda3d.physics import OrientedParticleFactory
+from panda3d.physics import BaseParticleRenderer
+from panda3d.physics import PointParticleRenderer
+from panda3d.physics import LineParticleRenderer
+from panda3d.physics import GeomParticleRenderer
+from panda3d.physics import SparkleParticleRenderer
+#from panda3d.physics import SpriteParticleRenderer
+from panda3d.physics import BaseParticleEmitter
+from panda3d.physics import ArcEmitter
+from panda3d.physics import BoxEmitter
+from panda3d.physics import DiscEmitter
+from panda3d.physics import LineEmitter
+from panda3d.physics import PointEmitter
+from panda3d.physics import RectangleEmitter
+from panda3d.physics import RingEmitter
+from panda3d.physics import SphereSurfaceEmitter
+from panda3d.physics import SphereVolumeEmitter
+from panda3d.physics import TangentRingEmitter
+from panda3d.physics import SpriteAnim
 
-import SpriteParticleRendererExt
+from . import SpriteParticleRendererExt
 
-import string
-import os
 from direct.directnotify.DirectNotifyGlobal import directNotify
 import sys
 
@@ -110,7 +109,7 @@ class Particles(ParticleSystem):
         elif (type == "OrientedParticleFactory"):
             self.factory = OrientedParticleFactory()
         else:
-            print "unknown factory type: %s" % type
+            print("unknown factory type: %s" % type)
             return None
         self.factory.setLifespanBase(0.5)
         ParticleSystem.setFactory(self, self.factory)
@@ -141,7 +140,7 @@ class Particles(ParticleSystem):
             self.renderer = SpriteParticleRendererExt.SpriteParticleRendererExt()
             # self.renderer.setTextureFromFile()
         else:
-            print "unknown renderer type: %s" % type
+            print("unknown renderer type: %s" % type)
             return None
         ParticleSystem.setRenderer(self, self.renderer)
 
@@ -173,7 +172,7 @@ class Particles(ParticleSystem):
         elif (type == "TangentRingEmitter"):
             self.emitter = TangentRingEmitter()
         else:
-            print "unknown emitter type: %s" % type
+            print("unknown emitter type: %s" % type)
             return None
         ParticleSystem.setEmitter(self, self.emitter)
 
@@ -354,7 +353,7 @@ class Particles(ParticleSystem):
                     else:
                         file.write(targ+'.renderer.setColorBlendMode(ColorBlendAttrib.%s)\n' % cbmLut[cbMode])
             cim = self.renderer.getColorInterpolationManager()
-            segIdList = eval('['+cim.getSegmentIdList().replace(' ',', ')+']')
+            segIdList = [int(seg) for seg in cim.getSegmentIdList().split()]
             for sid in segIdList:
                 seg = cim.getSegment(sid)
                 if seg.isEnabled():
@@ -365,31 +364,31 @@ class Particles(ParticleSystem):
                     typ = type(fun).__name__
                     if typ == 'ColorInterpolationFunctionConstant':
                         c_a = fun.getColorA()
-                        file.write(targ+'.renderer.getColorInterpolationManager().addConstant('+repr(t_b)+','+`t_e`+','+ \
-                                   'Vec4('+repr(c_a[0])+','+`c_a[1]`+','+`c_a[2]`+','+`c_a[3]`+'),'+`mod`+')\n')
+                        file.write(targ+'.renderer.getColorInterpolationManager().addConstant('+repr(t_b)+','+repr(t_e)+','+ \
+                                   'Vec4('+repr(c_a[0])+','+repr(c_a[1])+','+repr(c_a[2])+','+repr(c_a[3])+'),'+repr(mod)+')\n')
                     elif typ == 'ColorInterpolationFunctionLinear':
                         c_a = fun.getColorA()
                         c_b = fun.getColorB()
-                        file.write(targ+'.renderer.getColorInterpolationManager().addLinear('+repr(t_b)+','+`t_e`+','+ \
-                                   'Vec4('+repr(c_a[0])+','+`c_a[1]`+','+`c_a[2]`+','+`c_a[3]`+'),' + \
-                                   'Vec4('+repr(c_b[0])+','+`c_b[1]`+','+`c_b[2]`+','+`c_b[3]`+'),'+`mod`+')\n')
+                        file.write(targ+'.renderer.getColorInterpolationManager().addLinear('+repr(t_b)+','+repr(t_e)+','+ \
+                                   'Vec4('+repr(c_a[0])+','+repr(c_a[1])+','+repr(c_a[2])+','+repr(c_a[3])+'),' + \
+                                   'Vec4('+repr(c_b[0])+','+repr(c_b[1])+','+repr(c_b[2])+','+repr(c_b[3])+'),'+repr(mod)+')\n')
                     elif typ == 'ColorInterpolationFunctionStepwave':
                         c_a = fun.getColorA()
                         c_b = fun.getColorB()
                         w_a = fun.getWidthA()
                         w_b = fun.getWidthB()
-                        file.write(targ+'.renderer.getColorInterpolationManager().addStepwave('+repr(t_b)+','+`t_e`+','+ \
-                                   'Vec4('+repr(c_a[0])+','+`c_a[1]`+','+`c_a[2]`+','+`c_a[3]`+'),' + \
-                                   'Vec4('+repr(c_b[0])+','+`c_b[1]`+','+`c_b[2]`+','+`c_b[3]`+'),' + \
-                                   repr(w_a)+','+`w_b`+','+`mod`+')\n')
+                        file.write(targ+'.renderer.getColorInterpolationManager().addStepwave('+repr(t_b)+','+repr(t_e)+','+ \
+                                   'Vec4('+repr(c_a[0])+','+repr(c_a[1])+','+repr(c_a[2])+','+repr(c_a[3])+'),' + \
+                                   'Vec4('+repr(c_b[0])+','+repr(c_b[1])+','+repr(c_b[2])+','+repr(c_b[3])+'),' + \
+                                   repr(w_a)+','+repr(w_b)+','+repr(mod)+')\n')
                     elif typ == 'ColorInterpolationFunctionSinusoid':
                         c_a = fun.getColorA()
                         c_b = fun.getColorB()
                         per = fun.getPeriod()
-                        file.write(targ+'.renderer.getColorInterpolationManager().addSinusoid('+repr(t_b)+','+`t_e`+','+ \
-                                   'Vec4('+repr(c_a[0])+','+`c_a[1]`+','+`c_a[2]`+','+`c_a[3]`+'),' + \
-                                   'Vec4('+repr(c_b[0])+','+`c_b[1]`+','+`c_b[2]`+','+`c_b[3]`+'),' + \
-                                   repr(per)+','+`mod`+')\n')
+                        file.write(targ+'.renderer.getColorInterpolationManager().addSinusoid('+repr(t_b)+','+repr(t_e)+','+ \
+                                   'Vec4('+repr(c_a[0])+','+repr(c_a[1])+','+repr(c_a[2])+','+repr(c_a[3])+'),' + \
+                                   'Vec4('+repr(c_b[0])+','+repr(c_b[1])+','+repr(c_b[2])+','+repr(c_b[3])+'),' + \
+                                   repr(per)+','+repr(mod)+')\n')
 
         elif (self.rendererType == "SparkleParticleRenderer"):
             file.write('# Sparkle parameters\n')
@@ -457,7 +456,7 @@ class Particles(ParticleSystem):
                     else:
                         file.write(targ+'.renderer.setColorBlendMode(ColorBlendAttrib.%s)\n' % cbmLut[cbMode])
             cim = self.renderer.getColorInterpolationManager()
-            segIdList = eval('['+cim.getSegmentIdList().replace(' ',', ')+']')
+            segIdList = [int(seg) for seg in cim.getSegmentIdList().split()]
             for sid in segIdList:
                 seg = cim.getSegment(sid)
                 if seg.isEnabled():
@@ -468,31 +467,31 @@ class Particles(ParticleSystem):
                     typ = type(fun).__name__
                     if typ == 'ColorInterpolationFunctionConstant':
                         c_a = fun.getColorA()
-                        file.write(targ+'.renderer.getColorInterpolationManager().addConstant('+repr(t_b)+','+`t_e`+','+ \
-                                   'Vec4('+repr(c_a[0])+','+`c_a[1]`+','+`c_a[2]`+','+`c_a[3]`+'),'+`mod`+')\n')
+                        file.write(targ+'.renderer.getColorInterpolationManager().addConstant('+repr(t_b)+','+repr(t_e)+','+ \
+                                   'Vec4('+repr(c_a[0])+','+repr(c_a[1])+','+repr(c_a[2])+','+repr(c_a[3])+'),'+repr(mod)+')\n')
                     elif typ == 'ColorInterpolationFunctionLinear':
                         c_a = fun.getColorA()
                         c_b = fun.getColorB()
-                        file.write(targ+'.renderer.getColorInterpolationManager().addLinear('+repr(t_b)+','+`t_e`+','+ \
-                                   'Vec4('+repr(c_a[0])+','+`c_a[1]`+','+`c_a[2]`+','+`c_a[3]`+'),' + \
-                                   'Vec4('+repr(c_b[0])+','+`c_b[1]`+','+`c_b[2]`+','+`c_b[3]`+'),'+`mod`+')\n')
+                        file.write(targ+'.renderer.getColorInterpolationManager().addLinear('+repr(t_b)+','+repr(t_e)+','+ \
+                                   'Vec4('+repr(c_a[0])+','+repr(c_a[1])+','+repr(c_a[2])+','+repr(c_a[3])+'),' + \
+                                   'Vec4('+repr(c_b[0])+','+repr(c_b[1])+','+repr(c_b[2])+','+repr(c_b[3])+'),'+repr(mod)+')\n')
                     elif typ == 'ColorInterpolationFunctionStepwave':
                         c_a = fun.getColorA()
                         c_b = fun.getColorB()
                         w_a = fun.getWidthA()
                         w_b = fun.getWidthB()
-                        file.write(targ+'.renderer.getColorInterpolationManager().addStepwave('+repr(t_b)+','+`t_e`+','+ \
-                                   'Vec4('+repr(c_a[0])+','+`c_a[1]`+','+`c_a[2]`+','+`c_a[3]`+'),' + \
-                                   'Vec4('+repr(c_b[0])+','+`c_b[1]`+','+`c_b[2]`+','+`c_b[3]`+'),' + \
-                                   repr(w_a)+','+`w_b`+','+`mod`+')\n')
+                        file.write(targ+'.renderer.getColorInterpolationManager().addStepwave('+repr(t_b)+','+repr(t_e)+','+ \
+                                   'Vec4('+repr(c_a[0])+','+repr(c_a[1])+','+repr(c_a[2])+','+repr(c_a[3])+'),' + \
+                                   'Vec4('+repr(c_b[0])+','+repr(c_b[1])+','+repr(c_b[2])+','+repr(c_b[3])+'),' + \
+                                   repr(w_a)+','+repr(w_b)+','+repr(mod)+')\n')
                     elif typ == 'ColorInterpolationFunctionSinusoid':
                         c_a = fun.getColorA()
                         c_b = fun.getColorB()
                         per = fun.getPeriod()
-                        file.write(targ+'.renderer.getColorInterpolationManager().addSinusoid('+repr(t_b)+','+`t_e`+','+ \
-                                   'Vec4('+repr(c_a[0])+','+`c_a[1]`+','+`c_a[2]`+','+`c_a[3]`+'),' + \
-                                   'Vec4('+repr(c_b[0])+','+`c_b[1]`+','+`c_b[2]`+','+`c_b[3]`+'),' + \
-                                   repr(per)+','+`mod`+')\n')
+                        file.write(targ+'.renderer.getColorInterpolationManager().addSinusoid('+repr(t_b)+','+repr(t_e)+','+ \
+                                   'Vec4('+repr(c_a[0])+','+repr(c_a[1])+','+repr(c_a[2])+','+repr(c_a[3])+'),' + \
+                                   'Vec4('+repr(c_b[0])+','+repr(c_b[1])+','+repr(c_b[2])+','+repr(c_b[3])+'),' + \
+                                   repr(per)+','+repr(mod)+')\n')
 
         file.write('# Emitter parameters\n')
         emissionType = self.emitter.getEmissionType()
@@ -570,9 +569,9 @@ class Particles(ParticleSystem):
                          self.factory.getLifespanBase()+self.factory.getLifespanSpread()]
         birthRateRange = [self.getBirthRate()] * 3
 
-        print 'Litter Ranges:    ',litterRange
-        print 'LifeSpan Ranges:  ',lifespanRange
-        print 'BirthRate Ranges: ',birthRateRange
+        print('Litter Ranges:    %s' % litterRange)
+        print('LifeSpan Ranges:  %s' % lifespanRange)
+        print('BirthRate Ranges: %s' % birthRateRange)
 
         return dict(zip(('min','median','max'),[l*s/b for l,s,b in zip(litterRange,lifespanRange,birthRateRange)]))
 
