@@ -419,15 +419,15 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
         for subString in pathArray:
             if subString[:1] == 'X':
                 dataString = subString[1:]
-                dataString = dataString.replace('p', '.')
+                dataString = datastr.replace('p', '.')
                 sizeX = float(dataString)
             elif subString[:1] == 'Y':
                 dataString = subString[1:]
-                dataString = dataString.replace('p', '.')
+                dataString = datastr.replace('p', '.')
                 sizeY = float(dataString)
             elif subString[:1] == 'd':
                 dataString = subString[1:]
-                dataString = dataString.replace('p', '.')
+                dataString = datastr.replace('p', '.')
                 move = float(dataString)
             elif subString == 'mover':
                 type = 4

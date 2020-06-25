@@ -87,7 +87,7 @@ class InviteVisual(DirectFrame):
             activitiesString = '%s, %s' % (activitiesString, activity)
 
         activitiesString = activitiesString[2:]
-        activitiesString = activitiesString[:activitiesString.rfind(',')] + conjunction + activitiesString[activitiesString.rfind(',') + 1:]
+        activitiesString = activitiesString[:activitiesstr.rfind(',')] + conjunction + activitiesString[activitiesstr.rfind(',') + 1:]
         activitiesString = TTLocalizer.PartyPlannerInvitationThemeWhatActivitiesBeginning + activitiesString
         return self.insertCarriageReturn(activitiesString)
 

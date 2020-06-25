@@ -368,7 +368,7 @@ def walk_egg(egg_dir):
 
 def analyze_egg(egg_dir, stubs):
     # check for existing flag in EGG-INFO
-    for flag, fn in list(safety_flags.items()):
+    for flag, fn in safety_flags.items():
         if os.path.exists(os.path.join(egg_dir, 'EGG-INFO', fn)):
             return flag
     if not can_scan():
@@ -386,7 +386,7 @@ def analyze_egg(egg_dir, stubs):
 
 def write_safety_flag(egg_dir, safe):
     # Write or remove zip safety flag file(s)
-    for flag, fn in list(safety_flags.items()):
+    for flag, fn in safety_flags.items():
         fn = os.path.join(egg_dir, fn)
         if os.path.exists(fn):
             if safe is None or bool(safe) != flag:

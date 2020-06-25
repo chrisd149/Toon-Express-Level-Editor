@@ -59,11 +59,11 @@ def checkName(name, otherCheckFuncs = [], font = None):
 
     def printableChars(name):
         for char in name:
-            if ord(char) < 128 and char not in string.printable:
+            if ord(char) < 128 and char not in str.printable:
                 notify.info('name contains non-printable char #%s' % ord(char))
                 return OTPLocalizer.NCGeneric
 
-    validAsciiChars = set(".,'-" + string.ascii_letters + string.whitespace)
+    validAsciiChars = set(".,'-" + str.ascii_letters + str.whitespace)
 
     def _validCharacter(c, validAsciiChars = validAsciiChars, font = font):
         if c in validAsciiChars:
@@ -75,7 +75,7 @@ def checkName(name, otherCheckFuncs = [], font = None):
     def badCharacters(name, _validCharacter = _validCharacter):
         for char in name:
             if not _validCharacter(char):
-                if char in string.digits:
+                if char in str.digits:
                     notify.info('name contains digits')
                     return OTPLocalizer.NCNoDigits
                 else:
@@ -108,7 +108,7 @@ def checkName(name, otherCheckFuncs = [], font = None):
                 if ord(char) >= 128:
                     return None
 
-            letters = filterString(word, string.ascii_letters)
+            letters = filterString(word, str.ascii_letters)
             if len(letters) > 2:
                 vowels = filterString(letters, 'aeiouyAEIOUY')
                 if len(vowels) == 0:

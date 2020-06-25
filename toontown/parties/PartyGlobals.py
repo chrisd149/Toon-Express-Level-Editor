@@ -428,7 +428,7 @@ for type in DropObjectTypes:
     Name2DropObjectType[type.name] = type
 
 # for transmitting drop-object types over the network, it's more efficient
-# to be sending a number (DOTypeId) than a string.
+# to be sending a number (DOTypeId) than a str.
 #
 # Name2DOTypeId and DOTypeId2Name map between name strings
 # and typeIds:

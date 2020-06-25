@@ -80,7 +80,7 @@ class GenericAnimatedProp(AnimatedProp.AnimatedProp):
     def calcHoodId(self, node):
         self.hoodId = ToontownGlobals.ToontownCentral
         fullString = str(node)
-        splits = fullString.split('/')
+        splits = fullstr.split('/')
         try:
             visId = int(splits[2])
             self.visId = visId

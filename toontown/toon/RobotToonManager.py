@@ -446,7 +446,7 @@ if sys.argv[1:]:
 else:
     hoodString = base.config.GetString('level-editor-hoods',
                                        'TT DD BR DG DL MM PA')
-    hoods = string.split(hoodString)
+    hoods = str.split(hoodString)
 
 # The list of neighborhoods to edit
 hoodIds = {'TT' : 'toontown_central',
@@ -739,7 +739,7 @@ class RobotToonManager(DirectObject):
             dna.asTuple(),pos,hpr,startPos,startHpr,endPos,endHpr,state)
     def convertServerDNAString(self, serverString):
         # Strip out blank space and take last 30 characters
-        serverString = serverString.replace(' ', '')
+        serverString = serverstr.replace(' ', '')
         serverString = serverString[-30:]
         # Create a datagram from server string
         dg = PyDatagram()
@@ -815,7 +815,7 @@ class RobotToonManager(DirectObject):
                         props,pos,hpr,startPos,startHpr,endPos,endHpr,state)
             f.close()
     def parseAvatarProperties(self, line):
-        line = string.strip(line)
+        line = str.strip(line)
         if line:
             line = line.split('*')
         i = 0
@@ -825,16 +825,16 @@ class RobotToonManager(DirectObject):
             torso = line[i];i+=1
             legs = line[i];i+=1
             gender = line[i];i+=1
-            armColor = string.atoi(line[i]);i+=1
-            gloveColor = string.atoi(line[i]);i+=1
-            legColor = string.atoi(line[i]);i+=1
-            headColor = string.atoi(line[i]);i+=1
-            topTexture = string.atoi(line[i]);i+=1
-            topTextureColor = string.atoi(line[i]);i+=1
-            sleeveTexture = string.atoi(line[i]);i+=1
-            sleeveTextureColor = string.atoi(line[i]);i+=1
-            bottomTexture = string.atoi(line[i]);i+=1
-            bottomTextureColor = string.atoi(line[i]);i+=1
+            armColor = str.atoi(line[i]);i+=1
+            gloveColor = str.atoi(line[i]);i+=1
+            legColor = str.atoi(line[i]);i+=1
+            headColor = str.atoi(line[i]);i+=1
+            topTexture = str.atoi(line[i]);i+=1
+            topTextureColor = str.atoi(line[i]);i+=1
+            sleeveTexture = str.atoi(line[i]);i+=1
+            sleeveTextureColor = str.atoi(line[i]);i+=1
+            bottomTexture = str.atoi(line[i]);i+=1
+            bottomTextureColor = str.atoi(line[i]);i+=1
             props = [head, torso, legs, gender,
                     armColor, gloveColor, legColor, headColor,
                     topTexture, topTextureColor, sleeveTexture,
@@ -845,24 +845,24 @@ class RobotToonManager(DirectObject):
             dept = line[i];i+=1
             name = line[i];i+=1
             props = [body, dept, name]
-        x = string.atof(line[i]);i+=1
-        y = string.atof(line[i]);i+=1
-        z = string.atof(line[i]);i+=1
-        h = string.atof(line[i]);i+=1
-        p = string.atof(line[i]);i+=1
-        r = string.atof(line[i]);i+=1
-        x1 = string.atof(line[i]);i+=1
-        y1 = string.atof(line[i]);i+=1
-        z1 = string.atof(line[i]);i+=1
-        h1 = string.atof(line[i]);i+=1
-        p1 = string.atof(line[i]);i+=1
-        r1 = string.atof(line[i]);i+=1
-        x2 = string.atof(line[i]);i+=1
-        y2 = string.atof(line[i]);i+=1
-        z2 = string.atof(line[i]);i+=1
-        h2 = string.atof(line[i]);i+=1
-        p2 = string.atof(line[i]);i+=1
-        r2 = string.atof(line[i]);i+=1
+        x = str.atof(line[i]);i+=1
+        y = str.atof(line[i]);i+=1
+        z = str.atof(line[i]);i+=1
+        h = str.atof(line[i]);i+=1
+        p = str.atof(line[i]);i+=1
+        r = str.atof(line[i]);i+=1
+        x1 = str.atof(line[i]);i+=1
+        y1 = str.atof(line[i]);i+=1
+        z1 = str.atof(line[i]);i+=1
+        h1 = str.atof(line[i]);i+=1
+        p1 = str.atof(line[i]);i+=1
+        r1 = str.atof(line[i]);i+=1
+        x2 = str.atof(line[i]);i+=1
+        y2 = str.atof(line[i]);i+=1
+        z2 = str.atof(line[i]);i+=1
+        h2 = str.atof(line[i]);i+=1
+        p2 = str.atof(line[i]);i+=1
+        r2 = str.atof(line[i]);i+=1
         state = line[i]
         return (type, props,
                 Point3(x,y,z),
@@ -2384,8 +2384,8 @@ class RobotToonControlPanel(AppShell):
         tokens = text.split('x')
         if len(tokens) != 2:
             return
-        width = string.atoi(tokens[0])
-        height = string.atoi(tokens[1])
+        width = str.atoi(tokens[0])
+        height = str.atoi(tokens[1])
         
         props = WindowProperties(base.win.getProperties())
         props.setSize(width, height)
@@ -2482,7 +2482,7 @@ class RobotToonControlPanel(AppShell):
             self.topsCounter.invoke()
 
     def __switchTops(self, text):
-        value = string.atoi(text)
+        value = str.atoi(text)
         if (value < 0) or (value >= len(self.topsVariants)):
             return Pmw.ERROR
         else:
@@ -2510,7 +2510,7 @@ class RobotToonControlPanel(AppShell):
     def __switchBottoms(self, text):
         if not Pmw.integervalidator(text):
             return Pmw.ERROR
-        value = string.atoi(text)
+        value = str.atoi(text)
         if (value < 0) or (value >= len(self.bottomsVariants)):
             return Pmw.ERROR
         else:
@@ -2953,7 +2953,7 @@ class RobotToonControlPanel(AppShell):
     ### IN SUPPORT OF DEMO
     def _setServerString(self):
         if self.rtm.selectedToon:
-            self.rtm.selectedToon.updateDNA(self.serverString.get())
+            self.rtm.selectedToon.updateDNA(self.serverstr.get())
             self.rtm.selectedToon.loop('neutral')
             self.updateToonInfo()
 

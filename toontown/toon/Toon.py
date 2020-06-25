@@ -522,7 +522,7 @@ def loadPhaseAnims(phaseStr="phase_3", loadFlag = 1):
                 
     for key in list(HeadDict.keys()):            
         # only load anims for dog heads
-        if (string.find(key,"d") >= 0):
+        if (str.find(key,"d") >= 0):
             for anim in animList:
                 #file = phaseStr + HeadDict[key] + anim[1]
                 if loadFlag:
@@ -560,7 +560,7 @@ def compileGlobalAnimList():
 
         for key in list(HeadDict.keys()):            
             # only load anims for dog heads
-            if (string.find(key,"d") >= 0):
+            if (str.find(key,"d") >= 0):
                 HeadAnimDict.setdefault(key, {})
                 for anim in animList:
                     file = phaseStr + HeadDict[key] + anim[1]

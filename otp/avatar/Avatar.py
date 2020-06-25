@@ -10,7 +10,7 @@ from direct.distributed import ClockDelta
 from otp.avatar.ShadowCaster import ShadowCaster
 import random
 from otp.otpbase import OTPRender
-from direct.showbase.PythonUtil import recordCreationStack
+from otp.otpbase.PythonUtil import recordCreationStack
 
 def reconsiderAllUnderstandable():
     """
@@ -467,15 +467,15 @@ class Avatar(Actor, ShadowCaster):
         Play dialogue samples to match the given chat string
         """
         # use only lower case for searching
-        searchString = chatString.lower()
+        searchString = chatstr.lower()
         # determine the statement type
-        if (searchString.find(OTPLocalizer.DialogSpecial) >= 0):
+        if (searchstr.find(OTPLocalizer.DialogSpecial) >= 0):
             # special sound
             type = "special"
-        elif (searchString.find(OTPLocalizer.DialogExclamation) >= 0):
+        elif (searchstr.find(OTPLocalizer.DialogExclamation) >= 0):
             #exclamation
             type = "exclamation"
-        elif (searchString.find(OTPLocalizer.DialogQuestion) >= 0):
+        elif (searchstr.find(OTPLocalizer.DialogQuestion) >= 0):
             # question
             type = "question"
         else:

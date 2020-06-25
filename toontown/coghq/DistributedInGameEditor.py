@@ -562,10 +562,10 @@ class DistributedInGameEditor(DistributedObject.DistributedObject, Level.Level, 
             copyNum = 2
             if oldName[-1] != ')':
                 hasSuffix = False
-            if hasSuffix and oldName[-2] in string.digits:
+            if hasSuffix and oldName[-2] in str.digits:
                 i = len(oldName) - 2
                 numString = ''
-                while oldName[i] in string.digits:
+                while oldName[i] in str.digits:
                     numString = oldName[i] + numString
                     i -= 1
 

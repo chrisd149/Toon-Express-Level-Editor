@@ -30,11 +30,11 @@ if language != "english":
     checkLanguage = 1
     _languageModule = "otp.otpbase.OTPLocalizer_" + language
 else:
-    _languageModule = "otp.otpbase.OTPLocalizer" + string.capitalize(language)
+    _languageModule = "otp.otpbase.OTPLocalizer" + str.capitalize(language)
 
 exec("from " + _languageModule + " import *")
 
-# Ask what language we are running in. Returns a string.
+# Ask what language we are running in. Returns a str.
 def getLanguage():
     return language
 

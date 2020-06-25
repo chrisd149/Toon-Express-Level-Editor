@@ -400,7 +400,7 @@ class PackageIndex(Environment):
             self.warn(msg, url)
 
     def scan_egg_links(self, search_path):
-        dirs = list(filter(os.path.isdir, search_path))
+        dirs = filter(os.path.isdir, search_path)
         egg_links = (
             (path, entry)
             for path in dirs
@@ -412,7 +412,7 @@ class PackageIndex(Environment):
     def scan_egg_link(self, path, entry):
         with open(os.path.join(path, entry)) as raw_lines:
             # filter non-empty lines
-            lines = list([_f for _f in map(str.strip, raw_lines) if _f])
+            lines = list(filter(None, map(str.strip, raw_lines)))
 
         if len(lines) != 2:
             # format is not recognized; punt
@@ -738,7 +738,7 @@ class PackageIndex(Environment):
             if "content-length" in headers:
                 # Some servers return multiple Content-Length headers :(
                 sizes = get_all_headers(headers, 'Content-Length')
-                size = max(list(map(int, sizes)))
+                size = max(map(int, sizes))
                 self.reporthook(url, filename, blocknum, bs, size)
             with open(filename, 'wb') as tfp:
                 while True:
@@ -1025,7 +1025,7 @@ class PyPIConfig(configparser.RawConfigParser):
             if self.get(section, 'repository').strip()
         ]
 
-        return dict(list(map(self._get_repo_cred, sections_with_repositories)))
+        return dict(map(self._get_repo_cred, sections_with_repositories))
 
     def _get_repo_cred(self, section):
         repo = self.get(section, 'repository').strip()
@@ -1039,7 +1039,7 @@ class PyPIConfig(configparser.RawConfigParser):
         If the URL indicated appears to be a repository defined in this
         config, return the credential for that repository.
         """
-        for repository, cred in list(self.creds_by_repository.items()):
+        for repository, cred in self.creds_by_repository.items():
             if url.startswith(repository):
                 return cred
 

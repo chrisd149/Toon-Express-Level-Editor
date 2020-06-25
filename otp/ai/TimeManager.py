@@ -327,7 +327,7 @@ class TimeManager(DistributedObject.DistributedObject):
             if key is not None:
                 try:
                     verString = key.group(1)
-                    parts = verString.split('.')
+                    parts = verstr.split('.')
                     major = int(parts[0])
                     minor = int(parts[1])
                     bugfix = int(parts[2])

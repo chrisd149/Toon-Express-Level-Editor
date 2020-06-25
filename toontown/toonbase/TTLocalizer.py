@@ -29,12 +29,12 @@ except:
     if language != "english":
         checkLanguage = 1
 
-# Ask what language we are running in. Returns a string.
+# Ask what language we are running in. Returns a str.
 def getLanguage():
     return language
 
 print(("TTLocalizer: Running in language: %s" % (language)))
-_languageModule = "toontown.toonbase.TTLocalizer" + string.capitalize(language)
+_languageModule = "toontown.toonbase.TTLocalizer" + str.capitalize(language)
 exec("from " + _languageModule + " import *")
 
 if checkLanguage:

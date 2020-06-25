@@ -639,12 +639,12 @@ class DistributedSuit(DistributedSuitBase.DistributedSuitBase, DelayDeletable):
     def playDialogueForString(self, chatString, delay = 0.0):
         if len(chatString) == 0:
             return
-        searchString = chatString.lower()
-        if searchString.find(OTPLocalizer.DialogSpecial) >= 0:
+        searchString = chatstr.lower()
+        if searchstr.find(OTPLocalizer.DialogSpecial) >= 0:
             type = 'special'
-        elif searchString.find(OTPLocalizer.DialogExclamation) >= 0:
+        elif searchstr.find(OTPLocalizer.DialogExclamation) >= 0:
             type = 'exclamation'
-        elif searchString.find(OTPLocalizer.DialogQuestion) >= 0:
+        elif searchstr.find(OTPLocalizer.DialogQuestion) >= 0:
             type = 'question'
         elif random.randint(0, 1):
             type = 'statementA'

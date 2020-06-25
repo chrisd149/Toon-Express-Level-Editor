@@ -31,7 +31,7 @@ class ToontownAccess:
         moduleString = '' #listProcessModules()
         moduleList = []
         if moduleString:
-            moduleList = moduleString.split(',')
+            moduleList = modulestr.split(',')
         return moduleList
 
     def sendUpdate(self, fieldName, args = [], sendToId = None):

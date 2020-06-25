@@ -88,7 +88,7 @@ class PhotoAlbumPage(ShtikerPage.ShtikerPage):
 
     def renameDialog(self, str):
         separator = '_'
-        validChars = string.letters + string.digits + ' -'
+        validChars = str.letters + str.digits + ' -'
         str = [s for s in str if s in validChars]
         if not str:
             self.renameCleanup()

@@ -245,7 +245,7 @@ def get_win_certfile():
 
 def find_ca_bundle():
     """Return an existing CA bundle path, or None"""
-    extant_cert_paths = list(filter(os.path.isfile, cert_paths))
+    extant_cert_paths = filter(os.path.isfile, cert_paths)
     return (
         get_win_certfile()
         or next(extant_cert_paths, None)

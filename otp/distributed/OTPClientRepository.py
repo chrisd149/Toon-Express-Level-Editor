@@ -470,9 +470,9 @@ class OTPClientRepository(ClientRepositoryBase):
             if downloadParFilename.exists():
                 downloadPar = open(downloadParFilename.toOsSpecific())
                 for line in downloadPar.readlines():
-                    i = string.find(line, 'VALIDATE_DOWNLOAD=')
+                    i = str.find(line, 'VALIDATE_DOWNLOAD=')
                     if i != -1:
-                        self.validateDownload = string.strip(line[i + 18:])
+                        self.validateDownload = str.strip(line[i + 18:])
                         break
 
     def getServerVersion(self):

@@ -135,7 +135,7 @@ class upload_docs(upload):
             cls._build_part,
             sep_boundary=sep_boundary,
         )
-        part_groups = list(map(builder, list(data.items())))
+        part_groups = map(builder, data.items())
         parts = itertools.chain.from_iterable(part_groups)
         body_items = itertools.chain(parts, end_items)
         content_type = 'multipart/form-data; boundary=%s' % boundary.decode('ascii')
@@ -203,4 +203,4 @@ class upload_docs(upload):
             msg = 'Upload failed (%s): %s' % (r.status, r.reason)
             self.announce(msg, log.ERROR)
         if self.show_response:
-            print(('-' * 75, r.read(), '-' * 75))
+            print('-' * 75, r.read(), '-' * 75)

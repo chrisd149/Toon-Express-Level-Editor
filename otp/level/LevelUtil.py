@@ -15,7 +15,7 @@ def getZoneNum2Node(levelModel, logFunc = lambda str: str):
             name = name[len(baseString):]
             numDigits = 0
             while numDigits < len(name):
-                if name[numDigits] not in string.digits:
+                if name[numDigits] not in str.digits:
                     break
                 numDigits += 1
 

@@ -78,7 +78,7 @@ class sdist_add_defaults:
     def _add_defaults_optional(self):
         optional = ['test/test*.py', 'setup.cfg']
         for pattern in optional:
-            files = list(filter(os.path.isfile, glob(pattern)))
+            files = filter(os.path.isfile, glob(pattern))
             self.filelist.extend(files)
 
     def _add_defaults_python(self):

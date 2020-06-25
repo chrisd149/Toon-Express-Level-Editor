@@ -229,13 +229,13 @@ class ToontownMagicWordManager(MagicWordManager.MagicWordManager):
                 self.setMagicWordResponse(response)
             else:
                 tm.extraSkew = 0.0
-                skew = string.strip(word[5:])
+                skew = str.strip(word[5:])
                 if skew != '':
                     tm.extraSkew = float(skew)
                 globalClockDelta.clear()
                 tm.handleHotkey()
         elif wordIs('~period'):
-            timeout = string.strip(word[7:])
+            timeout = str.strip(word[7:])
             if timeout != '':
                 seconds = int(timeout)
                 base.cr.stopPeriodTimer()
@@ -679,7 +679,7 @@ class ToontownMagicWordManager(MagicWordManager.MagicWordManager):
 
     def identifyDistributedObjects(self, name):
         result = []
-        lowerName = string.lower(name)
+        lowerName = str.lower(name)
         for obj in list(base.cr.doId2do.values()):
             className = obj.__class__.__name__
             try:
@@ -687,13 +687,13 @@ class ToontownMagicWordManager(MagicWordManager.MagicWordManager):
             except:
                 name = className
 
-            if string.lower(name) == lowerName or string.lower(className) == lowerName or string.lower(className) == 'distributed' + lowerName:
+            if str.lower(name) == lowerName or str.lower(className) == lowerName or str.lower(className) == 'distributed' + lowerName:
                 result.append((name, obj))
 
         return result
 
     def getCSBitmask(self, str):
-        words = string.lower(str).split()
+        words = str.lower(str).split()
         if len(words) == 0:
             return None
         invalid = ''

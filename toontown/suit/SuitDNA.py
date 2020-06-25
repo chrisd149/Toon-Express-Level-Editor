@@ -218,7 +218,7 @@ class SuitDNA(AvatarDNA.AvatarDNA):
     def newSuit(self, name=None):
         """newSuit(self, string=None)
         If no suit name specified, set the dna for the default suit
-        else set the dna for suit specified by the given string.
+        else set the dna for suit specified by the given str.
         """
         if (name == None):
             self.__defaultSuit()

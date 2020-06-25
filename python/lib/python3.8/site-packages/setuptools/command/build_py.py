@@ -103,10 +103,10 @@ class build_py(orig.build_py, Mixin2to3):
             package,
             src_dir,
         )
-        globs_expanded = list(map(glob, patterns))
+        globs_expanded = map(glob, patterns)
         # flatten the expanded globs into an iterable of matches
         globs_matches = itertools.chain.from_iterable(globs_expanded)
-        glob_files = list(filter(os.path.isfile, globs_matches))
+        glob_files = filter(os.path.isfile, globs_matches)
         files = itertools.chain(
             self.manifest_files.get(package, []),
             glob_files,

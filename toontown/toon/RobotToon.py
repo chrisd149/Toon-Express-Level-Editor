@@ -42,7 +42,7 @@ class RobotAvatarBase:
         self.setAnimState(state)
     def convertServerDNAString(self, serverString, type = 't'):
         # Strip out blank space and take last 30 characters
-        serverString = serverString.replace(' ', '')
+        serverString = serverstr.replace(' ', '')
         if type == 't':
             stringLen = 30
         else:
