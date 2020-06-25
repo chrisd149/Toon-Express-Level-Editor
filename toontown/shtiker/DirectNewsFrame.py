@@ -1,6 +1,7 @@
 import os
 import time
 import datetime
+import functools
 from pandac.PandaModules import Filename, DSearchPath, TextNode
 from pandac.PandaModules import HTTPClient, Ramfile, DocumentSpec
 from direct.showbase import DirectObject
@@ -103,7 +104,7 @@ class DirectNewsFrame(DirectObject.DirectObject):
         newsDirAsFile = vfs.getFile(Filename(newsDir))
         fileList = newsDirAsFile.scanDirectory()
         fileNames = fileList.getFiles()
-        self.notify.debug('filenames=%s' % fileNames)
+        self.notify.debug('filenames=%s' % str(fileNames))
         homeFileNames = set([])
         for name in fileNames:
             self.notify.debug('processing %s' % name)
@@ -123,7 +124,7 @@ class DirectNewsFrame(DirectObject.DirectObject):
             return fileA.getFilename().compareTo(fileB.getFilename())
 
         homeFileNames = list(homeFileNames)
-        homeFileNames.sort(cmp=fileCmp)
+        homeFileNames.sort(key=functools.cmp_to_key(fileCmp))
         self.notify.debug('returned homeFileNames=%s' % homeFileNames)
         return homeFileNames
 
@@ -273,7 +274,7 @@ class DirectNewsFrame(DirectObject.DirectObject):
         return self.downloadNextFile(task)
 
     def downloadNextFile(self, task):
-        while self.nextNewsFile < len(self.newsFiles) and 'aaver' in self.newsFiles[self.nextNewsFile]:
+        while self.nextNewsFile < len(self.newsFiles) and b'aaver' in self.newsFiles[self.nextNewsFile]:
             self.nextNewsFile += 1
 
         if self.nextNewsFile >= len(self.newsFiles):
@@ -294,7 +295,7 @@ class DirectNewsFrame(DirectObject.DirectObject):
         self.percentDownloaded = float(self.nextNewsFile) / float(len(self.newsFiles))
         self.filename = self.newsFiles[self.nextNewsFile]
         self.nextNewsFile += 1
-        self.url = self.newsUrl + self.filename
+        self.url = self.newsUrl + self.filename.decode('utf-8')
         localFilename = Filename(self.newsDir, self.filename)
         self.notify.info('testing for %s' % localFilename.getFullpath())
         doc = DocumentSpec(self.url)
@@ -322,7 +323,7 @@ class DirectNewsFrame(DirectObject.DirectObject):
                 del self.newsCache[self.filename]
                 self.saveNewsCache()
             return self.downloadNextFile(task)
-        self.notify.info('downloaded %s' % self.filename)
+        self.notify.info('downloaded %s' % self.filename.decode('utf-8'))
         size = self.ch.getFileSize()
         doc = self.ch.getDocumentSpec()
         date = ''
@@ -354,12 +355,12 @@ class DirectNewsFrame(DirectObject.DirectObject):
         cacheIndexFilename = Filename(self.newsDir, self.CacheIndexFilename)
         try:
             file = open(cacheIndexFilename.toOsSpecific(), 'w')
-        except IOError, e:
+        except IOError as e:
             self.notify.warning('error opening news cache file %s: %s' % (cacheIndexFilename, str(e)))
             return
 
-        for filename, (size, date) in self.newsCache.items():
-            print >> file, '%s\t%s\t%s' % (filename, size, date)
+        for filename, (size, date) in list(self.newsCache.items()):
+            print('%s\t%s\t%s' % (filename, size, date), file=file)
 
     def handleNewIssueOut(self):
         if hasattr(self, 'createdTime') and base.cr.inGameNewsMgr.getLatestIssue() < self.createdTime:
@@ -391,8 +392,8 @@ class DirectNewsFrame(DirectObject.DirectObject):
         majorVer = 1
         minorVer = 0
         for entry in self.newsIndexEntries:
-            if 'aaver' in entry and dateStr in entry:
-                parts = entry.split('_')
+            if b'aaver' in entry and dateStr.encode('utf-8') in entry:
+                parts = entry.split(b'_')
                 if len(parts) > 5:
                     try:
                         majorVer = int(parts[5])

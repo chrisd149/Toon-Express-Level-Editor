@@ -23,8 +23,8 @@ class OZSafeZoneLoader(SafeZoneLoader):
 
     def __init__(self, hood, parentFSM, doneEvent):
         SafeZoneLoader.__init__(self, hood, parentFSM, doneEvent)
-        self.musicFile = 'phase_6/audio/bgm/OZ_SZ.mid'
-        self.activityMusicFile = 'phase_6/audio/bgm/GS_KartShop.mid'
+        self.musicFile = 'phase_6/audio/bgm/OZ_SZ.ogg'
+        self.activityMusicFile = 'phase_6/audio/bgm/GS_KartShop.ogg'
         self.dnaFile = 'phase_6/dna/outdoor_zone_sz.dna'
         self.safeZoneStorageDNAFile = 'phase_6/dna/storage_OZ_sz.dna'
         self.__toonTracks = {}
@@ -40,10 +40,10 @@ class OZSafeZoneLoader(SafeZoneLoader):
         self.done = 0
         self.geyserTrack = None
         SafeZoneLoader.load(self)
-        self.birdSound = map(base.loadSfx, ['phase_4/audio/sfx/SZ_TC_bird1.mp3', 'phase_4/audio/sfx/SZ_TC_bird2.mp3', 'phase_4/audio/sfx/SZ_TC_bird3.mp3'])
-        self.underwaterSound = base.loadSfx('phase_4/audio/sfx/AV_ambient_water.mp3')
-        self.swimSound = base.loadSfx('phase_4/audio/sfx/AV_swim_single_stroke.mp3')
-        self.submergeSound = base.loadSfx('phase_5.5/audio/sfx/AV_jump_in_water.mp3')
+        self.birdSound = list(map(base.loader.loadSfx, ['phase_4/audio/sfx/SZ_TC_bird1.ogg', 'phase_4/audio/sfx/SZ_TC_bird2.ogg', 'phase_4/audio/sfx/SZ_TC_bird3.ogg']))
+        self.underwaterSound = base.loader.loadSfx('phase_4/audio/sfx/AV_ambient_water.ogg')
+        self.swimSound = base.loader.loadSfx('phase_4/audio/sfx/AV_swim_single_stroke.ogg')
+        self.submergeSound = base.loader.loadSfx('phase_5.5/audio/sfx/AV_jump_in_water.ogg')
         geyserPlacer = self.geom.find('**/geyser*')
         waterfallPlacer = self.geom.find('**/waterfall*')
         binMgr = CullBinManager.getGlobalPtr()
@@ -58,9 +58,9 @@ class OZSafeZoneLoader(SafeZoneLoader):
         pool.setColorScale(1.0, 1.0, 1.0, 1.0)
         pool.setBin('water', 50, 1)
         self.geyserModel = loader.loadModel('phase_6/models/golf/golf_geyser_model')
-        self.geyserSound = loader.loadSfx('phase_6/audio/sfx/OZ_Geyser.mp3')
+        self.geyserSound = loader.loadSfx('phase_6/audio/sfx/OZ_Geyser.ogg')
         self.geyserSoundInterval = SoundInterval(self.geyserSound, node=geyserPlacer, listenerNode=base.camera, seamlessLoop=False, volume=1.0, cutOff=120)
-        self.geyserSoundNoToon = loader.loadSfx('phase_6/audio/sfx/OZ_Geyser_No_Toon.mp3')
+        self.geyserSoundNoToon = loader.loadSfx('phase_6/audio/sfx/OZ_Geyser_No_Toon.ogg')
         self.geyserSoundNoToonInterval = SoundInterval(self.geyserSoundNoToon, node=geyserPlacer, listenerNode=base.camera, seamlessLoop=False, volume=1.0, cutOff=120)
         if self.geyserModel:
             self.geyserActor = Actor.Actor(self.geyserModel)
@@ -81,7 +81,7 @@ class OZSafeZoneLoader(SafeZoneLoader):
             self.geyserPlacer = geyserPlacer
             self.startGeyser()
             base.sfxPlayer.setCutoffDistance(160)
-            self.geyserPoolSfx = loader.loadSfx('phase_6/audio/sfx/OZ_Geyser_BuildUp_Loop.wav')
+            self.geyserPoolSfx = loader.loadSfx('phase_6/audio/sfx/OZ_Geyser_BuildUp_Loop.ogg')
             self.geyserPoolSoundInterval = SoundInterval(self.geyserPoolSfx, node=self.geyserPlacer, listenerNode=base.camera, seamlessLoop=True, volume=1.0, cutOff=120)
             self.geyserPoolSoundInterval.loop()
             self.bubbles = Bubbles.Bubbles(self.geyserPlacer, render)
@@ -198,7 +198,7 @@ class OZSafeZoneLoader(SafeZoneLoader):
                 base.holder = holder
                 toonPos = av.getPos(render)
                 toonHpr = av.getHpr(render)
-                print 'av Pos %s' % av.getPos()
+                print('av Pos %s' % av.getPos())
                 base.toonPos = toonPos
                 holder.setPos(toonPos)
                 av.reparentTo(holder)
@@ -210,7 +210,7 @@ class OZSafeZoneLoader(SafeZoneLoader):
                     lookIn = Vec3(0 + lookAt, -30, 0)
                 else:
                     lookIn = Vec3(360 + lookAt, -30, 0)
-                print 'Camera Hprs toon %s; lookIn %s; final %s' % (newHpr, lookIn, lookIn - newHpr)
+                print('Camera Hprs toon %s; lookIn %s; final %s' % (newHpr, lookIn, lookIn - newHpr))
                 if local == 1:
                     camPosOriginal = camera.getPos()
                     camHprOriginal = camera.getHpr()
@@ -272,20 +272,20 @@ class OZSafeZoneLoader(SafeZoneLoader):
 
     def doPrint(self, thing):
         return 0
-        print thing
+        print(thing)
 
     def unload(self):
         del self.birdSound
         SafeZoneLoader.unload(self)
         self.done = 1
-        self.collBase.remove()
+        self.collBase.removeNode()
         if self.geyserTrack:
             self.geyserTrack.finish()
         self.geyserTrack = None
         self.geyserActor.cleanup()
-        self.geyserModel.remove()
+        self.geyserModel.removeNode()
         self.waterfallActor.cleanup()
-        self.waterfallModel.remove()
+        self.waterfallModel.removeNode()
         self.bubbles.destroy()
         del self.bubbles
         self.geyserPoolSoundInterval.finish()
@@ -335,7 +335,7 @@ class OZSafeZoneLoader(SafeZoneLoader):
             return ZoneUtil.getHoodId(status['zoneId']) == self.hood.hoodId
 
     def enterGolfCourse(self, requestStatus):
-        if requestStatus.has_key('curseId'):
+        if 'curseId' in requestStatus:
             self.golfCourseId = requestStatus['courseId']
         else:
             self.golfCourseId = 0
@@ -347,7 +347,7 @@ class OZSafeZoneLoader(SafeZoneLoader):
         del self.golfCourseId
 
     def handleRaceOver(self):
-        print 'you done!!'
+        print('you done!!')
 
     def handleLeftGolf(self):
         req = {'loader': 'safeZoneLoader',
@@ -379,5 +379,5 @@ class OZSafeZoneLoader(SafeZoneLoader):
             keyList.append(key)
 
         for key in keyList:
-            if self.__toonTracks.has_key(key):
+            if key in self.__toonTracks:
                 self.clearToonTrack(key)

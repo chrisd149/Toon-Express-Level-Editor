@@ -1,4 +1,5 @@
-from PurchaseBase import *
+from libotp import *
+from .PurchaseBase import *
 from direct.task.Task import Task
 from toontown.toon import ToonHead
 from toontown.toonbase import ToontownTimer
@@ -8,7 +9,7 @@ from direct.showbase.PythonUtil import Functor
 from toontown.minigame import TravelGameGlobals
 from toontown.distributed import DelayDelete
 from toontown.toonbase import ToontownGlobals
-import MinigameGlobals
+from . import MinigameGlobals
 COUNT_UP_RATE = 0.15
 COUNT_UP_DURATION = 0.5
 DELAY_BEFORE_COUNT_UP = 1.0
@@ -101,7 +102,7 @@ class Purchase(PurchaseBase):
             avId = self.ids[index]
             if self.states[index] != PURCHASE_NO_CLIENT_STATE and self.states[index] != PURCHASE_DISCONNECTED_STATE:
                 if avId != base.localAvatar.doId:
-                    if base.cr.doId2do.has_key(avId):
+                    if avId in base.cr.doId2do:
                         self.avInfoArray.append((avId, headFramePosList[layout[pos]], index))
                         pos = pos + 1
 
@@ -141,9 +142,9 @@ class Purchase(PurchaseBase):
         self.convertingVotesToBeansLabel.hide()
         self.rewardDoubledJellybeanLabel = DirectLabel(text=TTLocalizer.PartyRewardDoubledJellybean, text_fg=(1.0, 0.125, 0.125, 1.0), text_shadow=(0, 0, 0, 1), relief=None, pos=(0.0, 0, -0.67), scale=0.08)
         self.rewardDoubledJellybeanLabel.hide()
-        self.countSound = base.loadSfx('phase_3.5/audio/sfx/tick_counter.mp3')
-        self.overMaxSound = base.loadSfx('phase_3.5/audio/sfx/AV_collision.mp3')
-        self.celebrateSound = base.loadSfx('phase_4/audio/sfx/MG_win.mp3')
+        self.countSound = base.loader.loadSfx('phase_3.5/audio/sfx/tick_counter.ogg')
+        self.overMaxSound = base.loader.loadSfx('phase_3.5/audio/sfx/AV_collision.ogg')
+        self.celebrateSound = base.loader.loadSfx('phase_4/audio/sfx/MG_win.ogg')
         return
 
     def unload(self):
@@ -366,7 +367,7 @@ class Purchase(PurchaseBase):
             for i in range(len(task.ids)):
                 if task.pointsArray[i] == winningPoints:
                     avId = task.ids[i]
-                    if base.cr.doId2do.has_key(avId):
+                    if avId in base.cr.doId2do:
                         toon = base.cr.doId2do[avId]
                         toon.setAnimState('jump', 1.0)
 
@@ -682,7 +683,7 @@ class Purchase(PurchaseBase):
             return self.metagamePlayAgainResult
         numToons = 0
         for avId in self.ids:
-            if base.cr.doId2do.has_key(avId) and avId not in self.unexpectedExits:
+            if avId in base.cr.doId2do and avId not in self.unexpectedExits:
                 numToons += 1
 
         self.metagamePlayAgainResult = False
@@ -693,7 +694,7 @@ class Purchase(PurchaseBase):
 
     def setupUnexpectedExitHooks(self):
         for avId in self.ids:
-            if base.cr.doId2do.has_key(avId):
+            if avId in base.cr.doId2do:
                 toon = base.cr.doId2do[avId]
                 eventName = toon.uniqueName('disable')
                 self.accept(eventName, self.__handleUnexpectedExit, extraArgs=[avId])

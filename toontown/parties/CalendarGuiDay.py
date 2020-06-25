@@ -1,4 +1,5 @@
 import datetime
+import functools
 import time
 from pandac.PandaModules import TextNode, Vec3, Vec4, PlaneNode, Plane, Point3
 from direct.gui.DirectGui import DirectFrame, DirectLabel, DirectButton, DirectScrolledList, DGG
@@ -202,7 +203,7 @@ class CalendarGuiDay(DirectFrame):
         except e:
             numItems = 0
 
-        if numItems <= self.scrollList.numItemsVisible:
+        if numItems <= self.scrollList['numItemsVisible']:
             self.scrollList.incButton.hide()
             self.scrollList.decButton.hide()
         else:
@@ -287,7 +288,7 @@ class CalendarGuiDay(DirectFrame):
             else:
                 return 1
 
-        self.timedEvents.sort(cmp=timedEventCompare)
+        self.timedEvents.sort(key=functools.cmp_to_key(timedEventCompare))
         for timedEvent in self.timedEvents:
             if isinstance(timedEvent[1], PartyInfo):
                 self.addPartyToScrollList(timedEvent[1])

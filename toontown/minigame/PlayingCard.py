@@ -2,7 +2,7 @@ from direct.gui.DirectGui import *
 from pandac.PandaModules import *
 from direct.task import Task
 from toontown.toonbase import TTLocalizer
-import PlayingCardGlobals
+from . import PlayingCardGlobals
 
 class PlayingCardBase:
 
@@ -32,7 +32,7 @@ class PlayingCardBase:
             self.rank = None
             self.turnDown()
         else:
-            self.suit = value / PlayingCardGlobals.MaxRank
+            self.suit = value // PlayingCardGlobals.MaxRank
             self.rank = value % PlayingCardGlobals.MaxRank
         self.setImage()
         return

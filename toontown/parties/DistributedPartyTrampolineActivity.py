@@ -175,9 +175,9 @@ class DistributedPartyTrampolineActivity(DistributedPartyActivity):
         return
 
     def loadSounds(self):
-        self.jellyBeanSound = base.loadSfx('phase_4/audio/sfx/sparkly.mp3')
-        self.boingSound = base.loadSfx('phase_4/audio/sfx/target_trampoline_2.mp3')
-        self.whistleSound = base.loadSfx('phase_4/audio/sfx/AA_sound_whistle.mp3')
+        self.jellyBeanSound = base.loader.loadSfx('phase_4/audio/sfx/sparkly.ogg')
+        self.boingSound = base.loader.loadSfx('phase_4/audio/sfx/target_trampoline_2.ogg')
+        self.whistleSound = base.loader.loadSfx('phase_4/audio/sfx/AA_sound_whistle.ogg')
 
     def loadIntervals(self):
 
@@ -343,7 +343,7 @@ class DistributedPartyTrampolineActivity(DistributedPartyActivity):
              guiBean,
              beanAnim))
 
-        self.beansToCollect = range(self.numJellyBeans)
+        self.beansToCollect = list(range(self.numJellyBeans))
 
     def cleanupJellyBeans(self):
         for bean in self.beans:

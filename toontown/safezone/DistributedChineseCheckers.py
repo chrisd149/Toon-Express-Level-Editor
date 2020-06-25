@@ -2,12 +2,12 @@ from pandac.PandaModules import *
 from direct.distributed.ClockDelta import *
 from direct.task.Task import Task
 from direct.interval.IntervalGlobal import *
-from TrolleyConstants import *
+from .TrolleyConstants import *
 from direct.gui.DirectGui import *
 from toontown.toonbase import TTLocalizer
 from direct.distributed import DistributedNode
 from direct.distributed.ClockDelta import globalClockDelta
-from ChineseCheckersBoard import ChineseCheckersBoard
+from .ChineseCheckersBoard import ChineseCheckersBoard
 from direct.fsm import ClassicFSM, State
 from direct.fsm import StateData
 from toontown.distributed import DelayDelete
@@ -134,9 +134,9 @@ class DistributedChineseCheckers(DistributedNode.DistributedNode):
           45,
           55]]
         self.nonOpposingPositions = []
-        self.knockSound = base.loadSfx('phase_5/audio/sfx/GUI_knock_1.mp3')
-        self.clickSound = base.loadSfx('phase_3/audio/sfx/GUI_balloon_popup.mp3')
-        self.moveSound = base.loadSfx('phase_6/audio/sfx/CC_move.mp3')
+        self.knockSound = base.loader.loadSfx('phase_5/audio/sfx/GUI_knock_1.ogg')
+        self.clickSound = base.loader.loadSfx('phase_3/audio/sfx/GUI_balloon_popup.ogg')
+        self.moveSound = base.loader.loadSfx('phase_6/audio/sfx/CC_move.ogg')
         self.accept('stoppedAsleep', self.handleSleep)
         from direct.fsm import ClassicFSM, State
         self.fsm = ClassicFSM.ClassicFSM('ChineseCheckers', [State.State('waitingToBegin', self.enterWaitingToBegin, self.exitWaitingToBegin, ['playing', 'gameOver']), State.State('playing', self.enterPlaying, self.exitPlaying, ['gameOver']), State.State('gameOver', self.enterGameOver, self.exitGameOver, ['waitingToBegin'])], 'waitingToBegin', 'waitingToBegin')

@@ -9,7 +9,7 @@ from toontown.minigame import ArrowKeys
 from direct.showbase import PythonUtil
 from direct.task import Task
 from direct.distributed.ClockDelta import *
-import BuildGeometry
+from . import BuildGeometry
 from toontown.golf import GolfGlobals
 import random, time
 
@@ -60,6 +60,9 @@ class PhysicsWorldBase:
         self.refFPS = 60.0
         self.DTAStep = 1.0 / self.FPS
         self.refCon = 1.2
+        self.collisionEventName = 'ode-collision-%s' % id(self)
+        self.space.setCollisionEvent(self.collisionEventName)
+        self.accept(self.collisionEventName, self.__handleCollision)
 
     def delete(self):
         self.notify.debug('Max Collision Count was %s' % self.maxColCount)
@@ -67,7 +70,7 @@ class PhysicsWorldBase:
         self.commonObjectDict = None
         if self.canRender:
             for pair in self.odePandaRelationList:
-                pair[0].remove()
+                pair[0].removeNode()
                 pair[1].destroy()
 
             self.odePandaRelationList = None
@@ -87,10 +90,10 @@ class PhysicsWorldBase:
             ray.destroy()
             ray = None
 
-        self.placerNode.remove()
-        self.root.remove()
+        self.placerNode.removeNode()
+        self.root.removeNode()
         for marker in self.jointMarkers:
-            marker.remove()
+            marker.removeNode()
 
         self.jointMarkers = None
         for data in self.geomDataList:
@@ -106,6 +109,7 @@ class PhysicsWorldBase:
         self.space.destroy()
         self.world = None
         self.space = None
+        self.ignore(self.collisionEventName)
         return
 
     def setupSimulation(self):
@@ -155,7 +159,7 @@ class PhysicsWorldBase:
     def getCycleTime(self, doprint = 0):
         cycleTime = (globalClock.getRealTime() + self.timingCycleOffset) % self.timingCycleLength
         if doprint:
-            print 'Get Cycle Time %s' % cycleTime
+            print('Get Cycle Time %s' % cycleTime)
         return cycleTime
 
     def setTimeIntoCycle(self, time, doprint = 0):
@@ -194,8 +198,14 @@ class PhysicsWorldBase:
             endTime = globalClock.getRealTime() - startTime
         return task.cont
 
+    def __handleCollision(self, entry):
+        self.colEntries.append(entry)
+
     def simulate(self):
-        self.colCount = self.space.autoCollide()
+        self.colEntries = []
+        self.space.autoCollide()
+        eventMgr.doEvents()
+        self.colCount = len(self.colEntries)
         if self.maxColCount < self.colCount:
             self.maxColCount = self.colCount
             self.notify.debug('New Max Collision Count %s' % self.maxColCount)
@@ -352,7 +362,7 @@ class PhysicsWorldBase:
             motor.setParamVel(1.5)
             motor.setParamFMax(500000000.0)
             boxsize = Vec3(1.0, 1.0, 1.0)
-            motor.attach(0, cross)
+            motor.attachBody(cross, 0)
             motor.setAnchor(vPos)
             motor.setAxis(ourAxis)
             self.cross = cross
@@ -364,7 +374,7 @@ class PhysicsWorldBase:
             box.setPosition(vPos)
             box.setQuaternion(self.placerNode.getQuat())
             motor = OdeSliderJoint(self.world)
-            motor.attach(box, 0)
+            motor.attachBody(box, 0)
             motor.setAxis(ourAxis)
             motor.setParamVel(3.0)
             motor.setParamFMax(5000000.0)
@@ -424,7 +434,7 @@ class PhysicsWorldBase:
             motor.setParamVel(1.0)
             motor.setParamFMax(50000.0)
             boxsize = Vec3(1.0, 1.0, 1.0)
-            motor.attach(0, cross)
+            motor.attachBody(cross, 0)
             motor.setAnchor(self.subPlacerNode.getPos(self.root))
             motor.setAxis(ourAxis)
             self.cross = cross
@@ -436,7 +446,7 @@ class PhysicsWorldBase:
             box.setPosition(vPos)
             box.setQuaternion(self.placerNode.getQuat())
             motor = OdeSliderJoint(self.world)
-            motor.attach(box, 0)
+            motor.attachBody(box, 0)
             motor.setAxis(ourAxis)
             motor.setParamVel(moveDistance / 4.0)
             motor.setParamFMax(25000.0)
@@ -481,22 +491,22 @@ class PhysicsWorldBase:
         if ballIndex == 1:
             self.notify.debug('1')
             geom.setCollideBits(BitMask32(16777215))
-            geom.setCategoryBits(BitMask32(4278190080L))
+            geom.setCategoryBits(BitMask32(4278190080))
         elif ballIndex == 2:
             self.notify.debug('2')
             geom.setCollideBits(BitMask32(16777215))
-            geom.setCategoryBits(BitMask32(4278190080L))
+            geom.setCategoryBits(BitMask32(4278190080))
         elif ballIndex == 3:
             self.notify.debug('3')
             geom.setCollideBits(BitMask32(16777215))
-            geom.setCategoryBits(BitMask32(4278190080L))
+            geom.setCategoryBits(BitMask32(4278190080))
         elif ballIndex == 4:
             self.notify.debug('4')
             geom.setCollideBits(BitMask32(16777215))
-            geom.setCategoryBits(BitMask32(4278190080L))
+            geom.setCategoryBits(BitMask32(4278190080))
         else:
-            geom.setCollideBits(BitMask32(4294967295L))
-            geom.setCategoryBits(BitMask32(4294967295L))
+            geom.setCollideBits(BitMask32(4294967295))
+            geom.setCategoryBits(BitMask32(4294967295))
         geom.setBody(body)
         if self.notify.getDebug():
             self.notify.debug('golf ball geom id')

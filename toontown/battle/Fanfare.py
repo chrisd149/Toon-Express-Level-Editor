@@ -1,18 +1,18 @@
 from direct.interval.IntervalGlobal import *
-from BattleBase import *
-from BattleProps import *
-from BattleSounds import *
+from .BattleBase import *
+from .BattleProps import *
+from .BattleSounds import *
 from toontown.toon.ToonDNA import *
 from toontown.suit.SuitDNA import *
 from direct.particles.ParticleEffect import *
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
-import MovieUtil
-import MovieCamera
+from . import MovieUtil
+from . import MovieCamera
 from direct.directnotify import DirectNotifyGlobal
-import BattleParticles
+from . import BattleParticles
 from toontown.toonbase import ToontownGlobals
-import RewardPanel
+from . import RewardPanel
 notify = DirectNotifyGlobal.directNotify.newCategory('Fanfare')
 
 def makePanel(toon, showToonName):
@@ -20,7 +20,7 @@ def makePanel(toon, showToonName):
     panel.initialiseoptions(RewardPanel)
     panel.setTransparency(1)
     panel.hide()
-    if showToonName is 1:
+    if showToonName == 1:
         panel.avNameLabel = DirectLabel(parent=panel, relief=None, pos=Vec3(0, 0, 0.3), text=toon.getName(), text_scale=0.08)
     return panel
 
@@ -135,9 +135,9 @@ def doFanfare(delay, toon, panel):
     red_p0.renderer.getColorInterpolationManager().addConstant(0.0, 1.0, Vec4(1.0, 0.0, 0.0, 1.0), 1)
     trumpetsAppear = LerpColorInterval(trumpetNode, 0.3, startColor=Vec4(1, 1, 0, 0), color=Vec4(1, 1, 0, 1))
     trumpetsVanish = LerpColorInterval(trumpetNode, 0.3, startColor=Vec4(1, 1, 0, 1), color=Vec4(1, 1, 0, 0))
-    crabHorn = globalBattleSoundCache.getSound('King_Crab.mp3')
-    drumroll = globalBattleSoundCache.getSound('SZ_MM_drumroll.mp3')
-    fanfare = globalBattleSoundCache.getSound('SZ_MM_fanfare.mp3')
+    crabHorn = globalBattleSoundCache.getSound('King_Crab.ogg')
+    drumroll = globalBattleSoundCache.getSound('SZ_MM_drumroll.ogg')
+    fanfare = globalBattleSoundCache.getSound('SZ_MM_fanfare.ogg')
     crabHorn.setTime(1.5)
     partyBall.setTransparency(1)
     partyBall.setColorScale(1, 1, 1, 1)

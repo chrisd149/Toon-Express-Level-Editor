@@ -1,4 +1,5 @@
 from pandac.PandaModules import *
+from libotp import *
 from toontown.toonbase import ToontownGlobals
 from direct.showbase import DirectObject
 from direct.fsm import StateData
@@ -89,7 +90,7 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         self.pages[self.currPageIndex].exit()
         base.render.show()
         setBlackBackground = 0
-        for obj in base.cr.doId2do.values():
+        for obj in list(base.cr.doId2do.values()):
             if isinstance(obj, DistributedFireworkShow.DistributedFireworkShow) or isinstance(obj, DistributedPartyFireworksActivity.DistributedPartyFireworksActivity):
                 setBlackBackground = 1
 
@@ -129,9 +130,9 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         self.nextArrow = DirectButton(parent=self, relief=None, image=(bookModel.find('**/arrow_button'), bookModel.find('**/arrow_down'), bookModel.find('**/arrow_rollover')), scale=(0.1, 0.1, 0.1), pos=(0.838, 0, -0.661), command=self.__pageChange, extraArgs=[1])
         self.prevArrow = DirectButton(parent=self, relief=None, image=(bookModel.find('**/arrow_button'), bookModel.find('**/arrow_down'), bookModel.find('**/arrow_rollover')), scale=(-0.1, 0.1, 0.1), pos=(-0.838, 0, -0.661), command=self.__pageChange, extraArgs=[-1])
         bookModel.removeNode()
-        self.openSound = base.loadSfx('phase_3.5/audio/sfx/GUI_stickerbook_open.mp3')
-        self.closeSound = base.loadSfx('phase_3.5/audio/sfx/GUI_stickerbook_delete.mp3')
-        self.pageSound = base.loadSfx('phase_3.5/audio/sfx/GUI_stickerbook_turn.mp3')
+        self.openSound = base.loader.loadSfx('phase_3.5/audio/sfx/GUI_stickerbook_open.ogg')
+        self.closeSound = base.loader.loadSfx('phase_3.5/audio/sfx/GUI_stickerbook_delete.ogg')
+        self.pageSound = base.loader.loadSfx('phase_3.5/audio/sfx/GUI_stickerbook_turn.ogg')
         return
 
     def unload(self):

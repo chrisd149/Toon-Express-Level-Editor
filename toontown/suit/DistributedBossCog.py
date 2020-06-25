@@ -1,4 +1,5 @@
 from pandac.PandaModules import *
+from libotp import *
 from direct.interval.IntervalGlobal import *
 from direct.distributed.ClockDelta import *
 from direct.directnotify import DirectNotifyGlobal
@@ -7,8 +8,8 @@ from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import ToontownBattleGlobals
 from toontown.battle import BattleExperience
 from toontown.battle import BattleBase
-import BossCog
-import SuitDNA
+from . import BossCog
+from . import SuitDNA
 from toontown.coghq import CogDisguiseGlobals
 from direct.showbase import Transitions
 from toontown.hood import ZoneUtil
@@ -171,27 +172,27 @@ class DistributedBossCog(DistributedAvatar.DistributedAvatar, BossCog.BossCog):
         self.activeIntervals[name] = interval
 
     def cleanupIntervals(self):
-        for interval in self.activeIntervals.values():
+        for interval in list(self.activeIntervals.values()):
             interval.finish()
             DelayDelete.cleanupDelayDeletes(interval)
 
         self.activeIntervals = {}
 
     def clearInterval(self, name, finish = 1):
-        if self.activeIntervals.has_key(name):
+        if name in self.activeIntervals:
             ival = self.activeIntervals[name]
             if finish:
                 ival.finish()
             else:
                 ival.pause()
-            if self.activeIntervals.has_key(name):
+            if name in self.activeIntervals:
                 DelayDelete.cleanupDelayDeletes(ival)
                 del self.activeIntervals[name]
         else:
             self.notify.debug('interval: %s already cleared' % name)
 
     def finishInterval(self, name):
-        if self.activeIntervals.has_key(name):
+        if name in self.activeIntervals:
             interval = self.activeIntervals[name]
             interval.finish()
 
@@ -548,10 +549,10 @@ class DistributedBossCog(DistributedAvatar.DistributedAvatar, BossCog.BossCog):
         self.rightDoor = self.elevatorModel.find('**/right-door')
         if self.rightDoor.isEmpty():
             self.rightDoor = self.elevatorModel.find('**/right_door')
-        self.openSfx = base.loadSfx('phase_9/audio/sfx/CHQ_FACT_door_open_sliding.mp3')
-        self.finalOpenSfx = base.loadSfx('phase_9/audio/sfx/CHQ_FACT_door_open_final.mp3')
-        self.closeSfx = base.loadSfx('phase_9/audio/sfx/CHQ_FACT_door_open_sliding.mp3')
-        self.finalCloseSfx = base.loadSfx('phase_9/audio/sfx/CHQ_FACT_door_open_final.mp3')
+        self.openSfx = base.loader.loadSfx('phase_9/audio/sfx/CHQ_FACT_door_open_sliding.ogg')
+        self.finalOpenSfx = base.loader.loadSfx('phase_9/audio/sfx/CHQ_FACT_door_open_final.ogg')
+        self.closeSfx = base.loader.loadSfx('phase_9/audio/sfx/CHQ_FACT_door_open_sliding.ogg')
+        self.finalCloseSfx = base.loader.loadSfx('phase_9/audio/sfx/CHQ_FACT_door_open_final.ogg')
         self.openDoors = ElevatorUtils.getOpenInterval(self, self.leftDoor, self.rightDoor, self.openSfx, self.finalOpenSfx, self.elevatorType)
         self.closeDoors = ElevatorUtils.getCloseInterval(self, self.leftDoor, self.rightDoor, self.closeSfx, self.finalCloseSfx, self.elevatorType)
         self.closeDoors.start()
@@ -907,11 +908,11 @@ class DistributedBossCog(DistributedAvatar.DistributedAvatar, BossCog.BossCog):
             self.zapLocalToon(ToontownGlobals.BossCogAreaAttack)
 
     def loadEnvironment(self):
-        self.elevatorMusic = base.loadMusic('phase_7/audio/bgm/tt_elevator.mid')
-        self.stingMusic = base.loadMusic('phase_7/audio/bgm/encntr_suit_winning_indoor.mid')
-        self.battleOneMusic = base.loadMusic('phase_3.5/audio/bgm/encntr_general_bg.mid')
-        self.battleThreeMusic = base.loadMusic('phase_7/audio/bgm/encntr_suit_winning_indoor.mid')
-        self.epilogueMusic = base.loadMusic('phase_9/audio/bgm/encntr_hall_of_fame.mid')
+        self.elevatorMusic = base.loader.loadMusic('phase_7/audio/bgm/tt_elevator.ogg')
+        self.stingMusic = base.loader.loadMusic('phase_7/audio/bgm/encntr_suit_winning_indoor.ogg')
+        self.battleOneMusic = base.loader.loadMusic('phase_3.5/audio/bgm/encntr_general_bg.ogg')
+        self.battleThreeMusic = base.loader.loadMusic('phase_7/audio/bgm/encntr_suit_winning_indoor.ogg')
+        self.epilogueMusic = base.loader.loadMusic('phase_9/audio/bgm/encntr_hall_of_fame.ogg')
 
     def unloadEnvironment(self):
         pass

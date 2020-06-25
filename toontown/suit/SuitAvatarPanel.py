@@ -4,7 +4,7 @@ from pandac.PandaModules import *
 from direct.showbase import DirectObject
 from otp.avatar import Avatar
 from direct.distributed import DistributedObject
-import SuitDNA
+from . import SuitDNA
 from toontown.toonbase import TTLocalizer
 from otp.avatar import AvatarPanel
 from toontown.friends import FriendsListPanel
@@ -40,7 +40,7 @@ class SuitAvatarPanel(AvatarPanel.AvatarPanel):
         dept = SuitDNA.getSuitDeptFullname(avatar.dna.name)
         self.levelLabel = DirectLabel(parent=self.frame, pos=(0, 0, -0.1), relief=None, text=TTLocalizer.AvatarPanelCogLevel % level, text_font=avatar.getFont(), text_align=TextNode.ACenter, text_fg=Vec4(0, 0, 0, 1), text_pos=(0, 0), text_scale=0.05, text_wordwrap=8.0)
         corpIcon = avatar.corpMedallion.copyTo(hidden)
-        corpIcon.iPosHprScale()
+        corpIcon.setPosHprScale(0, 0, 0, 0, 0, 0, 0, 0, 0)
         self.corpIcon = DirectLabel(parent=self.frame, geom=corpIcon, geom_scale=0.13, pos=(0, 0, -0.175), relief=None)
         corpIcon.removeNode()
         self.deptLabel = DirectLabel(parent=self.frame, pos=(0, 0, -0.28), relief=None, text=dept, text_font=avatar.getFont(), text_align=TextNode.ACenter, text_fg=Vec4(0, 0, 0, 1), text_pos=(0, 0), text_scale=0.05, text_wordwrap=8.0)

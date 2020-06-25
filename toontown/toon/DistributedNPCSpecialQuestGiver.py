@@ -1,5 +1,5 @@
 from pandac.PandaModules import *
-from DistributedNPCToonBase import *
+from .DistributedNPCToonBase import *
 from toontown.quest import QuestParser
 from toontown.quest import QuestChoiceGui
 from toontown.quest import TrackChoiceGui
@@ -19,7 +19,7 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
 
     def announceGenerate(self):
         self.setAnimState('neutral', 0.9, None, None)
-        npcOrigin = self.cr.playGame.hood.loader.geom.find('**/npc_origin_' + `(self.posIndex)`)
+        npcOrigin = self.cr.playGame.hood.loader.geom.find('**/npc_origin_' + repr((self.posIndex)))
         if not npcOrigin.isEmpty():
             self.reparentTo(npcOrigin)
             self.clearMat()
@@ -132,7 +132,7 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
             return
         if mode == NPCToons.QUEST_MOVIE_REJECT:
             rejectString = Quests.chooseQuestDialogReject()
-            rejectString = Quests.fillInQuestNames(rejectString, avName=av.name)
+            rejectString = Quests.fillInQuestNames(rejectString, avName=av._name)
             self.setChatAbsolute(rejectString, CFSpeech | CFTimeout)
             if isLocalToon:
                 base.localAvatar.posCamera(0, 0)
@@ -140,7 +140,7 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
             return
         if mode == NPCToons.QUEST_MOVIE_TIER_NOT_DONE:
             rejectString = Quests.chooseQuestDialogTierNotDone()
-            rejectString = Quests.fillInQuestNames(rejectString, avName=av.name)
+            rejectString = Quests.fillInQuestNames(rejectString, avName=av._name)
             self.setChatAbsolute(rejectString, CFSpeech | CFTimeout)
             if isLocalToon:
                 base.localAvatar.posCamera(0, 0)
@@ -226,7 +226,7 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
                 self.acceptOnce('chooseTrack', self.sendChooseTrack)
                 self.trackChoiceGui = TrackChoiceGui.TrackChoiceGui(tracks, ChoiceTimeout)
             return
-        fullString = Quests.fillInQuestNames(fullString, avName=av.name, fromNpcId=npcId, toNpcId=toNpcId)
+        fullString = Quests.fillInQuestNames(fullString, avName=av._name, fromNpcId=npcId, toNpcId=toNpcId)
         self.acceptOnce(self.uniqueName('doneChatPage'), self.finishMovie, extraArgs=[av, isLocalToon])
         self.clearChat()
         self.setPageChat(avId, 0, fullString, 1)

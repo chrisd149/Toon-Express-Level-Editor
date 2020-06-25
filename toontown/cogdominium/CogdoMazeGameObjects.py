@@ -6,9 +6,9 @@ from direct.interval.IntervalGlobal import Func, Sequence, Parallel
 from direct.showbase.DirectObject import DirectObject
 from direct.task.Task import Task
 from toontown.toonbase import ToontownGlobals
-import CogdoMazeGameGlobals as Globals
-from CogdoGameExit import CogdoGameExit
-import CogdoUtil
+from . import CogdoMazeGameGlobals as Globals
+from .CogdoGameExit import CogdoGameExit
+from . import CogdoUtil
 import math
 import random
 
@@ -114,20 +114,8 @@ class CogdoMazeDrop(NodePath, DirectObject):
             self.drop.setScale(self, 1 - random.random() / 16, 1 - random.random() / 16, 1 - random.random() / 4)
 
         scaleChange = 0.4 + random.random() / 4
-        dropShakeSeq = Sequence(
-            LerpScaleInterval(self.drop, 0.25, Vec3(1.0 + scaleChange, 1.0 + scaleChange / 2, 1.0 - scaleChange), blendType='easeInOut'),
-            LerpScaleInterval(self.drop, 0.25, Vec3(1.0, 1.0, 1.0), blendType='easeInOut'), Func(self.disableCollisionDamage),
-            LerpScaleInterval(self.drop, 0.2, Vec3(1.0 + scaleChange / 8, 1.0 + scaleChange / 8, 1.0 - scaleChange / 8), blendType='easeInOut'),
-            LerpScaleInterval(self.drop, 0.2, Vec3(1.0, 1.0, 1.0), blendType='easeInOut'),
-            LerpScaleInterval(self.drop, 0.15, Vec3(1.0 + scaleChange / 16, 1.0 + scaleChange / 16, 1.0 - scaleChange / 16), blendType='easeInOut'),
-            LerpScaleInterval(self.drop, 0.15, Vec3(1.0, 1.0, 1.0), blendType='easeInOut'),
-            LerpScaleInterval(self.drop, 0.1, Vec3(1.0 + scaleChange / 16, 1.0 + scaleChange / 8, 1.0 - scaleChange / 16), blendType='easeInOut'),
-            LerpColorScaleInterval(self.drop, Globals.DropFadeTime, Vec4(1.0, 1.0, 1.0, 0.0)))
-        ival = Sequence(
-            Func(self.reparentTo, render),
-            Parallel(Sequence(WaitInterval(hangTime), dropIval), shadowIval),
-            Parallel(Func(self.game.dropHit, self, id), dropSoundIval, dropShakeSeq),
-            Func(self.game.cleanupDrop, id), name='drop%s' % id)
+        dropShakeSeq = Sequence(LerpScaleInterval(self.drop, 0.25, Vec3(1.0 + scaleChange, 1.0 + scaleChange / 2, 1.0 - scaleChange), blendType='easeInOut'), LerpScaleInterval(self.drop, 0.25, Vec3(1.0, 1.0, 1.0), blendType='easeInOut'), Func(self.disableCollisionDamage), LerpScaleInterval(self.drop, 0.2, Vec3(1.0 + scaleChange / 8, 1.0 + scaleChange / 8, 1.0 - scaleChange / 8), blendType='easeInOut'), LerpScaleInterval(self.drop, 0.2, Vec3(1.0, 1.0, 1.0), blendType='easeInOut'), LerpScaleInterval(self.drop, 0.15, Vec3(1.0 + scaleChange / 16, 1.0 + scaleChange / 16, 1.0 - scaleChange / 16), blendType='easeInOut'), LerpScaleInterval(self.drop, 0.15, Vec3(1.0, 1.0, 1.0), blendType='easeInOut'), LerpScaleInterval(self.drop, 0.1, Vec3(1.0 + scaleChange / 16, 1.0 + scaleChange / 8, 1.0 - scaleChange / 16), blendType='easeInOut'), LerpColorScaleInterval(self.drop, Globals.DropFadeTime, Vec4(1.0, 1.0, 1.0, 0.0)))
+        ival = Sequence(Func(self.reparentTo, render), Parallel(Sequence(WaitInterval(hangTime), dropIval), shadowIval), Parallel(Func(self.game.dropHit, self, id), dropSoundIval, dropShakeSeq), Func(self.game.cleanupDrop, id), name='drop%s' % id)
         self.ival = ival
         return ival
 

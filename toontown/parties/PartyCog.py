@@ -13,7 +13,7 @@ from pandac.PandaModules import Point3, Vec4, NodePath, TextNode, Mat4
 from toontown.toonbase import ToontownGlobals
 from toontown.battle.BattleProps import globalPropPool
 from toontown.battle.BattleSounds import globalBattleSoundCache
-import PartyGlobals
+from . import PartyGlobals
 
 class PartyCogManager:
 
@@ -102,8 +102,8 @@ class PartyCog(FSM):
         self.splat = globalPropPool.getProp(splatName)
         self.splat.setBillboardPointEye()
         self.splatType = globalPropPool.getPropType(splatName)
-        self.pieHitSound = globalBattleSoundCache.getSound('AA_wholepie_only.mp3')
-        self.upSound = globalBattleSoundCache.getSound('AV_jump_to_side.mp3')
+        self.pieHitSound = globalBattleSoundCache.getSound('AA_wholepie_only.ogg')
+        self.upSound = globalBattleSoundCache.getSound('AV_jump_to_side.ogg')
         self.hole = loader.loadModel('phase_13/models/parties/cogPinataHole')
         self.hole.setTransparency(True)
         self.hole.setP(-90.0)

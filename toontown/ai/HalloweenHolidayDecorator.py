@@ -1,12 +1,13 @@
 from direct.directnotify import DirectNotifyGlobal
 from direct.distributed.ClockDelta import *
 from direct.interval.IntervalGlobal import *
-import HolidayDecorator
+from . import HolidayDecorator
 from toontown.toonbase import ToontownGlobals
 from toontown.safezone import Playground
 from toontown.town import Street
 from toontown.estate import Estate
-from pandac.PandaModules import Vec4, loadDNAFile, CSDefault, TransformState, NodePath, TransparencyAttrib
+from pandac.PandaModules import Vec4, CSDefault, TransformState, NodePath, TransparencyAttrib
+from libtoontown import loadDNAFile
 
 class HalloweenHolidayDecorator(HolidayDecorator.HolidayDecorator):
     notify = DirectNotifyGlobal.directNotify.newCategory('HalloweenHolidayDecorator')
@@ -37,7 +38,7 @@ class HalloweenHolidayDecorator(HolidayDecorator.HolidayDecorator):
             base.cr.playGame.getPlace().loader.hood.loader and
             hasattr(base.cr.playGame.getPlace().loader.hood.loader, 'geom') and
             base.cr.playGame.getPlace().loader.hood.loader.geom):
-            return True
+                return True
         else:
             if hasattr(base.cr.playGame, 'getPlace') and base.cr.playGame.getPlace():
                 self.notify.debug('Failed Hood Check %s' % base.cr.playGame.getPlace())

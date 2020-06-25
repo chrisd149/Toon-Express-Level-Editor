@@ -2,7 +2,7 @@ from direct.showbase.ShowBaseGlobal import *
 from toontown.toonbase.ToonBaseGlobal import *
 from direct.interval.IntervalGlobal import *
 from toontown.toonbase import ToontownTimer
-from DistributedMinigame import *
+from .DistributedMinigame import *
 from direct.distributed.ClockDelta import *
 from direct.fsm import ClassicFSM
 from direct.fsm import State
@@ -10,18 +10,18 @@ from direct.task import Task
 from direct.actor import Actor
 from toontown.toon import LaffMeter
 from direct.distributed import DistributedSmoothNode
-import ArrowKeys
-import Ring
-import RingTrack
-import DivingGameGlobals
-import RingGroup
-import RingTrackGroups
+from . import ArrowKeys
+from . import Ring
+from . import RingTrack
+from . import DivingGameGlobals
+from . import RingGroup
+from . import RingTrackGroups
 import random
-import DivingGameToonSD
-import DivingFishSpawn
-import DivingTreasure
+from . import DivingGameToonSD
+from . import DivingFishSpawn
+from . import DivingTreasure
 import math
-import TreasureScorePanel
+from . import TreasureScorePanel
 from otp.distributed.TelemetryLimiter import TelemetryLimiter, TLGatherAllAvs
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import TTLocalizer
@@ -70,7 +70,7 @@ class DistributedDivingGame(DistributedMinigame):
         DistributedMinigame.load(self)
         loadBase = 'phase_4/models/minigames/'
         loadBaseShip = 'phase_5/models/props/'
-        self.sndAmbience = base.loadSfx('phase_4/audio/sfx/AV_ambient_water.mp3')
+        self.sndAmbience = base.loader.loadSfx('phase_4/audio/sfx/AV_ambient_water.ogg')
         self.environModel = loader.loadModel(loadBase + 'diving_game.bam')
         self.boatModel = self.environModel.find('**/boat')
         self.skyModel = self.environModel.find('**/sky')
@@ -104,19 +104,19 @@ class DistributedDivingGame(DistributedMinigame):
         toonSD = DivingGameToonSD.DivingGameToonSD(avId, self)
         self.toonSDs[avId] = toonSD
         toonSD.load()
-        crabSoundName = 'King_Crab.mp3'
+        crabSoundName = 'King_Crab.ogg'
         crabSoundPath = 'phase_4/audio/sfx/%s' % crabSoundName
         self.crabSound = loader.loadSfx(crabSoundPath)
-        treasureSoundName = 'SZ_DD_treasure.mp3'
+        treasureSoundName = 'SZ_DD_treasure.ogg'
         treasureSoundPath = 'phase_4/audio/sfx/%s' % treasureSoundName
         self.treasureSound = loader.loadSfx(treasureSoundPath)
-        hitSoundName = 'diving_game_hit.mp3'
+        hitSoundName = 'diving_game_hit.ogg'
         hitSoundPath = 'phase_4/audio/sfx/%s' % hitSoundName
         self.hitSound = loader.loadSfx(hitSoundPath)
-        self.music = base.loadMusic('phase_4/audio/bgm/MG_Target.mid')
-        self.addSound('dropGold', 'diving_treasure_drop_off.mp3', 'phase_4/audio/sfx/')
-        self.addSound('getGold', 'diving_treasure_pick_up.mp3', 'phase_4/audio/sfx/')
-        self.swimSound = loader.loadSfx('phase_4/audio/sfx/diving_swim_loop.wav')
+        self.music = base.loader.loadMusic('phase_4/audio/bgm/MG_Target.ogg')
+        self.addSound('dropGold', 'diving_treasure_drop_off.ogg', 'phase_4/audio/sfx/')
+        self.addSound('getGold', 'diving_treasure_pick_up.ogg', 'phase_4/audio/sfx/')
+        self.swimSound = loader.loadSfx('phase_4/audio/sfx/diving_swim_loop.ogg')
         self.swimSound.setVolume(0.0)
         self.swimSound.setPlayRate(1.0)
         self.swimSound.setLoop(True)
@@ -150,7 +150,7 @@ class DistributedDivingGame(DistributedMinigame):
         self.environModel.removeNode()
         del self.environModel
         self.removeChildGameFSM(self.gameFSM)
-        for avId in self.toonSDs.keys():
+        for avId in list(self.toonSDs.keys()):
             toonSD = self.toonSDs[avId]
             toonSD.unload()
 
@@ -168,14 +168,14 @@ class DistributedDivingGame(DistributedMinigame):
         else:
             spawnerId = int(name[2])
             spawnId = int(name[3:len(name)])
-            if self.spawners[spawnerId].fishArray.has_key(spawnId):
+            if spawnId in self.spawners[spawnerId].fishArray:
                 self.sendUpdate('handleFishCollision', [avId,
                  spawnId,
                  spawnerId,
                  toonSD.status])
 
     def fishSpawn(self, timestamp, fishcode, spawnerId, offset):
-        if self.dead is 1:
+        if self.dead == 1:
             return
         ts = globalClockDelta.localElapsedTime(timestamp)
         if not hasattr(self, 'spawners'):
@@ -290,7 +290,7 @@ class DistributedDivingGame(DistributedMinigame):
         self.boatTilt.finish()
         self.mapModel.hide()
         DistributedSmoothNode.activateSmoothing(1, 0)
-        for avId in self.toonSDs.keys():
+        for avId in list(self.toonSDs.keys()):
             self.toonSDs[avId].exit()
 
         base.camLens.setFar(ToontownGlobals.DefaultCameraFar)
@@ -334,7 +334,7 @@ class DistributedDivingGame(DistributedMinigame):
             self.cSphereNodePath2.removeNode()
             del self.cSphereNodePath2
         if hasattr(self, 'remoteToonCollNPs'):
-            for np in self.remoteToonCollNPs.values():
+            for np in list(self.remoteToonCollNPs.values()):
                 np.removeNode()
 
             del self.remoteToonCollNPs
@@ -414,7 +414,7 @@ class DistributedDivingGame(DistributedMinigame):
             cSphereNodePath = crab.attachNewNode(cSphereNode)
             cSphereNodePath.setScale(1, 3, 1)
             self.accept('hitby-' + 'crabby' + str(i), self.fishCollision)
-            if i % 2 is 0:
+            if i % 2 == 0:
                 crab.setPos(20, 0, -40)
                 crab.direction = -1
             else:
@@ -707,21 +707,21 @@ class DistributedDivingGame(DistributedMinigame):
             self.localLerp.finish()
             self.localLerp = Sequence(Func(toonSD.fsm.request, 'freeze'), Wait(3.0), Func(toonSD.fsm.request, 'normal'))
             self.localLerp.start(ts)
-        if self.spawners[spawnerId].fishArray.has_key(spawnId):
+        if spawnId in self.spawners[spawnerId].fishArray:
             fish = self.spawners[spawnerId].fishArray[spawnId]
             endX = self.spawners[spawnerId].position.getX()
             if fish.name == 'clown':
-                fishSoundName = 'Clownfish.mp3'
+                fishSoundName = 'Clownfish.ogg'
             elif fish.name == 'pbj':
-                fishSoundName = 'PBJ_Fish.mp3'
+                fishSoundName = 'PBJ_Fish.ogg'
             elif fish.name == 'balloon':
-                fishSoundName = 'BalloonFish.mp3'
+                fishSoundName = 'BalloonFish.ogg'
             elif fish.name == 'bear':
-                fishSoundName = 'Bear_Acuda.mp3'
+                fishSoundName = 'Bear_Acuda.ogg'
             elif fish.name == 'nurse':
-                fishSoundName = 'Nurse_Shark.mp3'
+                fishSoundName = 'Nurse_Shark.ogg'
             elif fish.name == 'piano':
-                fishSoundName = 'Piano_Tuna.mp3'
+                fishSoundName = 'Piano_Tuna.ogg'
             else:
                 fishSoundName = ' '
             fishSoundPath = 'phase_4/audio/sfx/%s' % fishSoundName
@@ -731,7 +731,7 @@ class DistributedDivingGame(DistributedMinigame):
                 fish.sound.setVolume(volume)
                 self.hitSound.play()
                 self.hitSound.setVolume(volume)
-            if fish.name is 'bear' or fish.name is 'nurse':
+            if fish.name == 'bear' or fish.name == 'nurse':
                 return
             colList = fish.findAllMatches('**/fc*')
             for col in colList:
@@ -760,7 +760,7 @@ class DistributedDivingGame(DistributedMinigame):
     def fishRemove(self, code):
         spawnId = int(code[1:len(code)])
         spawnerId = int(code[0])
-        if self.spawners[spawnerId].fishArray.has_key(spawnId):
+        if spawnId in self.spawners[spawnerId].fishArray:
             fish = self.spawners[spawnerId].fishArray[spawnId]
             fish.specialLerp.finish()
             fish.moveLerp.finish()

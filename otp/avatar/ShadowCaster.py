@@ -26,9 +26,9 @@ class ShadowCaster:
 
     def __init__(self, squareShadow = False):
         if squareShadow:
-            self.shadowFileName = 'phase_3/models/props/square_drop_shadow.bam'
+            self.shadowFileName = 'phase_3/models/props/square_drop_shadow'
         else:
-            self.shadowFileName = 'phase_3/models/props/drop_shadow.bam'
+            self.shadowFileName = 'phase_3/models/props/drop_shadow'
         self.dropShadow = None
         self.shadowPlacer = None
         self.activeShadow = 0

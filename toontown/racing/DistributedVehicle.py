@@ -1,4 +1,5 @@
 from pandac.PandaModules import *
+from libotp import *
 from direct.distributed.ClockDelta import *
 from direct.interval.IntervalGlobal import *
 from direct.gui.DirectGui import *
@@ -64,14 +65,14 @@ class DistributedVehicle(DistributedSmoothNode.DistributedSmoothNode, Kart.Kart,
           'windResistance': 0.2,
           'particleColor': Vec4(1.0, 1.0, 1.0, 1.0)}}
     SFX_BaseDir = 'phase_6/audio/sfx/'
-    SFX_WallHits = [SFX_BaseDir + 'KART_Hitting_Wood_Fence.mp3',
-     SFX_BaseDir + 'KART_Hitting_Wood_Fence_1.mp3',
-     SFX_BaseDir + 'KART_Hitting_Metal_Fence.mp3',
-     SFX_BaseDir + 'KART_Hitting_Wall.mp3']
-    SFX_SkidLoop_Grass = SFX_BaseDir + 'KART_Skidding_On_Grass.wav'
-    SFX_SkidLoop_Asphalt = SFX_BaseDir + 'KART_Skidding_On_Asphalt.wav'
-    SFX_TurboStart = SFX_BaseDir + 'KART_turboStart.mp3'
-    SFX_TurboLoop = SFX_BaseDir + 'KART_turboLoop.wav'
+    SFX_WallHits = [SFX_BaseDir + 'KART_Hitting_Wood_Fence.ogg',
+     SFX_BaseDir + 'KART_Hitting_Wood_Fence_1.ogg',
+     SFX_BaseDir + 'KART_Hitting_Metal_Fence.ogg',
+     SFX_BaseDir + 'KART_Hitting_Wall.ogg']
+    SFX_SkidLoop_Grass = SFX_BaseDir + 'KART_Skidding_On_Grass.ogg'
+    SFX_SkidLoop_Asphalt = SFX_BaseDir + 'KART_Skidding_On_Asphalt.ogg'
+    SFX_TurboStart = SFX_BaseDir + 'KART_turboStart.ogg'
+    SFX_TurboLoop = SFX_BaseDir + 'KART_turboLoop.ogg'
     AvId2kart = {}
 
     @classmethod
@@ -163,14 +164,14 @@ class DistributedVehicle(DistributedSmoothNode.DistributedSmoothNode, Kart.Kart,
         self.forward.setPos(0, 1, 0)
         self.wallHitsSfx = []
         for wallHit in self.SFX_WallHits:
-            self.wallHitsSfx.append(base.loadSfx(wallHit))
+            self.wallHitsSfx.append(base.loader.loadSfx(wallHit))
 
-        self.skidLoopAsphaltSfx = base.loadSfx(self.SFX_SkidLoop_Asphalt)
+        self.skidLoopAsphaltSfx = base.loader.loadSfx(self.SFX_SkidLoop_Asphalt)
         self.skidLoopAsphaltSfx.setLoop()
-        self.skidLoopGrassSfx = base.loadSfx(self.SFX_SkidLoop_Grass)
+        self.skidLoopGrassSfx = base.loader.loadSfx(self.SFX_SkidLoop_Grass)
         self.skidLoopGrassSfx.setLoop()
-        self.turboStartSfx = base.loadSfx(self.SFX_TurboStart)
-        self.turboLoopSfx = base.loadSfx(self.SFX_TurboLoop)
+        self.turboStartSfx = base.loader.loadSfx(self.SFX_TurboStart)
+        self.turboLoopSfx = base.loader.loadSfx(self.SFX_TurboLoop)
         self.turboLoopSfx.setLoop()
         self.forward.reparentTo(self.geom[0])
         self.anvil = globalPropPool.getProp('anvil')
@@ -390,7 +391,7 @@ class DistributedVehicle(DistributedSmoothNode.DistributedSmoothNode, Kart.Kart,
         for x in self.drifts:
             x.destroy()
 
-        self.smokeMount.remove()
+        self.smokeMount.removeNode()
         del self.driftSeq
         del self.driftParticleForces
         del self.drifts
@@ -426,7 +427,7 @@ class DistributedVehicle(DistributedSmoothNode.DistributedSmoothNode, Kart.Kart,
         sides = {0: 'right',
          1: 'left'}
         if side == None:
-            for x in sides.keys():
+            for x in list(sides.keys()):
                 self.sparks[x].effect.getParticlesNamed('particles-1').setBirthRate(1000)
                 taskMgr.doMethodLater(0.75, self.sparks[x].stop, 'stopSparks-' + sides[x], extraArgs=[])
 
@@ -445,7 +446,7 @@ class DistributedVehicle(DistributedSmoothNode.DistributedSmoothNode, Kart.Kart,
         for x in self.sparks:
             x.destroy()
 
-        self.sparkMount.remove()
+        self.sparkMount.removeNode()
         del self.sparks
         del self.sparkMount
 
@@ -904,7 +905,7 @@ class DistributedVehicle(DistributedSmoothNode.DistributedSmoothNode, Kart.Kart,
             driftMin = self.surfaceModifiers[self.groundType]['driftMin'] * 0.2
             if self.skidding:
                 driftMin = self.surfaceModifiers[self.groundType]['driftMin']
-        for i in range(numFrames):
+        for i in range(int(numFrames)):
             self.physicsMgr.doPhysics(self.physicsDt)
             curVelocity = self.actorNode.getPhysicsObject().getVelocity()
             idealVelocity = curHeading * curSpeed
@@ -1199,7 +1200,7 @@ class DistributedVehicle(DistributedSmoothNode.DistributedSmoothNode, Kart.Kart,
         self.wipeOut.start()
 
     def hitPie(self):
-        print 'yar, got Me with pi!'
+        print('yar, got Me with pi!')
         self.splatPie()
         if self.wipeOut:
             self.wipeOut.pause()

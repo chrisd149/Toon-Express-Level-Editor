@@ -1,7 +1,7 @@
 from pandac.PandaModules import *
 from direct.interval.IntervalGlobal import *
 from direct.particles import ParticleEffect
-from StomperGlobals import *
+from .StomperGlobals import *
 from direct.distributed import ClockDelta
 from direct.showbase.PythonUtil import lerp
 import math
@@ -19,11 +19,11 @@ from toontown.golf import BuildGeometry
 from direct.gui.DirectGui import *
 import random
 from direct.showbase import RandomNumGen
-import GameSprite3D
+from . import GameSprite3D
 from math import pi
 import math
 import random
-import cPickle
+import pickle
 from toontown.distributed import DelayDelete
 from toontown.toon import ToonHeadFrame
 from toontown.battle import BattleParticles
@@ -232,7 +232,7 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
             else:
                 printout += '%s ' % columnIndex
 
-        print printout
+        print(printout)
         for rowIndex in range(self.gridDimZ - 1, -1, -1):
             if rowIndex < 10:
                 printout = 'row  %s ' % rowIndex
@@ -247,18 +247,18 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
                 else:
                     printout += '%s  ' % hasSprite
 
-            print printout
+            print(printout)
 
         count = 0
         for sprite in self.sprites:
-            print 'count %s X %s Z %s Color %s' % (count,
+            print('count %s X %s Z %s Color %s' % (count,
              sprite.gridPosX,
              sprite.gridPosZ,
-             sprite.colorType)
+             sprite.colorType))
             count += 1
 
     def pickLevelPattern(self):
-        self.boardIndex = random.choice(range(0, len(self.boardData)))
+        self.boardIndex = random.choice(list(range(0, len(self.boardData))))
         self.board = self.boardData[self.boardIndex]
         self.attackPattern = self.attackPatterns[self.boardIndex]
         self.attackCounter = 0
@@ -277,14 +277,14 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
         self.invModel = loader.loadModel('phase_3.5/models/gui/inventory_icons')
         self.model = model
         self.model1 = model1
-        self.soundFire = base.loadSfx('phase_6/audio/sfx/Golf_Hit_Ball.mp3')
-        self.soundLand = base.loadSfx('phase_4/audio/sfx/MG_maze_pickup.mp3')
-        self.soundBurst = base.loadSfx('phase_5/audio/sfx/Toon_bodyfall_synergy.mp3')
-        self.soundBomb = base.loadSfx('phase_4/audio/sfx/MG_cannon_fire_alt.mp3')
-        self.soundLose = base.loadSfx('phase_11/audio/sfx/LB_capacitor_discharge_3.mp3')
-        self.soundWin = base.loadSfx('phase_4/audio/sfx/MG_pairing_match_bonus_both.mp3')
-        self.soundDone = base.loadSfx('phase_3/audio/sfx/GUI_create_toon_back.mp3')
-        self.soundMove = base.loadSfx('phase_3.5/audio/sfx/SA_shred.mp3')
+        self.soundFire = base.loader.loadSfx('phase_6/audio/sfx/Golf_Hit_Ball.ogg')
+        self.soundLand = base.loader.loadSfx('phase_4/audio/sfx/MG_maze_pickup.ogg')
+        self.soundBurst = base.loader.loadSfx('phase_5/audio/sfx/Toon_bodyfall_synergy.ogg')
+        self.soundBomb = base.loader.loadSfx('phase_4/audio/sfx/MG_cannon_fire_alt.ogg')
+        self.soundLose = base.loader.loadSfx('phase_11/audio/sfx/LB_capacitor_discharge_3.ogg')
+        self.soundWin = base.loader.loadSfx('phase_4/audio/sfx/MG_pairing_match_bonus_both.ogg')
+        self.soundDone = base.loader.loadSfx('phase_3/audio/sfx/GUI_create_toon_back.ogg')
+        self.soundMove = base.loader.loadSfx('phase_3.5/audio/sfx/SA_shred.ogg')
         background = model.find('**/bg')
         itemBoard = model.find('**/item_board')
         self.focusPoint = self.baseNode.attachNewNode('GolfGreenGameFrame')
@@ -355,7 +355,7 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
         self.arrangeToonHeadPanels()
 
     def removeToonHeadPanel(self, avId):
-        if self.toonPanels.has_key(avId):
+        if avId in self.toonPanels:
             self.toonPanels[avId].destroy()
             del self.toonPanels[avId]
             self.arrangeToonHeadPanels()
@@ -382,7 +382,7 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
         for panelKey in self.toonPanels:
             self.toonPanels[panelKey].destroy()
 
-        self.headPanel.remove()
+        self.headPanel.removeNode()
         self.toonPanels = None
         self.soundFire = None
         self.soundLand = None
@@ -538,7 +538,7 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
         base.localAvatar.startUpdateSmartCamera()
 
     def __removeGame(self):
-        self.spriteNode.remove()
+        self.spriteNode.removeNode()
         self.setupFlag = 0
 
     def __leaveGame(self):
@@ -997,7 +997,7 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
         size = self.radiusBall * 2.0
         facing = 1
         if color == None:
-            colorChoice = random.choice(range(0, 3))
+            colorChoice = random.choice(list(range(0, 3)))
         else:
             colorChoice = color
         newSprite = GameSprite3D.GameSprite(spriteBase, size, colorChoice, found, facing)
@@ -1076,7 +1076,7 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
         while self.controlSprite == None and self.attackPattern:
             if self.attackCounter > len(self.attackPattern) - 1:
                 self.attackCounter = 0
-            print 'Pattern %s Place %s Type %s' % (self.attackPattern, self.attackCounter, self.attackPattern[self.attackCounter])
+            print('Pattern %s Place %s Type %s' % (self.attackPattern, self.attackCounter, self.attackPattern[self.attackCounter]))
             if self.standbySprite.holdType != None:
                 color = self.standbySprite.holdType
                 sprite = self.addControlSprite(self.newBallX, self.newBallZ + self.spriteNotchPos * self.cellSizeZ, color)
@@ -1338,13 +1338,13 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
                 self.joinedToons.append(avId)
                 index = self.everJoinedToons.index(avId)
                 if index > 3:
-                    print 'ERROR! green game has had more than 4 players, we are about to crash\n %s' % self.everJoinedToons
-                    print 'Joining Toon is %s index is %s' % (avId, index)
+                    print('ERROR! green game has had more than 4 players, we are about to crash\n %s' % self.everJoinedToons)
+                    print('Joining Toon is %s index is %s' % (avId, index))
                 toon = base.cr.doId2do.get(avId)
                 selfPos = self.getPos(render)
                 offset = self.toonPoints[index]
                 if index > 3:
-                    print 'odd... we should have crashed by now'
+                    print('odd... we should have crashed by now')
                 standPoint = render.getRelativePoint(self, offset)
                 if toon:
                     toon.stopSmooth()
@@ -1416,7 +1416,7 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
 
         for entryIndex in range(len(scoreList)):
             entry = scoreList[entryIndex]
-            if self.toonPanels.has_key(entry[0]):
+            if entry[0] in self.toonPanels:
                 panel = self.toonPanels[entry[0]]
                 panel.extraData['text'] = TTLocalizer.GolfGreenGamePlayerScore % entry[1]
 
@@ -1469,5 +1469,5 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
             keyList.append(key)
 
         for key in keyList:
-            if self.__toonTracks.has_key(key):
+            if key in self.__toonTracks:
                 self.clearToonTrack(key)

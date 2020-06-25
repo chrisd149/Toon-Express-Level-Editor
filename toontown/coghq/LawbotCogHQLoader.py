@@ -1,15 +1,15 @@
 from direct.directnotify import DirectNotifyGlobal
 from direct.fsm import StateData
-import CogHQLoader
+from . import CogHQLoader
 from toontown.toonbase import ToontownGlobals
 from direct.gui import DirectGui
 from toontown.toonbase import TTLocalizer
 from toontown.toon import Toon
 from direct.fsm import State
-import StageInterior
-import LawbotHQExterior
-import LawbotHQBossBattle
-import LawbotOfficeExterior
+from . import StageInterior
+from . import LawbotHQExterior
+from . import LawbotHQBossBattle
+from . import LawbotOfficeExterior
 aspectSF = 0.7227
 
 class LawbotCogHQLoader(CogHQLoader.CogHQLoader):
@@ -27,7 +27,7 @@ class LawbotCogHQLoader(CogHQLoader.CogHQLoader):
             state = self.fsm.getStateNamed(stateName)
             state.addTransition('factoryExterior')
 
-        self.musicFile = 'phase_11/audio/bgm/LB_courtyard.mid'
+        self.musicFile = 'phase_11/audio/bgm/LB_courtyard.ogg'
         self.cogHQExteriorModelPath = 'phase_11/models/lawbotHQ/LawbotPlaza'
         self.factoryExteriorModelPath = 'phase_11/models/lawbotHQ/LB_DA_Lobby'
         self.cogHQLobbyModelPath = 'phase_11/models/lawbotHQ/LB_CH_Lobby'

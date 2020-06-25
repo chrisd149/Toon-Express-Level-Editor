@@ -1,4 +1,5 @@
 from pandac.PandaModules import *
+from libtoontown import *
 from direct.distributed.ClockDelta import *
 from direct.distributed import DistributedObject
 from direct.directnotify import DirectNotifyGlobal
@@ -8,7 +9,7 @@ from direct.showbase import BulletinBoardWatcher
 from direct.interval.IntervalGlobal import *
 from otp.otpbase import OTPGlobals
 from direct.interval.IntervalGlobal import *
-from RaceGag import RaceGag
+from .RaceGag import RaceGag
 from toontown.toonbase import ToontownGlobals, TTLocalizer
 from toontown.toon import ToonHeadFrame
 from toontown.racing.KartDNA import InvalidEntry, getAccessory, getDefaultColor
@@ -16,8 +17,8 @@ from pandac.PandaModules import CardMaker, OrthographicLens, LineSegs
 from direct.distributed import DistributedSmoothNode
 from math import fmod
 from math import sqrt
-from RaceGUI import RaceGUI
-import RaceGlobals
+from .RaceGUI import RaceGUI
+from . import RaceGlobals
 from direct.task.Task import Task
 from toontown.hood import SkyUtil
 from direct.fsm import ClassicFSM, State
@@ -34,9 +35,9 @@ class DistributedRace(DistributedObject.DistributedObject):
     WinEvent = 'RaceWinEvent'
     BGM_BaseDir = 'phase_6/audio/bgm/'
     SFX_BaseDir = 'phase_6/audio/sfx/'
-    SFX_StartBoop = SFX_BaseDir + 'KART_raceStart1.mp3'
-    SFX_StartBoop2 = SFX_BaseDir + 'KART_raceStart2.mp3'
-    SFX_Applause = SFX_BaseDir + 'KART_Applause_%d.mp3'
+    SFX_StartBoop = SFX_BaseDir + 'KART_raceStart1.ogg'
+    SFX_StartBoop2 = SFX_BaseDir + 'KART_raceStart2.ogg'
+    SFX_Applause = SFX_BaseDir + 'KART_Applause_%d.ogg'
 
     def __init__(self, cr):
         self.qbox = loader.loadModel('phase_6/models/karting/qbox')
@@ -69,8 +70,8 @@ class DistributedRace(DistributedObject.DistributedObject):
         self.hasFog = False
         self.dummyNode = None
         self.fog = None
-        self.bananaSound = base.loadSfx('phase_6/audio/sfx/KART_tossBanana.mp3')
-        self.anvilFall = base.loadSfx('phase_6/audio/sfx/KART_Gag_Hit_Anvil.mp3')
+        self.bananaSound = base.loader.loadSfx('phase_6/audio/sfx/KART_tossBanana.ogg')
+        self.anvilFall = base.loader.loadSfx('phase_6/audio/sfx/KART_Gag_Hit_Anvil.ogg')
         self.accept('leaveRace', self.leaveRace)
         self.toonsToLink = []
         self.curveTs = []
@@ -98,15 +99,15 @@ class DistributedRace(DistributedObject.DistributedObject):
         bboard.post('race', self)
         self.roomWatcher = None
         self.cutoff = 0.01
-        self.startBoopSfx = base.loadSfx(self.SFX_StartBoop)
-        self.startBoop2Sfx = base.loadSfx(self.SFX_StartBoop2)
+        self.startBoopSfx = base.loader.loadSfx(self.SFX_StartBoop)
+        self.startBoop2Sfx = base.loader.loadSfx(self.SFX_StartBoop2)
         return
 
     def announceGenerate(self):
         self.notify.debug('announceGenerate: %s' % self.doId)
         DistributedObject.DistributedObject.announceGenerate(self)
         musicFile = self.BGM_BaseDir + RaceGlobals.TrackDict[self.trackId][7]
-        self.raceMusic = base.loadMusic(musicFile)
+        self.raceMusic = base.loader.loadMusic(musicFile)
         base.playMusic(self.raceMusic, looping=1, volume=0.8)
         camera.reparentTo(render)
         if self.trackId in (RaceGlobals.RT_Urban_1,
@@ -234,7 +235,7 @@ class DistributedRace(DistributedObject.DistributedObject):
             cheerToPlay = place + (4 - self.numRacers)
             if cheerToPlay > 4:
                 cheerToPlay = 4
-            self.victory = base.loadSfx(self.SFX_Applause % cheerToPlay)
+            self.victory = base.loader.loadSfx(self.SFX_Applause % cheerToPlay)
             self.victory.play()
         self.knownPlace[avId] = place
         kart = base.cr.doId2do.get(self.kartMap.get(avId, None), None)
@@ -251,12 +252,12 @@ class DistributedRace(DistributedObject.DistributedObject):
         return
 
     def setCircuitPlace(self, avId, place, entryFee, winnings, bonus, trophies):
-        print 'setting cicruit place'
+        print('setting cicruit place')
         if self.fsm.getCurrentState().getName() == 'leaving':
             return
         if avId == localAvatar.doId:
             cheerToPlay = place + (4 - self.numRacers)
-            self.victory = base.loadSfx(self.SFX_Applause % cheerToPlay)
+            self.victory = base.loader.loadSfx(self.SFX_Applause % cheerToPlay)
             self.victory.play()
         oldPlace = 0
         if self.knownPlace.get(avId):
@@ -264,13 +265,13 @@ class DistributedRace(DistributedObject.DistributedObject):
             self.placeFixup.append([oldPlace - 1, place - 1])
         avatar = base.cr.doId2do.get(avId, None)
         if avatar:
-            print 'circuit trophies %s' % trophies
-            print 'winnings %s' % winnings
+            print('circuit trophies %s' % trophies)
+            print('winnings %s' % winnings)
             self.gui.racerFinishedCircuit(avId, oldPlace, entryFee, winnings, bonus, trophies)
         return
 
     def endCircuitRace(self):
-        print self.placeFixup
+        print(self.placeFixup)
         self.gui.circuitFinished(self.placeFixup)
 
     def prepForRace(self):
@@ -471,7 +472,7 @@ class DistributedRace(DistributedObject.DistributedObject):
         self.waitingLabel.setScale(TTLocalizer.DRenterWaiting)
 
     def exitWaiting(self):
-        self.waitingLabel.remove()
+        self.waitingLabel.removeNode()
 
     def enterStart(self):
         waitTime = self.baseTime - globalClock.getFrameTime()
@@ -684,7 +685,7 @@ class DistributedRace(DistributedObject.DistributedObject):
             return Task.cont
 
     def endGoSign(self, t):
-        self.clock.remove()
+        self.clock.removeNode()
 
     def countdown(self, duration):
         countdownTask = Task(self.timerTask)
@@ -900,7 +901,7 @@ class DistributedRace(DistributedObject.DistributedObject):
                         dict = self.innerBarricadeDict
                     elif side == 'outersidest':
                         dict = self.outerBarricadeDict
-                    if dict.has_key(segmentInd):
+                    if segmentInd in dict:
                         self.currBldgGroups[side] = dict[segmentInd]
                     for i in self.currBldgGroups[side]:
                         self.buildingGroups[side][i].unstash()
@@ -965,7 +966,7 @@ class DistributedRace(DistributedObject.DistributedObject):
     def precomputeSideStreets(self):
         farDist = base.camLens.getFar() + 300
         farDistSquared = farDist * farDist
-        for i in range(self.barricadeSegments):
+        for i in range(int(self.barricadeSegments)):
             testPoint = Point3(0, 0, 0)
             self.curve.getPoint(i / self.barricadeSegments * (self.curve.getMaxT() - 1e-11), testPoint)
             for side in ('innersidest', 'outersidest'):
@@ -981,7 +982,7 @@ class DistributedRace(DistributedObject.DistributedObject):
                                 dict = self.outerBarricadeDict
                             else:
                                 self.notify.error('unhandled side')
-                            if dict.has_key(i):
+                            if i in dict:
                                 if bldgGroupIndex not in dict[i]:
                                     dict[i].append(bldgGroupIndex)
                             else:
@@ -999,7 +1000,7 @@ class DistributedRace(DistributedObject.DistributedObject):
                                 dict = self.outerBarricadeDict
                             else:
                                 self.notify.error('unhandled side')
-                            if dict.has_key(i):
+                            if i in dict:
                                 if bldgGroupIndex not in dict[i]:
                                     dict[i].append(bldgGroupIndex)
                             else:
@@ -1193,7 +1194,7 @@ class DistributedRace(DistributedObject.DistributedObject):
         idStr = into.getTag('boostId')
         arrowVec = self.boostDir.get(idStr)
         if arrowVec == None:
-            print 'Unknown boost arrow %s' % idStr
+            print('Unknown boost arrow %s' % idStr)
             return
         fvec = self.localKart.forward.getPos(self.geom) - self.localKart.getPos(self.geom)
         fvec.normalize()

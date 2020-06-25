@@ -17,8 +17,8 @@ class GZSafeZoneLoader(SafeZoneLoader):
 
     def __init__(self, hood, parentFSM, doneEvent):
         SafeZoneLoader.__init__(self, hood, parentFSM, doneEvent)
-        self.musicFile = 'phase_6/audio/bgm/GZ_SZ.mid'
-        self.activityMusicFile = 'phase_6/audio/bgm/GS_KartShop.mid'
+        self.musicFile = 'phase_6/audio/bgm/GZ_SZ.ogg'
+        self.activityMusicFile = 'phase_6/audio/bgm/GS_KartShop.ogg'
         self.dnaFile = 'phase_6/dna/golf_zone_sz.dna'
         self.safeZoneStorageDNAFile = 'phase_6/dna/storage_GZ_sz.dna'
         del self.fsm
@@ -31,7 +31,7 @@ class GZSafeZoneLoader(SafeZoneLoader):
 
     def load(self):
         SafeZoneLoader.load(self)
-        self.birdSound = map(base.loadSfx, ['phase_4/audio/sfx/SZ_TC_bird1.mp3', 'phase_4/audio/sfx/SZ_TC_bird2.mp3', 'phase_4/audio/sfx/SZ_TC_bird3.mp3'])
+        self.birdSound = list(map(base.loader.loadSfx, ['phase_4/audio/sfx/SZ_TC_bird1.ogg', 'phase_4/audio/sfx/SZ_TC_bird2.ogg', 'phase_4/audio/sfx/SZ_TC_bird3.ogg']))
 
     def unload(self):
         del self.birdSound
@@ -84,7 +84,7 @@ class GZSafeZoneLoader(SafeZoneLoader):
             return ZoneUtil.getHoodId(status['zoneId']) == self.hood.hoodId
 
     def enterGolfCourse(self, requestStatus):
-        if requestStatus.has_key('curseId'):
+        if 'curseId' in requestStatus:
             self.golfCourseId = requestStatus['courseId']
         else:
             self.golfCourseId = 0
@@ -96,7 +96,7 @@ class GZSafeZoneLoader(SafeZoneLoader):
         del self.golfCourseId
 
     def handleRaceOver(self):
-        print 'you done!!'
+        print('you done!!')
 
     def handleLeftGolf(self):
         req = {'loader': 'safeZoneLoader',

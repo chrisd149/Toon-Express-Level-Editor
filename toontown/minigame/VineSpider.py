@@ -2,9 +2,9 @@ from direct.showbase.DirectObject import DirectObject
 from toontown.toonbase.ToontownGlobals import *
 from direct.directnotify import DirectNotifyGlobal
 from pandac.PandaModules import *
-import VineGameGlobals
+from . import VineGameGlobals
 
-class VineSpider(NodePath.NodePath, DirectObject):
+class VineSpider(NodePath, DirectObject):
     RADIUS = 1.7
 
     def __init__(self):
@@ -17,7 +17,7 @@ class VineSpider(NodePath.NodePath, DirectObject):
         gameAssets = loader.loadModel('phase_4/models/minigames/vine_game')
         spider2 = gameAssets.find('**/spider_3')
         spider1 = gameAssets.find('**/spider_2')
-        seqNode = SequenceNode.SequenceNode('spider')
+        seqNode = SequenceNode('spider')
         seqNode.addChild(spider1.node())
         seqNode.addChild(spider2.node())
         seqNode.setFrameRate(2)
@@ -56,8 +56,8 @@ class VineSpider(NodePath.NodePath, DirectObject):
         self.removeNode()
 
     def __handleEnterSphere(self, collEntry):
-        print 'VineSpider.__handleEnterSphere'
-        print collEntry
+        print('VineSpider.__handleEnterSphere')
+        print(collEntry)
         self.ignoreAll()
         self.notify.debug('treasuerGrabbed')
         messenger.send('VineSpiderGrabbed', [self.serialNum])

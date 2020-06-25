@@ -1,5 +1,5 @@
-import TownLoader
-import BRStreet
+from . import TownLoader
+from . import BRStreet
 from toontown.suit import Suit
 
 class BRTownLoader(TownLoader.TownLoader):
@@ -7,8 +7,8 @@ class BRTownLoader(TownLoader.TownLoader):
     def __init__(self, hood, parentFSM, doneEvent):
         TownLoader.TownLoader.__init__(self, hood, parentFSM, doneEvent)
         self.streetClass = BRStreet.BRStreet
-        self.musicFile = 'phase_8/audio/bgm/TB_SZ.mid'
-        self.activityMusicFile = 'phase_8/audio/bgm/TB_SZ_activity.mid'
+        self.musicFile = 'phase_8/audio/bgm/TB_SZ.ogg'
+        self.activityMusicFile = 'phase_8/audio/bgm/TB_SZ_activity.ogg'
         self.townStorageDNAFile = 'phase_8/dna/storage_BR_town.dna'
 
     def load(self, zoneId):

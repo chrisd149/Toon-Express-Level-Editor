@@ -2,9 +2,9 @@ from pandac.PandaModules import *
 from direct.distributed.ClockDelta import *
 from direct.interval.IntervalGlobal import *
 from direct.directtools.DirectGeometry import *
-from ElevatorConstants import *
-from ElevatorUtils import *
-from SuitBuildingGlobals import *
+from .ElevatorConstants import *
+from .ElevatorUtils import *
+from .SuitBuildingGlobals import *
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
 from toontown.toonbase import ToontownGlobals
@@ -346,20 +346,20 @@ class DistributedBuilding(DistributedObject.DistributedObject):
         if base.config.GetBool('want-qa-regression', 0):
             self.notify.info('QA-REGRESSION: COGBUILDING: Cog Take Over')
         if self.cogDropSound == None:
-            self.cogDropSound = base.loadSfx(self.TAKEOVER_SFX_PREFIX + 'cogbldg_drop.mp3')
-            self.cogLandSound = base.loadSfx(self.TAKEOVER_SFX_PREFIX + 'cogbldg_land.mp3')
-            self.cogSettleSound = base.loadSfx(self.TAKEOVER_SFX_PREFIX + 'cogbldg_settle.mp3')
-            self.openSfx = base.loadSfx('phase_5/audio/sfx/elevator_door_open.mp3')
+            self.cogDropSound = base.loader.loadSfx(self.TAKEOVER_SFX_PREFIX + 'cogbldg_drop.ogg')
+            self.cogLandSound = base.loader.loadSfx(self.TAKEOVER_SFX_PREFIX + 'cogbldg_land.ogg')
+            self.cogSettleSound = base.loader.loadSfx(self.TAKEOVER_SFX_PREFIX + 'cogbldg_settle.ogg')
+            self.openSfx = base.loader.loadSfx('phase_5/audio/sfx/elevator_door_open.ogg')
         return
 
     def loadAnimToToonSfx(self):
         if base.config.GetBool('want-qa-regression', 0):
             self.notify.info('QA-REGRESSION: COGBUILDING: Toon Take Over')
         if self.cogWeakenSound == None:
-            self.cogWeakenSound = base.loadSfx(self.TAKEOVER_SFX_PREFIX + 'cogbldg_weaken.mp3')
-            self.toonGrowSound = base.loadSfx(self.TAKEOVER_SFX_PREFIX + 'toonbldg_grow.mp3')
-            self.toonSettleSound = base.loadSfx(self.TAKEOVER_SFX_PREFIX + 'toonbldg_settle.mp3')
-            self.openSfx = base.loadSfx('phase_5/audio/sfx/elevator_door_open.mp3')
+            self.cogWeakenSound = base.loader.loadSfx(self.TAKEOVER_SFX_PREFIX + 'cogbldg_weaken.ogg')
+            self.toonGrowSound = base.loader.loadSfx(self.TAKEOVER_SFX_PREFIX + 'toonbldg_grow.ogg')
+            self.toonSettleSound = base.loader.loadSfx(self.TAKEOVER_SFX_PREFIX + 'toonbldg_settle.ogg')
+            self.openSfx = base.loader.loadSfx('phase_5/audio/sfx/elevator_door_open.ogg')
         return
 
     def unloadSfx(self):
@@ -458,10 +458,10 @@ class DistributedBuilding(DistributedObject.DistributedObject):
         backgroundNP = loader.loadModel('phase_5/models/modules/suit_sign')
         backgroundNP.reparentTo(signOrigin)
         backgroundNP.setPosHprScale(0.0, 0.0, textHeight * 0.8 / zScale, 0.0, 0.0, 0.0, 8.0, 8.0, 8.0 * zScale)
-        backgroundNP.node().setEffect(DecalEffect.make())
         signTextNodePath = backgroundNP.attachNewNode(textNode.generate())
         signTextNodePath.setPosHprScale(0.0, 0.0, -0.21 + textHeight * 0.1 / zScale, 0.0, 0.0, 0.0, 0.1, 0.1, 0.1 / zScale)
         signTextNodePath.setColor(1.0, 1.0, 1.0, 1.0)
+        signTextNodePath.setAttrib(DepthOffsetAttrib.make(1))
         frontNP = suitBuildingNP.find('**/*_front/+GeomNode;+s')
         backgroundNP.wrtReparentTo(frontNP)
         frontNP.node().setEffect(DecalEffect.make())
@@ -558,10 +558,10 @@ class DistributedBuilding(DistributedObject.DistributedObject):
         backgroundNP = loader.loadModel('phase_5/models/cogdominium/field_office_sign')
         backgroundNP.reparentTo(signOrigin)
         backgroundNP.setPosHprScale(0.0, 0.0, -1.2 + textHeight * 0.8 / zScale, 0.0, 0.0, 0.0, 20.0, 8.0, 8.0 * zScale)
-        backgroundNP.node().setEffect(DecalEffect.make())
         signTextNodePath = backgroundNP.attachNewNode(textNode.generate())
         signTextNodePath.setPosHprScale(0.0, 0.0, -0.13 + textHeight * 0.1 / zScale, 0.0, 0.0, 0.0, 0.1 * 8.0 / 20.0, 0.1, 0.1 / zScale)
         signTextNodePath.setColor(1.0, 1.0, 1.0, 1.0)
+        signTextNodePath.setAttrib(DepthOffsetAttrib.make(1))
         frontNP = suitBuildingNP.find('**/*_front/+GeomNode;+s')
         backgroundNP.wrtReparentTo(frontNP)
         frontNP.node().setEffect(DecalEffect.make())
@@ -710,7 +710,7 @@ class DistributedBuilding(DistributedObject.DistributedObject):
     def plantVictorsOutsideBldg(self):
         retVal = 0
         for victor in self.victorList:
-            if victor != 0 and self.cr.doId2do.has_key(victor):
+            if victor != 0 and victor in self.cr.doId2do:
                 toon = self.cr.doId2do[victor]
                 toon.setPosHpr(self.elevatorModel, 0, -10, 0, 0, 0, 0)
                 toon.startSmooth()
@@ -725,12 +725,12 @@ class DistributedBuilding(DistributedObject.DistributedObject):
         delayDeletes = []
         i = 0
         for victor in self.victorList:
-            if victor != 0 and self.cr.doId2do.has_key(victor):
+            if victor != 0 and victor in self.cr.doId2do:
                 toon = self.cr.doId2do[victor]
                 delayDeletes.append(DelayDelete.DelayDelete(toon, 'getVictoryRunTrack'))
                 toon.stopSmooth()
                 toon.setParent(ToontownGlobals.SPHidden)
-                origPosTrack.append(Func(toon.setPosHpr, self.elevatorNodePath, apply(Point3, ElevatorPoints[i]), Point3(180, 0, 0)))
+                origPosTrack.append(Func(toon.setPosHpr, self.elevatorNodePath, Point3(*ElevatorPoints[i]), Point3(180, 0, 0)))
                 origPosTrack.append(Func(toon.setParent, ToontownGlobals.SPRender))
             i += 1
 
@@ -740,7 +740,7 @@ class DistributedBuilding(DistributedObject.DistributedObject):
         runOutAll = Parallel()
         i = 0
         for victor in self.victorList:
-            if victor != 0 and self.cr.doId2do.has_key(victor):
+            if victor != 0 and victor in self.cr.doId2do:
                 toon = self.cr.doId2do[victor]
                 p0 = Point3(0, 0, 0)
                 p1 = Point3(ElevatorPoints[i][0], ElevatorPoints[i][1] - 5.0, ElevatorPoints[i][2])

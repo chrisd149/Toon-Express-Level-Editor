@@ -10,8 +10,8 @@ from toontown.toonbase.ToontownGlobals import *
 from toontown.toonbase import TTLocalizer
 from toontown.suit import Suit, SuitDNA
 from toontown.toon import Toon, ToonHead, ToonDNA
-from CogdoUtil import CogdoGameMovie
-import CogdoUtil
+from .CogdoUtil import CogdoGameMovie
+from . import CogdoUtil
 
 class CogdoExecutiveSuiteIntro(CogdoGameMovie):
     notify = DirectNotifyGlobal.directNotify.newCategory('CogdoExecutiveSuiteIntro')
@@ -50,8 +50,6 @@ class CogdoExecutiveSuiteIntro(CogdoGameMovie):
         for part in suit.getHeadParts():
             part.hide()
 
-        suit.loop('neutral')
-
     def load(self):
         self.notify.debug('load()')
         CogdoGameMovie.load(self)
@@ -84,7 +82,7 @@ class CogdoExecutiveSuiteIntro(CogdoGameMovie):
         self.clipPlane = self.toonHead.attachNewNode(PlaneNode('clip'))
         self.clipPlane.node().setPlane(Plane(0, 0, 1, 0))
         self.clipPlane.setPos(0, 0, 2.45)
-        self._toonDialogueSfx = loader.loadSfx('phase_3.5/audio/dial/AV_dog_long.mp3')
+        self._toonDialogueSfx = loader.loadSfx('phase_3.5/audio/dial/AV_dog_long.ogg')
         self._camHelperNode = NodePath('CamHelperNode')
         self._camHelperNode.reparentTo(render)
         dialogue = TTLocalizer.CogdoExecutiveSuiteIntroMessage

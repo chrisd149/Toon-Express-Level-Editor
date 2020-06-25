@@ -1,10 +1,11 @@
 from toontown.toonbase.ToonBaseGlobal import *
 from pandac.PandaModules import *
+from libtoontown import *
 from toontown.toonbase.ToontownGlobals import *
 import random
 from direct.distributed import DistributedObject
 from direct.directnotify import DirectNotifyGlobal
-import ToonInteriorColors
+from . import ToonInteriorColors
 from toontown.hood import ZoneUtil
 
 class DistributedGagshopInterior(DistributedObject.DistributedObject):

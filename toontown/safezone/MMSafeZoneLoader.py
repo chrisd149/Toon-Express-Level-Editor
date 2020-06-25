@@ -1,6 +1,6 @@
 from pandac.PandaModules import *
-import SafeZoneLoader
-import MMPlayground
+from . import SafeZoneLoader
+from . import MMPlayground
 from toontown.toonbase import ToontownGlobals
 
 class MMSafeZoneLoader(SafeZoneLoader.SafeZoneLoader):
@@ -8,13 +8,13 @@ class MMSafeZoneLoader(SafeZoneLoader.SafeZoneLoader):
     def __init__(self, hood, parentFSM, doneEvent):
         SafeZoneLoader.SafeZoneLoader.__init__(self, hood, parentFSM, doneEvent)
         self.playgroundClass = MMPlayground.MMPlayground
-        self.musicFile = 'phase_6/audio/bgm/MM_nbrhood.mid'
-        self.activityMusicFile = 'phase_6/audio/bgm/MM_SZ_activity.mid'
+        self.musicFile = 'phase_6/audio/bgm/MM_nbrhood.ogg'
+        self.activityMusicFile = 'phase_6/audio/bgm/MM_SZ_activity.ogg'
         self.dnaFile = 'phase_6/dna/minnies_melody_land_sz.dna'
         self.safeZoneStorageDNAFile = 'phase_6/dna/storage_MM_sz.dna'
 
     def load(self):
-        print 'loading MM safezone'
+        print('loading MM safezone')
         SafeZoneLoader.SafeZoneLoader.load(self)
         self.piano = self.geom.find('**/center_icon')
         if self.piano.isEmpty():

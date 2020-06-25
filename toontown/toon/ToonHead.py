@@ -360,7 +360,7 @@ class ToonHead(Actor.Actor):
         else:
             ToonHead.notify.error('unknown head style: %s' % headStyle)
         if len(lods) == 1:
-            self.loadModel('phase_3' + filePrefix + lods[0] + '.bam', 'head', 'lodRoot', copy)
+            self.loadModel('phase_3' + filePrefix + lods[0], 'head', 'lodRoot', copy)
             if not forGui:
                 pLoaded = self.loadPumpkin(headStyle[1], None, copy)
                 self.loadSnowMan(headStyle[1], None, copy)
@@ -378,7 +378,7 @@ class ToonHead(Actor.Actor):
                     self.__copy = copy
         else:
             for lod in lods:
-                self.loadModel('phase_3' + filePrefix + lod + '.bam', 'head', lod, copy)
+                self.loadModel('phase_3' + filePrefix + lod, 'head', lod, copy)
                 if not forGui:
                     pLoaded = self.loadPumpkin(headStyle[1], lod, copy)
                     self.loadSnowMan(headStyle[1], lod, copy)
@@ -407,7 +407,7 @@ class ToonHead(Actor.Actor):
             if not hasattr(self, 'pumpkins'):
                 self.pumpkins = NodePathCollection()
             ppath = 'phase_4/models/estate/pumpkin_'
-            if headStyle is 'l':
+            if headStyle == 'l':
                 if copy:
                     pmodel = loader.loadModel(ppath + 'tall')
                 else:
@@ -429,7 +429,7 @@ class ToonHead(Actor.Actor):
                 else:
                     p.reparentTo(self.find('**/__Actor_head'))
                 self.pumpkins.addPath(p)
-                pmodel.remove()
+                pmodel.removeNode()
                 return True
             else:
                 del self.pumpkins
@@ -442,7 +442,7 @@ class ToonHead(Actor.Actor):
             if not hasattr(self, 'snowMen'):
                 self.snowMen = NodePathCollection()
             snowManPath = 'phase_4/models/props/tt_m_efx_snowmanHead_'
-            if headStyle is 'l':
+            if headStyle == 'l':
                 snowManPath = snowManPath + 'tall'
             else:
                 snowManPath = snowManPath + 'short'
@@ -638,7 +638,7 @@ class ToonHead(Actor.Actor):
                 lp = self.__eyes.find('**/joint_pupilL*')
                 rp = self.__eyes.find('**/joint_pupilR*')
             if lp.isEmpty() or rp.isEmpty():
-                print 'Unable to locate pupils.'
+                print('Unable to locate pupils.')
             else:
                 leye = self.__eyes.attachNewNode('leye')
                 reye = self.__eyes.attachNewNode('reye')
@@ -750,7 +750,7 @@ class ToonHead(Actor.Actor):
             if self.__eyelashClosed:
                 self.__eyelashClosed.removeNode()
             animal = style.head[0]
-            model = loader.loadModel('phase_3' + EyelashDict[animal] + '.bam')
+            model = loader.loadModel('phase_3' + EyelashDict[animal])
             if self.hasLOD():
                 head = self.getPart('head', '1000')
             else:
@@ -1169,7 +1169,7 @@ class ToonHead(Actor.Actor):
                     muzzle = self.find('**/' + lodName + '/**/muzzle*')
                     if lodName == '1000' or lodName == '500':
                         filePrefix = DogMuzzleDict[style.head]
-                        muzzles = loader.loadModel('phase_3' + filePrefix + lodName + '.bam')
+                        muzzles = loader.loadModel('phase_3' + filePrefix + lodName)
                         if base.config.GetBool('want-new-anims', 1):
                             if not self.find('**/' + lodName + '/**/__Actor_head/def_head').isEmpty():
                                 muzzles.reparentTo(self.find('**/' + lodName + '/**/__Actor_head/def_head'))
@@ -1195,7 +1195,7 @@ class ToonHead(Actor.Actor):
             else:
                 muzzle = self.find('**/muzzle*')
                 filePrefix = DogMuzzleDict[style.head]
-                muzzles = loader.loadModel('phase_3' + filePrefix + '1000' + '.bam')
+                muzzles = loader.loadModel('phase_3' + filePrefix + '1000')
                 if base.config.GetBool('want-new-anims', 1):
                     if not self.find('**/def_head').isEmpty():
                         muzzles.reparentTo(self.find('**/def_head'))

@@ -51,7 +51,7 @@ class CogThief(DirectObject):
         self.maxAcceleration = 5.0
         self.perceptionRange = 6
         self.notify.debug('cogSpeed=%s' % self.cogSpeed)
-        self.kaboomSound = loader.loadSfx('phase_4/audio/sfx/MG_cannon_fire_alt.mp3')
+        self.kaboomSound = loader.loadSfx('phase_4/audio/sfx/MG_cannon_fire_alt.ogg')
         self.kaboom = loader.loadModel('phase_4/models/minigames/ice_game_kaboom')
         self.kaboom.setScale(2.0)
         self.kaboom.setBillboardPointEye()
@@ -61,7 +61,7 @@ class CogThief(DirectObject):
         self.splat = globalPropPool.getProp(splatName)
         self.splat.setBillboardPointEye()
         self.splatType = globalPropPool.getPropType(splatName)
-        self.pieHitSound = globalBattleSoundCache.getSound('AA_wholepie_only.mp3')
+        self.pieHitSound = globalBattleSoundCache.getSound('AA_wholepie_only.ogg')
         return
 
     def destroy(self):
@@ -217,7 +217,7 @@ class CogThief(DirectObject):
             return
         if not hasattr(self.game, 'barrels'):
             return
-        if self.goalId not in xrange(len(self.game.barrels)):
+        if self.goalId not in range(len(self.game.barrels)):
             return
         if not self.lastThinkTime:
             self.lastThinkTime = globalClock.getFrameTime()
@@ -396,7 +396,7 @@ class CogThief(DirectObject):
 
     def seeFriends(self):
         self.clearVisibleList()
-        for cogIndex in self.game.cogInfo.keys():
+        for cogIndex in list(self.game.cogInfo.keys()):
             if cogIndex == self.cogIndex:
                 continue
             if self.sameGoal(cogIndex):

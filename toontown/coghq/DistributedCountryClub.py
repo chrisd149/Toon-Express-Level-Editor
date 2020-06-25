@@ -59,7 +59,7 @@ class DistributedCountryClub(DistributedObject.DistributedObject):
 
     def stopSky(self):
         taskMgr.remove('skyTrack')
-        self.sky.remove()
+        self.sky.removeNode()
 
     def __setupHighSky(self):
         self.startSky()
@@ -222,7 +222,7 @@ class DistributedCountryClub(DistributedObject.DistributedObject):
         return
 
     def warpToRoom(self, roomId):
-        for i in xrange(len(self.rooms)):
+        for i in range(len(self.rooms)):
             room = self.rooms[i]
             if room.roomId == roomId:
                 break

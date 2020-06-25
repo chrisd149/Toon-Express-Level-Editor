@@ -1,10 +1,11 @@
+from libtoontown import *
 from toontown.toonbase.ToonBaseGlobal import *
 from direct.interval.IntervalGlobal import *
 from direct.distributed.ClockDelta import *
 from direct.showbase import Audio3DManager
 from toontown.toonbase import ToontownGlobals
-import cPickle
-from DistributedToonInterior import DistributedToonInterior
+import pickle
+from .DistributedToonInterior import DistributedToonInterior
 from direct.directnotify import DirectNotifyGlobal
 from direct.fsm import ClassicFSM, State
 from direct.distributed import DistributedObject
@@ -12,7 +13,7 @@ from direct.fsm import State
 from direct.actor import Actor
 import random
 import time
-import ToonInteriorColors
+from . import ToonInteriorColors
 from toontown.hood import ZoneUtil
 from toontown.toon import ToonDNA
 from toontown.toon import ToonHead
@@ -215,19 +216,19 @@ class DistributedToonHallInterior(DistributedToonInterior):
         self.sillyMeter.makeSubpart('arrow', ['uvj_progressBar*', 'def_springA'])
         self.sillyMeter.makeSubpart('meter', ['def_pivot'], ['uvj_progressBar*', 'def_springA'])
         self.audio3d = Audio3DManager.Audio3DManager(base.sfxManagerList[0], camera)
-        self.phase1Sfx = self.audio3d.loadSfx('phase_4/audio/sfx/tt_s_prp_sillyMeterPhaseOne.mp3')
+        self.phase1Sfx = self.audio3d.loadSfx('phase_4/audio/sfx/tt_s_prp_sillyMeterPhaseOne.ogg')
         self.phase1Sfx.setLoop(True)
-        self.phase2Sfx = self.audio3d.loadSfx('phase_4/audio/sfx/tt_s_prp_sillyMeterPhaseTwo.mp3')
+        self.phase2Sfx = self.audio3d.loadSfx('phase_4/audio/sfx/tt_s_prp_sillyMeterPhaseTwo.ogg')
         self.phase2Sfx.setLoop(True)
-        self.phase3Sfx = self.audio3d.loadSfx('phase_4/audio/sfx/tt_s_prp_sillyMeterPhaseThree.mp3')
+        self.phase3Sfx = self.audio3d.loadSfx('phase_4/audio/sfx/tt_s_prp_sillyMeterPhaseThree.ogg')
         self.phase3Sfx.setLoop(True)
-        self.phase4Sfx = self.audio3d.loadSfx('phase_4/audio/sfx/tt_s_prp_sillyMeterPhaseFour.mp3')
+        self.phase4Sfx = self.audio3d.loadSfx('phase_4/audio/sfx/tt_s_prp_sillyMeterPhaseFour.ogg')
         self.phase4Sfx.setLoop(True)
-        self.phase4To5Sfx = self.audio3d.loadSfx('phase_4/audio/sfx/tt_s_prp_sillyMeterPhaseFourToFive.mp3')
+        self.phase4To5Sfx = self.audio3d.loadSfx('phase_4/audio/sfx/tt_s_prp_sillyMeterPhaseFourToFive.ogg')
         self.phase4To5Sfx.setLoop(False)
-        self.phase5Sfx = self.audio3d.loadSfx('phase_4/audio/sfx/tt_s_prp_sillyMeterPhaseFive.mp3')
+        self.phase5Sfx = self.audio3d.loadSfx('phase_4/audio/sfx/tt_s_prp_sillyMeterPhaseFive.ogg')
         self.phase5Sfx.setLoop(True)
-        self.arrowSfx = self.audio3d.loadSfx('phase_4/audio/sfx/tt_s_prp_sillyMeterArrow.mp3')
+        self.arrowSfx = self.audio3d.loadSfx('phase_4/audio/sfx/tt_s_prp_sillyMeterArrow.ogg')
         self.arrowSfx.setLoop(False)
         self.audio3d.setDropOffFactor(0.1)
         self.accept('SillyMeterPhase', self.selectPhase)

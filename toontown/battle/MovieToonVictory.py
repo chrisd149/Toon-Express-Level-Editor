@@ -1,8 +1,9 @@
+from libotp import *
 from direct.interval.IntervalGlobal import *
 from direct.showbase.DirectObject import DirectObject
-from RewardPanel import *
-from BattleSounds import *
-import MovieCamera
+from .RewardPanel import *
+from .BattleSounds import *
+from . import MovieCamera
 from direct.directnotify import DirectNotifyGlobal
 import types
 notify = DirectNotifyGlobal.directNotify.newCategory('MovieToonVictory')
@@ -78,12 +79,12 @@ def doToonVictory(localToonActive, toons, rewardToonIds, rewardDicts, deathList,
         track.append(Func(NametagGlobals.setOnscreenChatForced, 1))
     camTrack = Sequence()
     endTrack = Sequence()
-    danceSound = globalBattleSoundCache.getSound('ENC_Win.mp3')
+    danceSound = globalBattleSoundCache.getSound('ENC_Win.ogg')
     toonList = []
     countToons = 0
     uberListNew = []
     for t in toons:
-        if isinstance(t, types.IntType):
+        if isinstance(t, int):
             t = base.cr.doId2do.get(t)
         if t:
             toonList.append(t)

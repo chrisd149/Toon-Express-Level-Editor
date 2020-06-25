@@ -1,13 +1,13 @@
 from pandac.PandaModules import *
 from direct.interval.IntervalGlobal import *
 from toontown.toonbase.ToontownGlobals import *
-from CrateGlobals import *
+from .CrateGlobals import *
 from direct.showbase.PythonUtil import fitSrcAngle2Dest
 from direct.distributed import DistributedObject
 from direct.directnotify import DirectNotifyGlobal
-import MovingPlatform
+from . import MovingPlatform
 from direct.task.Task import Task
-import DistributedCrushableEntity
+from . import DistributedCrushableEntity
 
 class DistributedCrate(DistributedCrushableEntity.DistributedCrushableEntity):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedCrate')
@@ -34,8 +34,8 @@ class DistributedCrate(DistributedCrushableEntity.DistributedCrushableEntity):
         self.stuckToCrate = 0
         self.upPressed = 0
         self.isPushing = 0
-        self.creakSound = loader.loadSfx('phase_9/audio/sfx/CHQ_FACT_crate_effort.mp3')
-        self.pushSound = loader.loadSfx('phase_9/audio/sfx/CHQ_FACT_crate_sliding.mp3')
+        self.creakSound = loader.loadSfx('phase_9/audio/sfx/CHQ_FACT_crate_effort.ogg')
+        self.pushSound = loader.loadSfx('phase_9/audio/sfx/CHQ_FACT_crate_sliding.ogg')
         return
 
     def disable(self):

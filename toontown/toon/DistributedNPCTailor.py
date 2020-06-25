@@ -1,12 +1,12 @@
 from pandac.PandaModules import *
-from DistributedNPCToonBase import *
+from .DistributedNPCToonBase import *
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
-import NPCToons
+from . import NPCToons
 from direct.task.Task import Task
-import TailorClothesGUI
+from . import TailorClothesGUI
 from toontown.toonbase import TTLocalizer
-import ToonDNA
+from . import ToonDNA
 from toontown.estate import ClosetGlobals
 
 class DistributedNPCTailor(DistributedNPCToonBase):
@@ -21,12 +21,15 @@ class DistributedNPCTailor(DistributedNPCToonBase):
         self.roomAvailable = 0
         self.button = None
         self.popupInfo = None
+        self.lerpCameraSeq = None
         return
 
     def disable(self):
         self.ignoreAll()
         taskMgr.remove(self.uniqueName('popupPurchaseGUI'))
-        taskMgr.remove(self.uniqueName('lerpCamera'))
+        if self.lerpCameraSeq:
+            self.lerpCameraSeq.finish()
+            self.lerpCameraSeq = None
         if self.clothesGUI:
             self.clothesGUI.exit()
             self.clothesGUI.unload()
@@ -61,7 +64,9 @@ class DistributedNPCTailor(DistributedNPCToonBase):
     def resetTailor(self):
         self.ignoreAll()
         taskMgr.remove(self.uniqueName('popupPurchaseGUI'))
-        taskMgr.remove(self.uniqueName('lerpCamera'))
+        if self.lerpCameraSeq:
+            self.lerpCameraSeq.finish()
+            self.lerpCameraSeq = None
         if self.clothesGUI:
             self.clothesGUI.hideButtons()
             self.clothesGUI.exit()
@@ -91,7 +96,9 @@ class DistributedNPCTailor(DistributedNPCToonBase):
         if mode == NPCToons.PURCHASE_MOVIE_CLEAR:
             return
         if mode == NPCToons.PURCHASE_MOVIE_TIMEOUT:
-            taskMgr.remove(self.uniqueName('lerpCamera'))
+            if self.lerpCameraSeq:
+                self.lerpCameraSeq.finish()
+                self.lerpCameraSeq = None
             if self.isLocalToon:
                 self.ignore(self.purchaseDoneEvent)
                 self.ignore(self.swapEvent)
@@ -124,7 +131,8 @@ class DistributedNPCTailor(DistributedNPCToonBase):
             self.setupAvatars(self.av)
             if self.isLocalToon:
                 camera.wrtReparentTo(render)
-                camera.lerpPosHpr(-5, 9, self.getHeight() - 0.5, -150, -2, 0, 1, other=self, blendType='easeOut', task=self.uniqueName('lerpCamera'))
+                self.lerpCameraSeq = camera.posQuatInterval(1, Point3(-5, 9, self.getHeight() - 0.5), Point3(-150, -2, 0), other=self, blendType='easeOut', name=self.uniqueName('lerpCamera'))
+                self.lerpCameraSeq.start()
             if self.browsing == 0:
                 if self.roomAvailable == 0:
                     self.setChatAbsolute(TTLocalizer.STOREOWNER_NOROOM, CFSpeech | CFTimeout)
@@ -134,31 +142,31 @@ class DistributedNPCTailor(DistributedNPCToonBase):
                 self.setChatAbsolute(TTLocalizer.STOREOWNER_BROWSING, CFSpeech | CFTimeout)
             if self.isLocalToon:
                 taskMgr.doMethodLater(3.0, self.popupPurchaseGUI, self.uniqueName('popupPurchaseGUI'))
-                print '-----------Starting tailor interaction-----------'
-                print 'avid: %s, gender: %s' % (self.av.doId, self.av.style.gender)
-                print 'current top = %s,%s,%s,%s and  bot = %s,%s,' % (self.av.style.topTex,
+                print('-----------Starting tailor interaction-----------')
+                print('avid: %s, gender: %s' % (self.av.doId, self.av.style.gender))
+                print('current top = %s,%s,%s,%s and  bot = %s,%s,' % (self.av.style.topTex,
                  self.av.style.topTexColor,
                  self.av.style.sleeveTex,
                  self.av.style.sleeveTexColor,
                  self.av.style.botTex,
-                 self.av.style.botTexColor)
-                print 'topsList = %s' % self.av.getClothesTopsList()
-                print 'bottomsList = %s' % self.av.getClothesBottomsList()
-                print '-------------------------------------------------'
+                 self.av.style.botTexColor))
+                print('topsList = %s' % self.av.getClothesTopsList())
+                print('bottomsList = %s' % self.av.getClothesBottomsList())
+                print('-------------------------------------------------')
         elif mode == NPCToons.PURCHASE_MOVIE_COMPLETE:
             self.setChatAbsolute(TTLocalizer.STOREOWNER_GOODBYE, CFSpeech | CFTimeout)
             if self.av and self.isLocalToon:
-                print '-----------ending tailor interaction-----------'
-                print 'avid: %s, gender: %s' % (self.av.doId, self.av.style.gender)
-                print 'current top = %s,%s,%s,%s and  bot = %s,%s,' % (self.av.style.topTex,
+                print('-----------ending tailor interaction-----------')
+                print('avid: %s, gender: %s' % (self.av.doId, self.av.style.gender))
+                print('current top = %s,%s,%s,%s and  bot = %s,%s,' % (self.av.style.topTex,
                  self.av.style.topTexColor,
                  self.av.style.sleeveTex,
                  self.av.style.sleeveTexColor,
                  self.av.style.botTex,
-                 self.av.style.botTexColor)
-                print 'topsList = %s' % self.av.getClothesTopsList()
-                print 'bottomsList = %s' % self.av.getClothesBottomsList()
-                print '-------------------------------------------------'
+                 self.av.style.botTexColor))
+                print('topsList = %s' % self.av.getClothesTopsList())
+                print('bottomsList = %s' % self.av.getClothesBottomsList())
+                print('-------------------------------------------------')
             self.resetTailor()
         elif mode == NPCToons.PURCHASE_MOVIE_NO_MONEY:
             self.notify.warning('PURCHASE_MOVIE_NO_MONEY should not be called')
@@ -206,7 +214,7 @@ class DistributedNPCTailor(DistributedNPCToonBase):
                 which = which | ClosetGlobals.SHIRT
             if self.clothesGUI.bottomChoice != -1:
                 which = which | ClosetGlobals.SHORTS
-            print 'setDNA: which = %d, top = %d, bot = %d' % (which, self.clothesGUI.topChoice, self.clothesGUI.bottomChoice)
+            print('setDNA: which = %d, top = %d, bot = %d' % (which, self.clothesGUI.topChoice, self.clothesGUI.bottomChoice))
             if self.roomAvailable == 0:
                 if self.isLocalToon:
                     if self.av.isClosetFull() or which & ClosetGlobals.SHIRT and which & ClosetGlobals.SHORTS:

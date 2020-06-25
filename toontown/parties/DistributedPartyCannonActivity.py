@@ -2,7 +2,7 @@ import math
 from pandac.PandaModules import *
 from direct.distributed.ClockDelta import *
 from direct.interval.IntervalGlobal import *
-from direct.showbase.PythonUtil import quantizeVec
+from otp.otpbase.PythonUtil import quantizeVec
 from direct.task.Task import Task
 from toontown.toontowngui import TTDialog
 from toontown.toonbase.ToonBaseGlobal import *
@@ -28,7 +28,6 @@ INITIAL_VELOCITY = 90.0
 WHISTLE_SPEED = INITIAL_VELOCITY * 0.35
 
 class DistributedPartyCannonActivity(DistributedPartyActivity):
-    # I never go anywhere without my party cannon!
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedPartyCannonActivity')
     HIT_GROUND = 0
     HIT_TOWER = 1
@@ -101,12 +100,12 @@ class DistributedPartyCannonActivity(DistributedPartyActivity):
         self.splash = Splash.Splash(render)
         self.dustCloud = DustCloud.DustCloud(render)
         self.dustCloud.setBillboardPointEye()
-        self.sndHitGround = base.loadSfx('phase_4/audio/sfx/MG_cannon_hit_dirt.mp3')
-        self.sndHitWater = base.loadSfx('phase_4/audio/sfx/MG_cannon_splash.mp3')
-        self.sndHitHouse = base.loadSfx('phase_5/audio/sfx/AA_drop_sandbag.mp3')
-        self.sndBounce1 = base.loadSfx('phase_13/audio/sfx/bounce1.mp3')
-        self.sndBounce2 = base.loadSfx('phase_13/audio/sfx/bounce2.mp3')
-        self.sndBounce3 = base.loadSfx('phase_13/audio/sfx/bounce3.mp3')
+        self.sndHitGround = base.loader.loadSfx('phase_4/audio/sfx/MG_cannon_hit_dirt.ogg')
+        self.sndHitWater = base.loader.loadSfx('phase_4/audio/sfx/MG_cannon_splash.ogg')
+        self.sndHitHouse = base.loader.loadSfx('phase_5/audio/sfx/AA_drop_sandbag.ogg')
+        self.sndBounce1 = base.loader.loadSfx('phase_13/audio/sfx/bounce1.ogg')
+        self.sndBounce2 = base.loader.loadSfx('phase_13/audio/sfx/bounce2.ogg')
+        self.sndBounce3 = base.loader.loadSfx('phase_13/audio/sfx/bounce3.ogg')
         self.onstage()
         self.sign.reparentTo(hidden)
         self.sign.setPos(-6.0, 10.0, 0.0)
@@ -264,10 +263,10 @@ class DistributedPartyCannonActivity(DistributedPartyActivity):
             self.inWater = 0
             flightResults = self.__calcFlightResults(cannon, toonId, launchTime)
             if not isClient():
-                print 'EXECWARNING DistributedPartyCannonActivity: %s' % flightResults
+                print('EXECWARNING DistributedPartyCannonActivity: %s' % flightResults)
                 printStack()
             for key in flightResults:
-                exec "%s = flightResults['%s']" % (key, key)
+                exec("%s = flightResults['%s']" % (key, key))
 
             self.notify.debug('start position: ' + str(startPos))
             self.notify.debug('start velocity: ' + str(startVel))
@@ -343,7 +342,7 @@ class DistributedPartyCannonActivity(DistributedPartyActivity):
     def _remoteToonFlyTask(self, task = None):
         ids2del = []
         frameTime = globalClock.getFrameTime()
-        for avId, trajInfo in self._avId2trajectoryInfo.iteritems():
+        for avId, trajInfo in self._avId2trajectoryInfo.items():
             trajectory = trajInfo.trajectory
             startTime = trajInfo.startT
             groundTime = trajectory.calcTimeOfImpactOnPlane(0.0) / self.TimeFactor + startTime
@@ -952,5 +951,5 @@ class DistributedPartyCannonActivity(DistributedPartyActivity):
 
     def handleToonExited(self, toonId):
         self.notify.debug('DistributedPartyCannonActivity handleToonExited( toonId=%s ) ' % toonId)
-        if self.cr.doId2do.has_key(toonId):
+        if toonId in self.cr.doId2do:
             self.notify.warning('handleToonExited is not defined')

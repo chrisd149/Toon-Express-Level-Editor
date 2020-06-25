@@ -1,8 +1,8 @@
-import DistributedLawnDecor
+from . import DistributedLawnDecor
 from direct.directnotify import DirectNotifyGlobal
 from direct.showbase.ShowBase import *
 from direct.interval.IntervalGlobal import *
-import GardenGlobals
+from . import GardenGlobals
 from toontown.toonbase import TTLocalizer
 from toontown.estate import PlantingGUI
 from toontown.estate import PlantTreeGUI
@@ -64,7 +64,7 @@ class DistributedGardenPlot(DistributedLawnDecor.DistributedLawnDecor):
         self.model = None
         if self.defaultModel:
             self.model = loader.loadModel(self.defaultModel)
-            if type(self.plotScale) == types.TupleType:
+            if type(self.plotScale) == tuple:
                 self.model.setScale(*self.plotScale)
             else:
                 self.model.setScale(self.plotScale)
@@ -331,7 +331,7 @@ class DistributedGardenPlot(DistributedLawnDecor.DistributedLawnDecor):
         self.movie.start()
 
     def generatePlaceItemTrack(self, toon, item):
-        sound = loader.loadSfx('phase_5.5/audio/sfx/burrow.mp3')
+        sound = loader.loadSfx('phase_5.5/audio/sfx/burrow.ogg')
         sound.setPlayRate(0.5)
         placeItemTrack = Parallel()
         placeItemTrack.append(Sequence(ActorInterval(toon, 'start-dig'), Parallel(ActorInterval(toon, 'loop-dig', loop=1, duration=5.13), Sequence(Wait(0.25), SoundInterval(sound, node=toon, duration=0.55), Wait(0.8), SoundInterval(sound, node=toon, duration=0.55), Wait(1.35), SoundInterval(sound, node=toon, duration=0.55))), ActorInterval(toon, 'start-dig', playRate=-1), Func(toon.loop, 'neutral'), Func(toon.detachShovel)))

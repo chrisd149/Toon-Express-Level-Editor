@@ -1,5 +1,5 @@
-import TownLoader
-import DGStreet
+from . import TownLoader
+from . import DGStreet
 from toontown.suit import Suit
 
 class DGTownLoader(TownLoader.TownLoader):
@@ -7,8 +7,8 @@ class DGTownLoader(TownLoader.TownLoader):
     def __init__(self, hood, parentFSM, doneEvent):
         TownLoader.TownLoader.__init__(self, hood, parentFSM, doneEvent)
         self.streetClass = DGStreet.DGStreet
-        self.musicFile = 'phase_8/audio/bgm/DG_SZ.mid'
-        self.activityMusicFile = 'phase_8/audio/bgm/DG_SZ.mid'
+        self.musicFile = 'phase_8/audio/bgm/DG_SZ.ogg'
+        self.activityMusicFile = 'phase_8/audio/bgm/DG_SZ.ogg'
         self.townStorageDNAFile = 'phase_8/dna/storage_DG_town.dna'
 
     def load(self, zoneId):

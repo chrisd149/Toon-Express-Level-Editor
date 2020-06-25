@@ -9,6 +9,7 @@ from toontown.estate import DistributedCannon
 from toontown.estate import CannonGlobals
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
+from libotp import *
 from toontown.toon import NPCToons
 from toontown.toon import ToonHead
 from toontown.toonbase import TTLocalizer
@@ -128,10 +129,10 @@ class DistributedLawbotCannon(DistributedObject.DistributedObject):
         self.cannon.reparentTo(self.nodePath)
         self.kartColNode = CollisionNode(self.uniqueName('KartColNode'))
         self.kartNode = self.nodePath.attachNewNode(self.kartColNode)
-        self.sndCannonMove = base.loadSfx('phase_4/audio/sfx/MG_cannon_adjust.mp3')
-        self.sndCannonFire = base.loadSfx('phase_4/audio/sfx/MG_cannon_fire_alt.mp3')
-        self.sndHitGround = base.loadSfx('phase_4/audio/sfx/MG_cannon_hit_dirt.mp3')
-        self.sndHitChair = base.loadSfx('phase_11/audio/sfx/LB_toon_jury.mp3')
+        self.sndCannonMove = base.loader.loadSfx('phase_4/audio/sfx/MG_cannon_adjust.ogg')
+        self.sndCannonFire = base.loader.loadSfx('phase_4/audio/sfx/MG_cannon_fire_alt.ogg')
+        self.sndHitGround = base.loader.loadSfx('phase_4/audio/sfx/MG_cannon_hit_dirt.ogg')
+        self.sndHitChair = base.loader.loadSfx('phase_11/audio/sfx/LB_toon_jury.ogg')
         self.cannon.hide()
         self.flashingLabel = None
         return
@@ -232,7 +233,7 @@ class DistributedLawbotCannon(DistributedObject.DistributedObject):
                 camera.setPos(0.5, -2, 2.5)
                 camera.setHpr(0, 0, 0)
                 self.boss.toonEnteredCannon(self.avId, self.index)
-            if self.cr.doId2do.has_key(self.avId):
+            if self.avId in self.cr.doId2do:
                 self.av = self.cr.doId2do[self.avId]
                 self.acceptOnce(self.av.uniqueName('disable'), self.__avatarGone)
                 self.av.loop('neutral')
@@ -667,12 +668,7 @@ class DistributedLawbotCannon(DistributedObject.DistributedObject):
         avId = task.avId
         if self.toonHead == None or not self.boss.state == 'BattleTwo':
             return Task.done
-        flightResults = self.__calcFlightResults(avId, launchTime)
-        if not isClient():
-            print 'EXECWARNING DistributedLawbotCannon: %s' % flightResults
-            printStack()
-        for key in flightResults:
-            exec "%s = flightResults['%s']" % (key, key)
+        startPos, startHpr, startVel, trajectory, timeOfImpact, hitWhat = self.__calcFlightResults(avId, launchTime)
 
         self.notify.debug('start position: ' + str(startPos))
         self.notify.debug('start velocity: ' + str(startVel))
@@ -744,12 +740,7 @@ class DistributedLawbotCannon(DistributedObject.DistributedObject):
         trajectory = Trajectory.Trajectory(launchTime, startPos, startVel)
         self.trajectory = trajectory
         timeOfImpact, hitWhat = self.__calcToonImpact(trajectory)
-        return {'startPos': startPos,
-         'startHpr': startHpr,
-         'startVel': startVel,
-         'trajectory': trajectory,
-         'timeOfImpact': 3 * timeOfImpact,
-         'hitWhat': hitWhat}
+        return startPos, startHpr, startVel, trajectory, 3 * timeOfImpact, hitWhat
 
     def __calcToonImpact(self, trajectory):
         t_groundImpact = trajectory.checkCollisionWithGround(GROUND_PLANE_MIN)

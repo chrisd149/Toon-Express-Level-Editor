@@ -3,14 +3,14 @@ from pandac.PandaModules import *
 from toontown.toonbase import ToontownGlobals
 from toontown.toontowngui import TTDialog
 from toontown.toonbase import TTLocalizer
-import CatalogItemTypes
-import CatalogItem
-from CatalogWallpaperItem import getAllWallpapers
-from CatalogFlooringItem import getAllFloorings
-from CatalogMouldingItem import getAllMouldings
-from CatalogWainscotingItem import getAllWainscotings
-from CatalogFurnitureItem import getAllFurnitures
-from CatalogFurnitureItem import FLTrunk
+from . import CatalogItemTypes
+from . import CatalogItem
+from .CatalogWallpaperItem import getAllWallpapers
+from .CatalogFlooringItem import getAllFloorings
+from .CatalogMouldingItem import getAllMouldings
+from .CatalogWainscotingItem import getAllWainscotings
+from .CatalogFurnitureItem import getAllFurnitures
+from .CatalogFurnitureItem import FLTrunk
 from toontown.toontowngui.TeaserPanel import TeaserPanel
 from otp.otpbase import OTPGlobals
 from direct.directnotify import DirectNotifyGlobal
@@ -266,7 +266,7 @@ class CatalogItemPanel(DirectFrame):
         self.ival = None
         if len(self.items):
             self.items[0].cleanupPicture()
-        self.pictureFrame.remove()
+        self.pictureFrame.removeNode()
         self.pictureFrame = None
         self.items = []
         if self.verify:

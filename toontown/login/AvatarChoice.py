@@ -8,7 +8,7 @@ from direct.gui.DirectGui import *
 from toontown.toonbase import TTLocalizer
 from direct.directnotify import DirectNotifyGlobal
 from toontown.toontowngui import TeaserPanel
-from toontown.toonbase import UserFunnel
+#from toontown.toonbase import UserFunnel
 NAME_ROTATIONS = (7, -11, 1, -5, 3.5, -5)
 NAME_POSITIONS = ((0, 0, 0.26),
  (-0.03, 0, 0.25),
@@ -177,8 +177,8 @@ class AvatarChoice(DirectButton):
     def __handleChoice(self):
         cleanupDialog('globalDialog')
         messenger.send(self.doneEvent, ['chose', self.position])
-        UserFunnel.loggingAvID('write', str(self.avForLogging))
-        UserFunnel.logSubmit(0, 'AvatarChoice')
+        #UserFunnel.loggingAvID('write', str(self.avForLogging))
+        #UserFunnel.logSubmit(0, 'AvatarChoice')
 
     def __handleCreate(self):
         cleanupDialog('globalDialog')
@@ -219,7 +219,7 @@ class AvatarChoice(DirectButton):
             nameBalloon = loader.loadModel('phase_3/models/props/chatbox_input')
             okButtonImage = (buttons.find('**/ChtBx_OKBtn_UP'), buttons.find('**/ChtBx_OKBtn_DN'), buttons.find('**/ChtBx_OKBtn_Rllvr'))
             cancelButtonImage = (buttons.find('**/CloseBtn_UP'), buttons.find('**/CloseBtn_DN'), buttons.find('**/CloseBtn_Rllvr'))
-            self.deleteWithPasswordFrame = DirectFrame(pos=(0.0, 0.1, 0.2), parent=aspect2dp, relief=None, image=DGG.getDefaultDialogGeom(), image_color=ToontownGlobals.GlobalDialogColor, image_scale=(1.4, 1.0, 1.0), text=deleteText, text_wordwrap=19, text_scale=TTLocalizer.ACdeleteWithPasswordFrame, text_pos=(0, 0.25), textMayChange=1, sortOrder=NO_FADE_SORT_INDEX)
+            self.deleteWithPasswordFrame = DirectFrame(pos=(0.0, 0.1, 0.2), parent=aspect2dp, relief=None, image=DGG.getDefaultDialogGeom(), image_color=ToontownGlobals.GlobalDialogColor, image_scale=(1.4, 1.0, 1.0), text=deleteText, text_wordwrap=19, text_scale=TTLocalizer.ACdeleteWithPasswordFrame, text_pos=(0, 0.25), textMayChange=1, sortOrder=DGG.NO_FADE_SORT_INDEX)
             self.deleteWithPasswordFrame.hide()
             if self.deleteWithPassword:
                 self.passwordLabel = DirectLabel(parent=self.deleteWithPasswordFrame, relief=None, pos=(-0.07, 0.0, -0.2), text=TTLocalizer.AvatarChoicePassword, text_scale=0.08, text_align=TextNode.ARight, textMayChange=0)

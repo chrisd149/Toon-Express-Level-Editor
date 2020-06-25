@@ -32,7 +32,7 @@ class DistributedPartyGate(DistributedObject.DistributedObject):
                 si = '0%d' % i
             else:
                 si = '%d' % i
-            self.clockSounds.append(base.loadSfx('phase_4/audio/sfx/clock%s.mp3' % si))
+            self.clockSounds.append(base.loader.loadSfx('phase_4/audio/sfx/clock%s.ogg' % si))
 
     def generate(self):
         DistributedObject.DistributedObject.generate(self)
@@ -74,7 +74,7 @@ class DistributedPartyGate(DistributedObject.DistributedObject):
 
     def announceGenerate(self):
         DistributedObject.DistributedObject.announceGenerate(self)
-        if ToontownGlobals.dnaMap.has_key(self.zoneId):
+        if self.zoneId in ToontownGlobals.dnaMap:
             playground = ToontownGlobals.dnaMap[self.zoneId]
         else:
             playground = ToontownGlobals.dnaMap[2000]

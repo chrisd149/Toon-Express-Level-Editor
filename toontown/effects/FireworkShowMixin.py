@@ -5,9 +5,9 @@ from toontown.toonbase.ToontownGlobals import *
 from toontown.toonbase import TTLocalizer
 from toontown.parties import PartyGlobals
 from toontown.hood import *
-import Fireworks
-import FireworkShows
-from FireworkGlobals import skyTransitionDuration, preShowPauseDuration, postShowPauseDuration, preNormalMusicPauseDuration
+from . import Fireworks
+from . import FireworkShows
+from .FireworkGlobals import skyTransitionDuration, preShowPauseDuration, postShowPauseDuration, preNormalMusicPauseDuration
 from toontown.effects.FireworkShow import FireworkShow
 
 class FireworkShowMixin:
@@ -81,22 +81,22 @@ class FireworkShowMixin:
             instructionMessage = TTLocalizer.FireworksInstructions
             startMessage = TTLocalizer.FireworksJuly4Beginning
             endMessage = TTLocalizer.FireworksJuly4Ending
-            musicFile = 'phase_4/audio/bgm/tt_party2.mid'
+            musicFile = 'phase_4/audio/bgm/tt_party2.ogg'
         elif eventId == NEWYEARS_FIREWORKS:
             instructionMessage = TTLocalizer.FireworksInstructions
             startMessage = TTLocalizer.FireworksNewYearsEveBeginning
             endMessage = TTLocalizer.FireworksNewYearsEveEnding
-            musicFile = 'phase_4/audio/bgm/tt_s_ara_gen_fireworks_auldLangSyne.mid'
+            musicFile = 'phase_4/audio/bgm/tt_s_ara_gen_fireworks_auldLangSyne.ogg'
         elif eventId == PartyGlobals.FireworkShows.Summer:
             instructionMessage = TTLocalizer.FireworksActivityInstructions
             startMessage = TTLocalizer.FireworksActivityBeginning
             endMessage = TTLocalizer.FireworksActivityEnding
-            musicFile = 'phase_4/audio/bgm/tt_summer.mid'
+            musicFile = 'phase_4/audio/bgm/tt_summer.ogg'
         elif eventId == COMBO_FIREWORKS:
             instructionMessage = TTLocalizer.FireworksInstructions
             startMessage = TTLocalizer.FireworksComboBeginning
             endMessage = TTLocalizer.FireworksComboEnding
-            musicFile = 'phase_4/audio/bgm/tt_party2.mid'
+            musicFile = 'phase_4/audio/bgm/tt_party2.ogg'
         else:
             FireworkShowMixin.notify.warning('Invalid fireworks event ID: %d' % eventId)
             return None
@@ -135,7 +135,6 @@ class FireworkShowMixin:
 
     def restoreCameraLens(self):
         hood = self.getHood()
-        from toontown.hood import *
         if isinstance(hood, OZHood.OZHood):
             base.camLens.setFar(SpeedwayCameraFar)
         elif isinstance(hood, GSHood.GSHood):
@@ -177,7 +176,6 @@ class FireworkShowMixin:
             self.fireworkShow.begin(timeStamp)
             self.fireworkShow.reparentTo(root)
             hood = self.getHood()
-            from toontown.hood import *
             if isinstance(hood, TTHood.TTHood):
                 self.fireworkShow.setPos(150, 0, 80)
                 self.fireworkShow.setHpr(90, 0, 0)

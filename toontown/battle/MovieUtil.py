@@ -1,11 +1,11 @@
 from direct.interval.IntervalGlobal import *
-from BattleBase import *
-from BattleProps import *
+from .BattleBase import *
+from .BattleProps import *
 from direct.directnotify import DirectNotifyGlobal
 import random
 from direct.particles import ParticleEffect
-import BattleParticles
-import BattleProps
+from . import BattleParticles
+from . import BattleProps
 from toontown.toonbase import TTLocalizer
 notify = DirectNotifyGlobal.directNotify.newCategory('MovieUtil')
 SUIT_LOSE_DURATION = 6.0
@@ -262,8 +262,8 @@ def createSuitReviveTrack(suit, toon, battle, npcs = []):
     suitTrack.append(Func(removeReviveSuit, suit, deathSuit, name='remove-death-suit'))
     suitTrack.append(Func(notify.debug, 'after removeDeathSuit'))
     suitTrack.append(Func(suit.loop, 'neutral'))
-    spinningSound = base.loadSfx('phase_3.5/audio/sfx/Cog_Death.mp3')
-    deathSound = base.loadSfx('phase_3.5/audio/sfx/ENC_cogfall_apart.mp3')
+    spinningSound = base.loader.loadSfx('phase_3.5/audio/sfx/Cog_Death.ogg')
+    deathSound = base.loader.loadSfx('phase_3.5/audio/sfx/ENC_cogfall_apart.ogg')
     deathSoundTrack = Sequence(Wait(0.8), SoundInterval(spinningSound, duration=1.2, startTime=1.5, volume=0.2, node=suit), SoundInterval(spinningSound, duration=3.0, startTime=0.6, volume=0.8, node=suit), SoundInterval(deathSound, volume=0.32, node=suit))
     BattleParticles.loadParticles()
     smallGears = BattleParticles.createParticleEffect(file='gearExplosionSmall')
@@ -307,8 +307,8 @@ def createSuitDeathTrack(suit, toon, battle, npcs = []):
     suitTrack.append(Func(notify.debug, 'before removeDeathSuit'))
     suitTrack.append(Func(removeDeathSuit, suit, deathSuit, name='remove-death-suit'))
     suitTrack.append(Func(notify.debug, 'after removeDeathSuit'))
-    spinningSound = base.loadSfx('phase_3.5/audio/sfx/Cog_Death.mp3')
-    deathSound = base.loadSfx('phase_3.5/audio/sfx/ENC_cogfall_apart.mp3')
+    spinningSound = base.loader.loadSfx('phase_3.5/audio/sfx/Cog_Death.ogg')
+    deathSound = base.loader.loadSfx('phase_3.5/audio/sfx/ENC_cogfall_apart.ogg')
     deathSoundTrack = Sequence(Wait(0.8), SoundInterval(spinningSound, duration=1.2, startTime=1.5, volume=0.2, node=deathSuit), SoundInterval(spinningSound, duration=3.0, startTime=0.6, volume=0.8, node=deathSuit), SoundInterval(deathSound, volume=0.32, node=deathSuit))
     BattleParticles.loadParticles()
     smallGears = BattleParticles.createParticleEffect(file='gearExplosionSmall')
@@ -588,7 +588,7 @@ def createSuitStunInterval(suit, before, after):
     stars.adjustAllPriorities(100)
     head = suit.getHeadParts()[0]
     head.calcTightBounds(p1, p2)
-    return Sequence(Wait(before), Func(stars.reparentTo, head), Func(stars.setZ, max(0.0, p2[2] - 1.0)), Func(stars.loop, 'stun'), Wait(after), Func(stars.removeNode))
+    return Sequence(Wait(before), Func(stars.reparentTo, head), Func(stars.setZ, max(0.0, p2[2] - 1.0)), Func(stars.loop, 'stun'), Wait(after), Func(stars.cleanup), Func(stars.removeNode))
 
 
 def calcAvgSuitPos(throw):

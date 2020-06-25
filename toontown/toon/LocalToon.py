@@ -12,6 +12,7 @@ from direct.showbase import PythonUtil
 from direct.directnotify import DirectNotifyGlobal
 from direct.gui import DirectGuiGlobals
 from pandac.PandaModules import *
+from libotp import *
 from otp.avatar import LocalAvatar
 from otp.login import LeaveToPayDialog
 from otp.avatar import PositionExaminer
@@ -48,9 +49,9 @@ from toontown.battle import Fanfare
 from toontown.parties import PartyGlobals
 from toontown.toon import ElevatorNotifier
 from toontown.toon import ToonDNA
-import DistributedToon
-import Toon
-import LaffMeter
+from . import DistributedToon
+from . import Toon
+from . import LaffMeter
 from toontown.quest import QuestMap
 from toontown.toon.DistributedNPCToonBase import DistributedNPCToonBase
 WantNewsPage = base.config.GetBool('want-news-page', ToontownGlobals.DefaultWantNewsPageSetting)
@@ -78,11 +79,11 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
             chatMgr = ToontownChatManager.ToontownChatManager(cr, self)
             talkAssistant = TTTalkAssistant.TTTalkAssistant()
             LocalAvatar.LocalAvatar.__init__(self, cr, chatMgr, talkAssistant, passMessagesThrough=True)
-            self.soundRun = base.loadSfx('phase_3.5/audio/sfx/AV_footstep_runloop.wav')
-            self.soundWalk = base.loadSfx('phase_3.5/audio/sfx/AV_footstep_walkloop.wav')
-            self.soundWhisper = base.loadSfx('phase_3.5/audio/sfx/GUI_whisper_3.mp3')
-            self.soundPhoneRing = base.loadSfx('phase_3.5/audio/sfx/telephone_ring.mp3')
-            self.soundSystemMessage = base.loadSfx('phase_3/audio/sfx/clock03.mp3')
+            self.soundRun = base.loader.loadSfx('phase_3.5/audio/sfx/AV_footstep_runloop.ogg')
+            self.soundWalk = base.loader.loadSfx('phase_3.5/audio/sfx/AV_footstep_walkloop.ogg')
+            self.soundWhisper = base.loader.loadSfx('phase_3.5/audio/sfx/GUI_whisper_3.ogg')
+            self.soundPhoneRing = base.loader.loadSfx('phase_3.5/audio/sfx/telephone_ring.ogg')
+            self.soundSystemMessage = base.loader.loadSfx('phase_3/audio/sfx/clock03.ogg')
             self.positionExaminer = PositionExaminer.PositionExaminer()
             friendsGui = loader.loadModel('phase_3.5/models/gui/friendslist_gui')
             friendsButtonNormal = friendsGui.find('**/FriendsBox_Closed')
@@ -227,7 +228,7 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
             if self.ticker >= 10:
                 self.ticker = 0
         if self.glitchCount >= 7:
-            print 'GLITCH MAXED!!! resetting pos'
+            print('GLITCH MAXED!!! resetting pos')
             self.setX(self.glitchX - 1 * (self.getX() - self.glitchX))
             self.setY(self.glitchY - 1 * (self.getY() - self.glitchY))
             self.glitchCount = 0
@@ -237,308 +238,10 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         self.startLookAround()
         if base.wantNametags:
             self.nametag.manage(base.marginManager)
-        self.startHackObservation()
         DistributedToon.DistributedToon.announceGenerate(self)
         from otp.friends import FriendInfo
 
-    def toonPosCheck(self, task = None):
-        toon = random.choice(self.cr.toons.values())
-        if toon and toon is not self and not isinstance(toon, DistributedNPCToonBase):
-            self.notify.debug('checking position for %s' % toon.doId)
-            realTimeStart = globalClock.getRealTime()
-            numOtherToons = len(self.cr.toons.values())
-            for otherToonIdxBase in range(numOtherToons):
-                otherToonIdx = otherToonIdxBase + self.prevToonIdx
-                if otherToonIdx >= numOtherToons:
-                    otherToonIdx = otherToonIdx % numOtherToons
-                if globalClock.getRealTime() > realTimeStart + AV_TOUCH_CHECK_TIMELIMIT_CL:
-                    self.notify.debug('too much time, exiting at index %s' % otherToonIdx)
-                    self.prevToonIdx = otherToonIdx
-                    break
-                otherToon = self.cr.toons.values()[otherToonIdx]
-                self.notify.debug('comparing with toon %s at index %s' % (otherToon.doId, otherToonIdx))
-                if otherToon and otherToon is not toon and otherToon is not self and not isinstance(otherToon, DistributedNPCToonBase):
-                    toonPos = toon.getPos(render)
-                    otherToonPos = otherToon.getPos(render)
-                    self.notify.debug('pos1: %s pos2: %s' % (toonPos, otherToonPos))
-                    zDist = otherToonPos.getZ() - toonPos.getZ()
-                    toonPos.setZ(0)
-                    otherToonPos.setZ(0)
-                    moveVec = otherToonPos - toonPos
-                    dist = moveVec.length()
-                    self.notify.debug('distance to %s is %s %s' % (otherToon.doId, dist, zDist))
-                    if dist < AV_TOUCH_CHECK_DIST and zDist < AV_TOUCH_CHECK_DIST_Z:
-                        self.notify.debug('inappropriate touching!!!')
-                        if toon.getParent() == render:
-                            toonToMoveId = toon.doId
-                            toonToNotMoveId = otherToon.doId
-                        else:
-                            toonToMoveId = otherToon.doId
-                            toonToNotMoveId = toon.doId
-                        self.sendUpdate('flagAv', [toonToMoveId, AV_FLAG_REASON_TOUCH, [str(toonToNotMoveId)]])
-                        self.prevToonIdx = otherToonIdx
-                        break
-                self.notify.debug('spent %s seconds doing pos check for %s' % (globalClock.getRealTime() - realTimeStart, toon.doId))
-
-        return Task.again
-
-    def tmdcc(self, task = None):
-        toon = random.choice(self.cr.toons.values())
-        result = self._tmdcc(toon)
-        if task:
-            if result:
-                task.setDelay(5.0)
-            else:
-                task.setDelay(1.5)
-        return Task.again
-
-    def _tmdcc(self, toon, checks = []):
-        result = None
-        if isinstance(toon, DistributedNPCToonBase) or toon is localAvatar or toon.isEmpty() or toon.bFake or toon._delayDeleteForceAllow:
-            return result
-        startTime = globalClock.getRealTime()
-
-        def delayedSend(toon, msg):
-            if toon:
-                toon.sendLogSuspiciousEvent(msg)
-            return Task.done
-
-        def sendT(header, msg, sToon, sendFooter = False, sendLs = True):
-            uid = '[' + str(globalClock.getRealTime()) + ']'
-            msgSize = 800 - (len(header) + len(uid) + 1)
-            uname = self.uniqueName('ioorrd234')
-            currCounter = 0
-
-            def sendAsParts(message, counter):
-                for currBlock in range(0, len(message) / msgSize + 1):
-                    fmsg = '%s %02d: ' % (uid, currBlock + counter) + header + ': "%s"' % message[currBlock * msgSize:currBlock * msgSize + msgSize]
-                    taskMgr.doMethodLater(0.08 * (currBlock + counter), delayedSend, uname + str(currBlock + counter), extraArgs=[sToon, fmsg])
-
-                return currBlock + counter + 1
-
-            currCounter = sendAsParts(msg, currCounter)
-            if sendLs:
-                sstream = StringStream.StringStream()
-                sToon.ls(sstream)
-                sdata = sstream.getData()
-                currCounter = sendAsParts(sdata, currCounter)
-            if sendFooter:
-                sstream.clearData()
-                if hasattr(sToon, 'suitGeom'):
-                    sToon.suitGeom.ls(sstream)
-                bs = ''
-                nodeNames = config.GetString('send-suspicious-bam', 'to_head')
-                if nodeNames != '':
-                    bs = ' bam ' + nodeNames + ': '
-                    nodesToLog = []
-                    for currName in nodeNames.split():
-                        nodesToLog.append(sToon.find('**/' + currName))
-
-                    for currNode in nodesToLog:
-                        bs += zlib.compress(currNode.encodeToBamStream()).encode('hex') + '_'
-
-                footer = 'loc: %s dna: %s gmname: %s ntag: %s ceffect: %s disguise: %s sstyle: %s sgeom: %s %s' % (str(sToon.getLocation()),
-                 str(sToon.style.asTuple()),
-                 sToon.gmNameTagEnabled,
-                 str(sToon.nametag and sToon.nametag.getContents()),
-                 str(sToon.cheesyEffect),
-                 sToon.isDisguised,
-                 hasattr(sToon, 'suit') and str(sToon.suit.style),
-                 hasattr(sToon, 'suitGeom') and sstream.getData(),
-                 bs)
-                currCounter = sendAsParts(footer, currCounter)
-
-        self.sendUpdate('requestPing', [toon.doId])
-        if not checks:
-            numChecks = 6
-            checks = [random.choice(range(1, numChecks + 1))]
-
-        def findParentAv(node):
-            avId = 0
-            topParent = node
-            while topParent and not topParent.getTag('avatarDoId'):
-                topParent = topParent.getParent()
-
-            if topParent:
-                avIdStr = topParent.getTag('avatarDoId')
-                if avIdStr:
-                    avId = int(avIdStr)
-            return (self.cr.getDo(avId), avId)
-
-        msgHeader = 'AvatarHackWarning!'
-
-        def hacker_detect_immediate(cbdata):
-            action = cbdata.getAction()
-            node = cbdata.getNode()
-            np = NodePath(node)
-            if not self.cr or not self.cr.distributedDistrict or not self.cr.distributedDistrict.getAllowAHNNLog():
-                if self.cr and self.cr.distributedDistrict:
-                    sToon, avId = findParentAv(np)
-                    if sToon is localAvatar:
-                        return
-                    if sToon and isinstance(sToon, DistributedToon.DistributedToon):
-                        msg = "Blocking '%s' '%s' '%s'" % (self.cr.distributedDistrict.getAllowAHNNLog(), np, re.sub('<', '[', StackTrace(start=1).compact()))
-                        sendT(msgHeader, msg, sToon, sendFooter=False, sendLs=False)
-                return
-            try:
-                parentNames = ['__Actor_modelRoot', 'to_head']
-                newParent = np.getParent()
-                if newParent and newParent.getName() in parentNames:
-                    newParentParent = newParent.getParent()
-                    parentParentNames = ['actorGeom', '__Actor_modelRoot']
-                    if newParentParent and newParentParent.getName() in parentParentNames:
-                        sToon, avId = findParentAv(newParentParent.getParent())
-                        if sToon is localAvatar:
-                            return
-                        header = msgHeader + ' nodename'
-                        avInfo = "hacker activity '%s' avatar %s node name '%s' with parents '%s' and '%s'!" % (action,
-                         avId,
-                         np.getName(),
-                         newParent.getName(),
-                         newParentParent.getName())
-                        if sToon and isinstance(sToon, DistributedToon.DistributedToon):
-                            avInfo += ' trace: '
-                            avInfo += re.sub('<', '[', StackTrace(start=1).compact())
-                            sendT(header, avInfo, sToon=sToon, sendFooter=True)
-                        else:
-                            sendLogSuspiciousEvent(header, 'got non-toon or missing parent %s...' % sToon + avInfo)
-            except:
-                pass
-
-        if config.GetBool('detect-suspicious-nodename', True):
-            PandaNode.setDetectCallback(PythonCallbackObject(hacker_detect_immediate))
-
-        def trackChat(chattingToon):
-
-            def _spoke(cbdata):
-                avId = cbdata.getId()
-                av = self.cr.getDo(avId)
-                chat = cbdata.getChat()
-                if avId != localAvatar.doId and av:
-                    avInfo = 'suspicious chat "%s" trace: ' % chat
-                    avInfo += re.sub('<', '[', StackTrace(start=1).compact())
-                    sendT(msgHeader + ' chat', avInfo, chattingToon, sendFooter=False, sendLs=False)
-
-            chattingToon.nametag.setChatCallback(PythonCallbackObject(_spoke))
-            chattingToon.nametag.setChatCallbackId(chattingToon.doId)
-
-        if 1 in checks:
-            if base.config.GetBool('tmdcc-headcheck', 1):
-                headNodes = toon.findAllMatches('**/__Actor_head')
-                if len(headNodes) != 3 or not toon.getGeomNode().isHidden() and filter(lambda x: x.isHidden(), headNodes):
-                    sendT(msgHeader, 'missing head node', toon)
-                    result = toon
-                    if base.config.GetBool('tmdcc-chatcheck', 1):
-                        trackChat(toon)
-            else:
-                checks.append(2)
-        if 2 in checks:
-            if base.config.GetBool('tmdcc-handcheck', 1):
-                if not toon.getGeomNode().isHidden():
-                    handNodes = toon.findAllMatches('**/hands')
-                    for currHandNode in handNodes:
-                        if currHandNode.hasColor() and currHandNode.getColor() != VBase4(1, 1, 1, 1):
-                            sendT(msgHeader, 'invalid hand color: %s' % currHandNode.getColor(), toon)
-                            result = toon
-                            break
-
-            else:
-                checks.append(3)
-        if 3 in checks:
-            if base.config.GetBool('tmdcc-namecheck', 1):
-                nameNode = toon.find('**/nametag3d')
-                if not nameNode or nameNode.isHidden() and not toon.getGeomNode().isHidden() and toon.ghostMode == 0:
-                    sendT(msgHeader, 'missing nametag for name: %s' % toon.getName(), toon)
-                    result = toon
-            else:
-                checks.append(4)
-        if 4 in checks:
-            if base.config.GetBool('tmdcc-animcheck', 1):
-                if toon.zoneId in [ToontownGlobals.DonaldsDock,
-                 ToontownGlobals.OutdoorZone,
-                 ToontownGlobals.ToontownCentral,
-                 ToontownGlobals.TheBrrrgh,
-                 ToontownGlobals.MinniesMelodyland,
-                 ToontownGlobals.DaisyGardens,
-                 ToontownGlobals.FunnyFarm,
-                 ToontownGlobals.GoofySpeedway,
-                 ToontownGlobals.DonaldsDreamland]:
-                    currAnim = toon.animFSM.getCurrentState().getName()
-                    if currAnim != None and currAnim not in ['neutral',
-                     'Happy',
-                     'off',
-                     'Sad',
-                     'TeleportIn',
-                     'jumpAirborne',
-                     'CloseBook',
-                     'run',
-                     'OpenBook',
-                     'TeleportOut',
-                     'TeleportedOut',
-                     'ReadBook',
-                     'walk',
-                     'Sit',
-                     'jumpLand',
-                     'Sleep',
-                     'cringe',
-                     'jumpSquat',
-                     'Died']:
-                        sendT(msgHeader, 'invalid animation playing: %s' % currAnim, toon)
-                        result = toon
-            else:
-                checks.append(5)
-        if 5 in checks:
-            if base.config.GetBool('tmdcc-cogsuit', 1):
-                if toon.zoneId in [ToontownGlobals.DonaldsDock,
-                 ToontownGlobals.OutdoorZone,
-                 ToontownGlobals.ToontownCentral,
-                 ToontownGlobals.TheBrrrgh,
-                 ToontownGlobals.MinniesMelodyland,
-                 ToontownGlobals.DaisyGardens,
-                 ToontownGlobals.FunnyFarm,
-                 ToontownGlobals.GoofySpeedway,
-                 ToontownGlobals.DonaldsDreamland]:
-                    if toon.isDisguised:
-                        sendT(msgHeader, 'toon %s is in a cog suit' % toon.getName(), toon)
-                        result = toon
-            else:
-                checks.append(6)
-        if 6 in checks:
-            if base.config.GetBool('tmdcc-colorcheck', 1):
-                torsoPieces = toon.getPieces(('torso', ('arms', 'neck')))
-                legPieces = toon.getPieces(('legs', ('legs', 'feet')))
-                headPieces = toon.getPieces(('head', '*head*'))
-                if (filter(lambda x: x.hasColor() and x.getColor() not in ToonDNA.allowedColors,
-                           torsoPieces) or
-                filter(lambda x: x.hasColor() and x.getColor() not in ToonDNA.allowedColors,
-                       legPieces) or
-                filter(lambda x: x.hasColor() and x.getColor() not in ToonDNA.allowedColors,
-                       headPieces)) and toon.cheesyEffect == ToontownGlobals.CENormal:
-                    torsoColors = str(map(lambda x: not x.hasColor() and 'clear' or x.getColor() in ToonDNA.allowedColors and 'ok' or x.getColor(), torsoPieces))
-                    legColors = str(map(lambda x: not x.hasColor() and 'clear' or x.getColor() in ToonDNA.allowedColors and 'ok' or x.getColor(), legPieces))
-                    headColors = str(map(lambda x: not x.hasColor() and 'clear' or x.getColor() in ToonDNA.allowedColors and 'ok' or x.getColor(), headPieces))
-                    sendT(msgHeader, 'invalid color...arm: %s leg: %s head: %s' % (torsoColors, legColors, headColors), toon)
-                    result = toon
-            else:
-                checks.append(7)
-        endTime = globalClock.getRealTime()
-        return result
-
-    def startHackObservation(self):
-        taskMgr.doMethodLater(AV_TOUCH_CHECK_DELAY_CL, self.toonPosCheck, self.uniqueName('toonPosCheck'))
-        taskMgr.doMethodLater(config.GetDouble('tmdcc-delay', 5.0), self.tmdcc, self.uniqueName('tmdcc'))
-        if __dev__ and base.config.GetBool('tmdcc-keys', 0):
-            from toontown.testenv import safezoneAutoVisit
-            safezoneAutoVisit.setupKeys()
-            from toontown.testenv import watchDistObj
-            watchDistObj.watchObj.setupKeys()
-
-    def stopHackObservation(self):
-        taskMgr.remove(self.uniqueName('toonPosCheck'))
-        taskMgr.remove(self.uniqueName('tmdcc'))
-
     def disable(self):
-        self.stopHackObservation()
         self.laffMeter.destroy()
         del self.laffMeter
         self.questMap.destroy()
@@ -954,7 +657,7 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         return
 
     def localPresentPie(self, time):
-        import TTEmote
+        from . import TTEmote
         from otp.avatar import Emote
         self.__stopPresentPie()
         if self.tossTrack:
@@ -990,7 +693,7 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
 
     def __stopPresentPie(self):
         if self.__presentingPie:
-            import TTEmote
+            from . import TTEmote
             from otp.avatar import Emote
             Emote.globalEmote.releaseBody(self)
             messenger.send('end-pie')
@@ -1042,11 +745,11 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
             tossTrack = self.tossTrack
             self.tossTrack = None
             tossTrack.finish()
-        if self.pieTracks.has_key(sequence):
+        if sequence in self.pieTracks:
             pieTrack = self.pieTracks[sequence]
             del self.pieTracks[sequence]
             pieTrack.finish()
-        if self.splatTracks.has_key(sequence):
+        if sequence in self.splatTracks:
             splatTrack = self.splatTracks[sequence]
             del self.splatTracks[sequence]
             splatTrack.finish()
@@ -1087,7 +790,7 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
             self.__piePowerMeter.hide()
 
     def __finishPieTrack(self, sequence):
-        if self.pieTracks.has_key(sequence):
+        if sequence in self.pieTracks:
             pieTrack = self.pieTracks[sequence]
             del self.pieTracks[sequence]
             pieTrack.finish()
@@ -1099,7 +802,7 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
             return
         sequence = int(entry.getFromNodePath().getNetTag('pieSequence'))
         self.__finishPieTrack(sequence)
-        if self.splatTracks.has_key(sequence):
+        if sequence in self.splatTracks:
             splatTrack = self.splatTracks[sequence]
             del self.splatTracks[sequence]
             splatTrack.finish()
@@ -1414,7 +1117,7 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         else:
             zoneId = '?'
         strPos = '(%.3f' % pos[0] + '\n %.3f' % pos[1] + '\n %.3f)' % pos[2] + '\nH: %.3f' % hpr[0] + '\nZone: %s' % str(zoneId) + ',\nVer: %s, ' % serverVersion + '\nDistrict: %s' % districtName
-        print 'Current position=', strPos.replace('\n', ', ')
+        print('Current position=', strPos.replace('\n', ', '))
         self.setChatAbsolute(strPos, CFThought | CFTimeout)
         return
 
@@ -1706,7 +1409,7 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
             changeString = TTLocalizer.GardeningNoSkill
         else:
             changeString = '+%s %s' % (change, TTLocalizer.GardeningWaterSkill)
-        self.waterTrack = Sequence(Wait(0.0), Func(self.changeButtonText, self.wateringCanButtonFake, changeString), SoundInterval(globalBattleSoundCache.getSound('GUI_balloon_popup.mp3'), node=self), Wait(1.0), Func(self.hideWateringCanButtonFake, 1))
+        self.waterTrack = Sequence(Wait(0.0), Func(self.changeButtonText, self.wateringCanButtonFake, changeString), SoundInterval(globalBattleSoundCache.getSound('GUI_balloon_popup.ogg'), node=self), Wait(1.0), Func(self.hideWateringCanButtonFake, 1))
         self.waterTrack.start()
 
     def levelShovel(self, change = 1):
@@ -1720,7 +1423,7 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         plant = base.cr.doId2do.get(self.shovelRelatedDoId)
         if plant:
             self.holdShovelText = plant.getShovelAction()
-        self.shovelTrack = Sequence(Wait(0.0), Func(self.changeButtonText, self.shovelButtonFake, changeString), SoundInterval(globalBattleSoundCache.getSound('GUI_balloon_popup.mp3'), node=self), Wait(1.0), Func(self.hideShovelButtonFake, 1))
+        self.shovelTrack = Sequence(Wait(0.0), Func(self.changeButtonText, self.shovelButtonFake, changeString), SoundInterval(globalBattleSoundCache.getSound('GUI_balloon_popup.ogg'), node=self), Wait(1.0), Func(self.hideShovelButtonFake, 1))
         self.shovelTrack.start()
 
     def setGuiConflict(self, con):
@@ -1738,7 +1441,7 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         if place:
             state = place.fsm.getCurrentState()
             if state.getName() != self.lastPlaceState:
-                print 'Place State Change From %s to %s' % (self.lastPlaceState, state.getName())
+                print('Place State Change From %s to %s' % (self.lastPlaceState, state.getName()))
                 self.lastPlaceState = state.getName()
         return Task.cont
 
@@ -2058,7 +1761,7 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
 
     def b_setAnimState(self, animName, animMultiplier = 1.0, callback = None, extraArgs = []):
         if self.wantStatePrint:
-            print 'Local Toon Anim State %s' % animName
+            print('Local Toon Anim State %s' % animName)
         DistributedToon.DistributedToon.b_setAnimState(self, animName, animMultiplier, callback, extraArgs)
 
     def swimTimeoutAction(self):
@@ -2073,13 +1776,13 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         base.cr.gameFSM.request('closeShard', ['afkTimeout'])
 
     def sbFriendAdd(self, id, info):
-        print 'sbFriendAdd'
+        print('sbFriendAdd')
 
     def sbFriendUpdate(self, id, info):
-        print 'sbFriendUpdate'
+        print('sbFriendUpdate')
 
     def sbFriendRemove(self, id):
-        print 'sbFriendRemove'
+        print('sbFriendRemove')
 
     def addGolfPage(self):
         if self.hasPlayedGolf():
@@ -2180,7 +1883,7 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
             maze = base.cr.doFind('DistCogdoMazeGame')
             if maze:
                 if kindOfCheat == 0:
-                    for suitNum in maze.game.suitsById.keys():
+                    for suitNum in list(maze.game.suitsById.keys()):
                         suit = maze.game.suitsById[suitNum]
                         maze.sendUpdate('requestSuitHitByGag', [suit.type, suitNum])
 

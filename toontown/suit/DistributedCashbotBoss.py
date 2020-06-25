@@ -2,10 +2,10 @@ from direct.interval.IntervalGlobal import *
 from direct.task.TaskManagerGlobal import *
 from direct.directnotify import DirectNotifyGlobal
 from toontown.toonbase import TTLocalizer
-import DistributedBossCog
+from . import DistributedBossCog
 from direct.task.Task import Task
-import DistributedCashbotBossGoon
-import SuitDNA
+from . import DistributedCashbotBossGoon
+from . import SuitDNA
 from toontown.toon import Toon
 from toontown.toon import ToonDNA
 from direct.fsm import FSM
@@ -19,8 +19,10 @@ from toontown.distributed import DelayDelete
 from toontown.chat import ResistanceChat
 from toontown.coghq import CogDisguiseGlobals
 from pandac.PandaModules import *
+from libotp import *
 import random
 import math
+import functools
 OneBossCog = None
 TTL = TTLocalizer
 
@@ -44,7 +46,7 @@ class DistributedCashbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
     def announceGenerate(self):
         DistributedBossCog.DistributedBossCog.announceGenerate(self)
         self.setName(TTLocalizer.CashbotBossName)
-        nameInfo = TTLocalizer.BossCogNameWithDept % {'name': self.name,
+        nameInfo = TTLocalizer.BossCogNameWithDept % {'name': self._name,
          'dept': SuitDNA.getDeptFullname(self.style.dept)}
         self.setDisplayName(nameInfo)
         target = CollisionSphere(2, 0, 0, 3)
@@ -99,7 +101,7 @@ class DistributedCashbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         npc.setPickable(0)
         npc.setPlayerType(NametagGroup.CCNonPlayer)
         dna = ToonDNA.ToonDNA()
-        dna.newToonRandom(11237, 'f', 1)
+        dna.newToonRandom(146392, 'f', 1)
         dna.head = 'pls'
         npc.setDNAString(dna.makeNetString())
         npc.animFSM.request('neutral')
@@ -156,7 +158,7 @@ class DistributedCashbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
                 goon.request('Off')
 
     def __showFakeGoons(self, state):
-        print self.fakeGoons
+        print(self.fakeGoons)
         if self.fakeGoons:
             for goon in self.fakeGoons:
                 goon.request(state)
@@ -244,7 +246,7 @@ class DistributedCashbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
 
         newCollisionNode.setIntoCollideMask(newCollideMask)
         threshold = 0.1
-        planes.sort(lambda p1, p2: p1.compareTo(p2, threshold))
+        planes.sort(key=functools.cmp_to_key(lambda p1, p2: p1.compareTo(p2, threshold)))
         lastPlane = None
         for plane in planes:
             if lastPlane == None or plane.compareTo(lastPlane, threshold) != 0:
@@ -382,7 +384,7 @@ class DistributedCashbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
           VBase3(231, 0, 0)]]
         mainGoon = self.fakeGoons[0]
         goonLoop = Parallel()
-        print self.fakeGoons
+        print(self.fakeGoons)
         for i in range(1, self.numFakeGoons):
             goon = self.fakeGoons[i]
             goonLoop.append(Sequence(goon.posHprInterval(8, goonPosHprs[i][0], goonPosHprs[i][1]), goon.posHprInterval(8, goonPosHprs[i][2], goonPosHprs[i][3])))
@@ -486,8 +488,8 @@ class DistributedCashbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         loco = loader.loadModel('phase_10/models/cogHQ/CashBotLocomotive')
         car1 = loader.loadModel('phase_10/models/cogHQ/CashBotBoxCar')
         car2 = loader.loadModel('phase_10/models/cogHQ/CashBotTankCar')
-        trainPassingSfx = base.loadSfx('phase_10/audio/sfx/CBHQ_TRAIN_pass.mp3')
-        boomSfx = loader.loadSfx('phase_3.5/audio/sfx/ENC_cogfall_apart.mp3')
+        trainPassingSfx = base.loader.loadSfx('phase_10/audio/sfx/CBHQ_TRAIN_pass.ogg')
+        boomSfx = loader.loadSfx('phase_3.5/audio/sfx/ENC_cogfall_apart.ogg')
         rollThroughDoor = self.rollBossToPoint(fromPos=Point3(120, -280, 0), fromHpr=None, toPos=Point3(120, -250, 0), toHpr=None, reverse=0)
         rollTrack = Sequence(Func(self.getGeomNode().setH, 180), rollThroughDoor[0], Func(self.getGeomNode().setH, 0))
         g = 80.0 / 300.0
@@ -594,17 +596,17 @@ class DistributedCashbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
                 goon.b_destroyGoon()
 
     def deactivateCranes(self):
-        for crane in self.cranes.values():
+        for crane in list(self.cranes.values()):
             crane.demand('Free')
 
     def hideBattleThreeObjects(self):
         for goon in self.goons:
             goon.demand('Off')
 
-        for safe in self.safes.values():
+        for safe in list(self.safes.values()):
             safe.demand('Off')
 
-        for crane in self.cranes.values():
+        for crane in list(self.cranes.values()):
             crane.demand('Off')
 
     def __doPhysics(self, task):

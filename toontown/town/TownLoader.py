@@ -11,7 +11,7 @@ from direct.fsm import StateData
 from direct.fsm import ClassicFSM, State
 from direct.fsm import State
 from direct.task import Task
-import TownBattle
+from . import TownBattle
 from toontown.toon import Toon
 from toontown.toon.Toon import teleportDebug
 from toontown.battle import BattleParticles
@@ -51,9 +51,9 @@ class TownLoader(StateData.StateData):
         self.loadBattleAnims()
         self.branchZone = ZoneUtil.getBranchZone(zoneId)
         self.canonicalBranchZone = ZoneUtil.getCanonicalBranchZone(zoneId)
-        self.music = base.loadMusic(self.musicFile)
-        self.activityMusic = base.loadMusic(self.activityMusicFile)
-        self.battleMusic = base.loadMusic('phase_3.5/audio/bgm/encntr_general_bg.mid')
+        self.music = base.loader.loadMusic(self.musicFile)
+        self.activityMusic = base.loader.loadMusic(self.activityMusicFile)
+        self.battleMusic = base.loader.loadMusic('phase_3.5/audio/bgm/encntr_general_bg.ogg')
         self.townBattle = TownBattle.TownBattle(self.townBattleDoneEvent)
         self.townBattle.load()
 
@@ -73,6 +73,8 @@ class TownLoader(StateData.StateData):
         del self.hood
         del self.nodeDict
         del self.zoneDict
+        if base.cr.astronSupport:
+            del self.node2zone
         del self.fadeInDict
         del self.fadeOutDict
         del self.nodeList
@@ -203,7 +205,7 @@ class TownLoader(StateData.StateData):
         npl = self.geom.findAllMatches('**/=DNARoot=holiday_prop')
         for i in range(npl.getNumPaths()):
             np = npl.getPath(i)
-            np.setTag('transformIndex', `i`)
+            np.setTag('transformIndex', repr(i))
             self.holidayPropTransforms[i] = np.getNetTransform()
 
         self.notify.info('skipping self.geom.flattenMedium')
@@ -227,6 +229,8 @@ class TownLoader(StateData.StateData):
     def makeDictionaries(self, dnaStore):
         self.nodeDict = {}
         self.zoneDict = {}
+        if base.cr.astronSupport:
+            self.node2zone = {}
         self.nodeList = []
         self.fadeInDict = {}
         self.fadeOutDict = {}
@@ -250,6 +254,8 @@ class TownLoader(StateData.StateData):
             self.nodeDict[zoneId] = []
             self.nodeList.append(groupNode)
             self.zoneDict[zoneId] = groupNode
+            if base.cr.astronSupport:
+                self.node2zone[groupNode] = zoneId
             fadeDuration = 0.5
             self.fadeOutDict[groupNode] = Sequence(Func(groupNode.setTransparency, 1), LerpColorScaleInterval(groupNode, fadeDuration, a0, startColorScale=a1), Func(groupNode.clearColorScale), Func(groupNode.clearTransparency), Func(groupNode.stash), name='fadeZone-' + str(zoneId), autoPause=1)
             self.fadeInDict[groupNode] = Sequence(Func(groupNode.unstash), Func(groupNode.setTransparency, 1), LerpColorScaleInterval(groupNode, fadeDuration, a1, startColorScale=a0), Func(groupNode.clearColorScale), Func(groupNode.clearTransparency), name='fadeZone-' + str(zoneId), autoPause=1)
@@ -352,7 +358,7 @@ class TownLoader(StateData.StateData):
         return
 
     def deleteAnimatedProps(self):
-        for zoneNode, animPropList in self.animPropDict.items():
+        for zoneNode, animPropList in list(self.animPropDict.items()):
             for animProp in animPropList:
                 animProp.delete()
 

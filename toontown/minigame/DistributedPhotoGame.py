@@ -1,7 +1,8 @@
 from direct.directnotify import DirectNotifyGlobal
 from pandac.PandaModules import *
+from libtoontown import *
 from toontown.toonbase.ToonBaseGlobal import *
-from DistributedMinigame import *
+from .DistributedMinigame import *
 from direct.distributed.ClockDelta import *
 from direct.interval.IntervalGlobal import *
 from direct.fsm import ClassicFSM, State
@@ -11,7 +12,7 @@ from toontown.toonbase import ToontownTimer
 from direct.task.Task import Task
 import math
 from toontown.toon import ToonHead
-import PhotoGameGlobals
+from . import PhotoGameGlobals
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
 from toontown.toonbase import TTLocalizer
@@ -132,11 +133,11 @@ class DistributedPhotoGame(DistributedMinigame, PhotoGameBase.PhotoGameBase):
         self.tripodModel = loader.loadModel('phase_4/models/minigames/toon_cannon')
         self.filmPanel = DirectLabel(parent=hidden, relief=None, pos=(1.16, 0.0, 0.45), scale=0.65, text=str(self.filmCount), text_scale=0.2, text_fg=(0.95, 0.95, 0, 1), text_pos=(0.08, -0.15), text_font=ToontownGlobals.getSignFont(), image=self.filmImage, image_scale=Point3(1.0, 0.0, 0.85))
         self.filmPanelTitle = DirectLabel(parent=self.filmPanel, relief=None, pos=(0.08, 0, 0.04), scale=0.08, text=TTLocalizer.PhotoGameFilm, text_fg=(0.95, 0.95, 0, 1), text_shadow=(0, 0, 0, 1))
-        self.music = base.loadMusic('phase_4/audio/bgm/MG_cannon_game.mid')
-        self.sndPhotoMove = base.loadSfx('phase_4/audio/sfx/MG_cannon_adjust.mp3')
-        self.sndPhotoFire = base.loadSfx('phase_4/audio/sfx/MG_cannon_fire_alt.mp3')
-        self.sndWin = base.loadSfx('phase_4/audio/sfx/MG_win.mp3')
-        self.sndFilmTick = base.loadSfx('phase_4/audio/sfx/Photo_instamatic.mp3')
+        self.music = base.loader.loadMusic('phase_4/audio/bgm/MG_cannon_game.ogg')
+        self.sndPhotoMove = base.loader.loadSfx('phase_4/audio/sfx/MG_cannon_adjust.ogg')
+        self.sndPhotoFire = base.loader.loadSfx('phase_4/audio/sfx/MG_cannon_fire_alt.ogg')
+        self.sndWin = base.loader.loadSfx('phase_4/audio/sfx/MG_win.ogg')
+        self.sndFilmTick = base.loader.loadSfx('phase_4/audio/sfx/Photo_instamatic.ogg')
         self.timer = ToontownTimer.ToontownTimer()
         self.timer.posInTopRightCorner()
         self.timer.hide()
@@ -160,8 +161,8 @@ class DistributedPhotoGame(DistributedMinigame, PhotoGameBase.PhotoGameBase):
         self.blackoutNode.setDepthTest(1)
         self.blackoutNode.hide()
         self.subjectToon = Toon.Toon()
-        self.addSound('zoom', 'Photo_zoom.mp3', 'phase_4/audio/sfx/')
-        self.addSound('snap', 'Photo_shutter.mp3', 'phase_4/audio/sfx/')
+        self.addSound('zoom', 'Photo_zoom.ogg', 'phase_4/audio/sfx/')
+        self.addSound('snap', 'Photo_shutter.ogg', 'phase_4/audio/sfx/')
         return
 
     def __setupCapture(self):
@@ -292,10 +293,10 @@ class DistributedPhotoGame(DistributedMinigame, PhotoGameBase.PhotoGameBase):
         self.queue = CollisionHandlerQueue()
         self.traverser = CollisionTraverser('traverser name')
         self.rayArray = []
-        vRange = (GOODROWS - BADROWS) / 2
-        for row in range(-(GOODROWS / 2), GOODROWS / 2 + 1):
-            for column in range(-(GOODROWS / 2), GOODROWS / 2 + 1):
-                goodRange = range(-((GOODROWS - BADROWS) / 2), (GOODROWS - BADROWS) / 2 + 1)
+        vRange = (GOODROWS - BADROWS) // 2
+        for row in range(-(GOODROWS // 2), GOODROWS // 2 + 1):
+            for column in range(-(GOODROWS // 2), GOODROWS // 2 + 1):
+                goodRange = list(range(-((GOODROWS - BADROWS) // 2), (GOODROWS - BADROWS) // 2 + 1))
                 rayQuality = 'g'
                 if row not in goodRange or column not in goodRange:
                     rayQuality = 'l'
@@ -434,7 +435,7 @@ class DistributedPhotoGame(DistributedMinigame, PhotoGameBase.PhotoGameBase):
                 newEntry = (entry.getFromNode(), object)
                 distance = Vec3(entry.getSurfacePoint(self.tripod)).lengthSquared()
                 name = entry.getFromNode().getName()
-                if not distDict.has_key(name):
+                if name not in distDict:
                     distDict[name] = distance
                     hitDict[name] = (entry.getFromNode(), object, marker)
                 elif distance < distDict[name]:
@@ -462,7 +463,7 @@ class DistributedPhotoGame(DistributedMinigame, PhotoGameBase.PhotoGameBase):
             else:
                 quality = 1
                 onCenter = 1
-            if not centerDict.has_key(superParent):
+            if superParent not in centerDict:
                 centerDict[superParent] = (onCenter,
                  overB,
                  overT,
@@ -986,7 +987,7 @@ class DistributedPhotoGame(DistributedMinigame, PhotoGameBase.PhotoGameBase):
     def printAD(self):
         for assignment in self.assignmentDataDict:
             data = self.assignmentDataDict[assignment]
-            print 'Key:%s\nData:%s\n' % (str(assignment), data)
+            print('Key:%s\nData:%s\n' % (str(assignment), data))
 
     def updateScorePanel(self):
         teamScore = 0.0

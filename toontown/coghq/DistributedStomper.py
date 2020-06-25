@@ -1,18 +1,18 @@
 from pandac.PandaModules import *
 from direct.interval.IntervalGlobal import *
-from StomperGlobals import *
+from .StomperGlobals import *
 from direct.distributed import ClockDelta
 from direct.showbase.PythonUtil import lerp
 import math
-import DistributedCrusherEntity
-import MovingPlatform
+from . import DistributedCrusherEntity
+from . import MovingPlatform
 from direct.directnotify import DirectNotifyGlobal
 from direct.task import Task
 from toontown.toonbase import ToontownGlobals
 
 class DistributedStomper(DistributedCrusherEntity.DistributedCrusherEntity):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedStomper')
-    stomperSounds = ['phase_4/audio/sfx/CHQ_FACT_stomper_small.mp3', 'phase_9/audio/sfx/CHQ_FACT_stomper_med.mp3', 'phase_9/audio/sfx/CHQ_FACT_stomper_large.mp3']
+    stomperSounds = ['phase_4/audio/sfx/CHQ_FACT_stomper_small.ogg', 'phase_9/audio/sfx/CHQ_FACT_stomper_med.ogg', 'phase_9/audio/sfx/CHQ_FACT_stomper_large.ogg']
     stomperModels = ['phase_9/models/cogHQ/square_stomper']
 
     def __init__(self, cr):

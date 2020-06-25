@@ -4,10 +4,9 @@ import tokenize
 import copy
 from direct.interval.IntervalGlobal import *
 from direct.directnotify import DirectNotifyGlobal
-from direct.showbase import AppRunnerGlobal
 from pandac.PandaModules import *
 from direct.showbase import DirectObject
-import BlinkingArrows
+from . import BlinkingArrows
 from toontown.toon import ToonHeadFrame
 from toontown.char import CharDNA
 from toontown.suit import SuitDNA
@@ -50,7 +49,7 @@ def clear():
 def readFile(filename):
     global curId
     scriptFile = StreamReader(vfs.openReadFile(filename, 1), 1)
-    gen = tokenize.generate_tokens(scriptFile.readline)
+    gen = tokenize.tokenize(scriptFile.readline)
     line = getLineOfTokens(gen)
     while line is not None:
         if line == []:
@@ -70,11 +69,11 @@ def readFile(filename):
 def getLineOfTokens(gen):
     tokens = []
     nextNeg = 0
-    token = gen.next()
+    token = next(gen)
     if token[0] == tokenize.ENDMARKER:
         return None
     while token[0] != tokenize.NEWLINE and token[0] != tokenize.NL:
-        if token[0] == tokenize.COMMENT:
+        if token[0] in (tokenize.COMMENT, tokenize.ENCODING):
             pass
         elif token[0] == tokenize.OP and token[1] == '-':
             nextNeg = 1
@@ -90,7 +89,7 @@ def getLineOfTokens(gen):
             tokens.append(token[1])
         else:
             notify.warning('Ignored token type: %s on line: %s' % (tokenize.tok_name[token[0]], token[2][0]))
-        token = gen.next()
+        token = next(gen)
 
     return tokens
 
@@ -106,7 +105,7 @@ def parseId(line):
 
 
 def questDefined(scriptId):
-    return lineDict.has_key(scriptId)
+    return scriptId in lineDict
 
 
 class NPCMoviePlayer(DirectObject.DirectObject):
@@ -129,9 +128,9 @@ class NPCMoviePlayer(DirectObject.DirectObject):
         return
 
     def getVar(self, varName):
-        if self.privateVarDict.has_key(varName):
+        if varName in self.privateVarDict:
             return self.privateVarDict[varName]
-        elif globalVarDict.has_key(varName):
+        elif varName in globalVarDict:
             return globalVarDict[varName]
         elif varName.find('tomDialogue') > -1 or varName.find('harryDialogue') > -1:
             notify.warning('%s getting referenced. Tutorial Ack: %d                                  Place: %s' % (varName, base.localAvatar.tutorialAck, base.cr.playGame.hood))
@@ -141,9 +140,9 @@ class NPCMoviePlayer(DirectObject.DirectObject):
         return None
 
     def delVar(self, varName):
-        if self.privateVarDict.has_key(varName):
+        if varName in self.privateVarDict:
             del self.privateVarDict[varName]
-        elif globalVarDict.has_key(varName):
+        elif varName in globalVarDict:
             del globalVarDict[varName]
         else:
             notify.warning('Variable not defined: %s' % varName)
@@ -157,7 +156,7 @@ class NPCMoviePlayer(DirectObject.DirectObject):
             self.currentTrack = None
         self.ignoreAll()
         taskMgr.remove(self.uniqueId)
-        for toonHeadFrame in self.toonHeads.values():
+        for toonHeadFrame in list(self.toonHeads.values()):
             toonHeadFrame.destroy()
 
         while self.chars:
@@ -472,7 +471,7 @@ class NPCMoviePlayer(DirectObject.DirectObject):
 
     def parseLoadSfx(self, line):
         token, varName, fileName = line
-        sfx = base.loadSfx(fileName)
+        sfx = base.loader.loadSfx(fileName)
         self.setVar(varName, sfx)
 
     def parseLoadDialogue(self, line):
@@ -480,7 +479,7 @@ class NPCMoviePlayer(DirectObject.DirectObject):
         if varName == 'tomDialogue_01':
             notify.debug('VarName tomDialogue getting added. Tutorial Ack: %d' % base.localAvatar.tutorialAck)
         if base.config.GetString('language', 'english') == 'japanese':
-            dialogue = base.loadSfx(fileName)
+            dialogue = base.loader.loadSfx(fileName)
         else:
             dialogue = None
         self.setVar(varName, dialogue)
@@ -494,7 +493,7 @@ class NPCMoviePlayer(DirectObject.DirectObject):
             classicChar = 'minnie'
         filename = filenameTemplate % classicChar
         if base.config.GetString('language', 'english') == 'japanese':
-            dialogue = base.loadSfx(filename)
+            dialogue = base.loader.loadSfx(filename)
         else:
             dialogue = None
         self.setVar(varName, dialogue)
@@ -878,7 +877,7 @@ class NPCMoviePlayer(DirectObject.DirectObject):
     def parseAddInventory(self, line):
         token, track, level, number = line
         inventory = self.getVar('inventory')
-        countSound = base.loadSfx('phase_3.5/audio/sfx/tick_counter.mp3')
+        countSound = base.loader.loadSfx('phase_3.5/audio/sfx/tick_counter.ogg')
         return Sequence(Func(base.playSfx, countSound), Func(inventory.buttonBoing, track, level), Func(inventory.addItems, track, level, number), Func(inventory.updateGUI, track, level))
 
     def parseSetInventory(self, line):
@@ -1067,13 +1066,8 @@ class NPCMoviePlayer(DirectObject.DirectObject):
 
 
 searchPath = DSearchPath()
-if AppRunnerGlobal.appRunner:
-    searchPath.appendDirectory(Filename.expandFrom('$TT_3_ROOT/phase_3/etc'))
-else:
-    searchPath.appendDirectory(Filename('phase_3/etc'))
-    searchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('$TOONTOWN/src/quest')))
-    searchPath.appendDirectory(Filename.fromOsSpecific('toontown/src/quest'))
-    searchPath.appendDirectory(Filename('.'))
+if __debug__:
+    searchPath.appendDirectory(Filename('resources/phase_3/etc'))
 scriptFile = Filename('QuestScripts.txt')
 found = vfs.resolveFilename(scriptFile, searchPath)
 if not found:

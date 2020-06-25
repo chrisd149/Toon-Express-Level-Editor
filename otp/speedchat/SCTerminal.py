@@ -1,6 +1,6 @@
-from SCElement import SCElement
-from SCObject import SCObject
-from SCMenu import SCMenu
+from .SCElement import SCElement
+from .SCObject import SCObject
+from .SCMenu import SCMenu
 from direct.fsm.StatePush import StateVar, FunctionCall
 from direct.showbase.DirectObject import DirectObject
 from otp.avatar import Emote
@@ -75,7 +75,7 @@ class SCTerminal(SCElement):
 
     def setCharges(self, nCharges):
         self.__numCharges = nCharges
-        if nCharges is 0:
+        if nCharges == 0:
             self.setDisabled(True)
 
     def isDisabled(self):
@@ -162,7 +162,7 @@ class SCTerminal(SCElement):
             self.ignore(Emote.globalEmote.EmoteEnableStateChanged)
 
     def getDisplayText(self):
-        if self.getCharges() is not -1:
+        if self.getCharges() != -1:
             return self.text + ' (%s)' % self.getCharges()
         else:
             return self.text

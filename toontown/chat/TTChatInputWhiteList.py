@@ -119,7 +119,7 @@ class TTChatInputWhiteList(ChatInputWhiteListFrame):
 
     def sendWhisperByFriend(self, avatarId, text):
         online = 0
-        if base.cr.doId2do.has_key(avatarId):
+        if avatarId in base.cr.doId2do:
             online = 1
         avatarUnderstandable = 0
         av = None
@@ -132,7 +132,7 @@ class TTChatInputWhiteList(ChatInputWhiteListFrame):
         return
 
     def chatButtonPressed(self):
-        print 'chatButtonPressed'
+        print('chatButtonPressed')
         if self.okayToSubmit:
             self.sendChat(self.chatEntry.get())
         else:
@@ -187,7 +187,7 @@ class TTChatInputWhiteList(ChatInputWhiteListFrame):
                     flag = 1
 
             for word in words:
-                if word == '' or self.whiteList.isWord(word) or not base.cr.whiteListChatEnabled:
+                if word == '' or self.whiteList.isWord(word.encode('utf-8')) or not base.cr.whiteListChatEnabled:
                     newwords.append(word)
                 else:
                     if self.checkBeforeSend:
@@ -201,7 +201,7 @@ class TTChatInputWhiteList(ChatInputWhiteListFrame):
 
             if not strict:
                 lastword = words[-1]
-                if lastword == '' or self.whiteList.isPrefix(lastword) or not base.cr.whiteListChatEnabled:
+                if lastword == '' or self.whiteList.isPrefix(lastword.encode('utf-8')) or not base.cr.whiteListChatEnabled:
                     newwords[-1] = lastword
                 elif flag:
                     newwords[-1] = '\x01WLDisplay\x01' + lastword + '\x02'

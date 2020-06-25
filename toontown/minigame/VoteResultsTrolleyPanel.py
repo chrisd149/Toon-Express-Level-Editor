@@ -5,7 +5,7 @@ from pandac.PandaModules import Point3, TextNode, Vec4
 from toontown.minigame import TravelGameGlobals
 from toontown.toonbase import TTLocalizer
 from direct.interval.IntervalGlobal import Parallel, Sequence, LerpFunc, Func, Wait, SoundInterval
-from direct.showbase.PythonUtil import pdir
+from otp.otpbase.PythonUtil import pdir
 
 class VoteResultsTrolleyPanel(DirectFrame):
     notify = DirectNotifyGlobal.directNotify.newCategory('VoteResultsTrolleyPanel')
@@ -102,12 +102,12 @@ class VoteResultsTrolleyPanel(DirectFrame):
         self.upArrowSfx = []
         self.downArrowSfx = []
         for i in range(5):
-            self.upArrowSfx.append(base.loadSfx('phase_4/audio/sfx/MG_sfx_travel_game_blue_arrow.mp3'))
-            self.downArrowSfx.append(base.loadSfx('phase_4/audio/sfx/MG_sfx_travel_game_red_arrow.mp3'))
+            self.upArrowSfx.append(base.loader.loadSfx('phase_4/audio/sfx/MG_sfx_travel_game_blue_arrow.ogg'))
+            self.downArrowSfx.append(base.loader.loadSfx('phase_4/audio/sfx/MG_sfx_travel_game_red_arrow.ogg'))
 
-        self.winVoteSfx = base.loadSfx('phase_4/audio/sfx/MG_sfx_travel_game_win_vote.mp3')
-        self.noVoteSfx = base.loadSfx('phase_4/audio/sfx/MG_sfx_travel_game_square_no_vote_1.mp3')
-        self.loseVoteSfx = base.loadSfx('phase_4/audio/sfx/MG_sfx_travel_game_lose_vote.mp3')
+        self.winVoteSfx = base.loader.loadSfx('phase_4/audio/sfx/MG_sfx_travel_game_win_vote.ogg')
+        self.noVoteSfx = base.loader.loadSfx('phase_4/audio/sfx/MG_sfx_travel_game_square_no_vote_1.ogg')
+        self.loseVoteSfx = base.loader.loadSfx('phase_4/audio/sfx/MG_sfx_travel_game_lose_vote.ogg')
         self.localAvatarWon = False
         self.localAvatarLost = False
         localIndex = self.avIdList.index(base.localAvatar.doId)
@@ -168,7 +168,7 @@ class VoteResultsTrolleyPanel(DirectFrame):
             label['text'] = str(int(t * additionalVotes + startVotes))
 
         track.append(LerpFunc(totalTicker, duration=duration, name='countTotal %d' % index))
-        if self.avVotesLabel.has_key(index):
+        if index in self.avVotesLabel:
 
             def avVotesTicker(t, label = self.avVotesLabel[index], startVotes = 0, endVotes = numVotes, direction = direction):
                 oldValue = label['text']
@@ -186,7 +186,7 @@ class VoteResultsTrolleyPanel(DirectFrame):
 
             label = self.avVotesLabel[index]
             track.append(Func(self.avVotesLabel[index].show, name='showName %d' % index))
-            if self.avArrows.has_key(index):
+            if index in self.avArrows:
                 track.append(Func(self.avArrows[index].show, name='showArrow %d' % index))
             if direction == 0 and numVotes:
                 pass

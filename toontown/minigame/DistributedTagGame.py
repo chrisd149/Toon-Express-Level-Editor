@@ -1,20 +1,20 @@
 from pandac.PandaModules import *
 from toontown.toonbase.ToonBaseGlobal import *
-from DistributedMinigame import *
+from .DistributedMinigame import *
 from direct.interval.IntervalGlobal import *
 from direct.fsm import ClassicFSM, State
 from direct.fsm import State
 from toontown.safezone import Walk
 from toontown.toonbase import ToontownTimer
 from direct.gui import OnscreenText
-import MinigameAvatarScorePanel
+from . import MinigameAvatarScorePanel
 from direct.distributed import DistributedSmoothNode
 import random
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import TTLocalizer
 from otp.otpbase import OTPGlobals
-import TagGameGlobals
-import Trajectory
+from . import TagGameGlobals
+from . import Trajectory
 
 class DistributedTagGame(DistributedMinigame):
     DURATION = TagGameGlobals.DURATION
@@ -50,8 +50,8 @@ class DistributedTagGame(DistributedMinigame):
         self.itText.hide()
         self.sky = loader.loadModel('phase_3.5/models/props/TT_sky')
         self.ground = loader.loadModel('phase_4/models/minigames/tag_arena')
-        self.music = base.loadMusic('phase_4/audio/bgm/MG_toontag.mid')
-        self.tagSfx = base.loadSfx('phase_4/audio/sfx/MG_Tag_C.mp3')
+        self.music = base.loader.loadMusic('phase_4/audio/bgm/MG_toontag.ogg')
+        self.tagSfx = base.loader.loadSfx('phase_4/audio/sfx/MG_Tag_C.ogg')
         self.itPointer = loader.loadModel('phase_4/models/minigames/bboard-pointer')
         self.tracks = []
         self.IT = None

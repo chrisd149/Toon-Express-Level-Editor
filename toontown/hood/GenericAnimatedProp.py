@@ -1,4 +1,4 @@
-import AnimatedProp
+from . import AnimatedProp
 from direct.actor import Actor
 from direct.interval.IntervalGlobal import *
 from direct.directnotify import DirectNotifyGlobal
@@ -86,7 +86,7 @@ class GenericAnimatedProp(AnimatedProp.AnimatedProp):
             self.visId = visId
             self.hoodId = ZoneUtil.getCanonicalHoodId(visId)
             self.notify.debug('calcHoodId %d from %s' % (self.hoodId, fullString))
-        except Exception, generic:
+        except Exception as generic:
             if 'Editor' not in fullString:
                 self.notify.warning("calcHoodId couldn't parse %s using 0" % fullString)
             self.hoodId = 0
@@ -105,9 +105,9 @@ class GenericAnimatedProp(AnimatedProp.AnimatedProp):
             soundfile = origAnimName.replace('tt_a_ara', 'tt_s_ara')
             fullPath = self.soundPath + '/' + soundfile
             if origAnimName in self.AnimsUsingWav:
-                theSound = loader.loadSfx(fullPath + '.wav')
+                theSound = loader.loadSfx(fullPath + '.ogg')
             else:
-                theSound = loader.loadSfx(fullPath + '.mp3')
+                theSound = loader.loadSfx(fullPath + '.ogg')
             self.origAnimNameToSound[origAnimName] = theSound
         if theSound:
             soundDur = theSound.length()

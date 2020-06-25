@@ -2,7 +2,7 @@ from direct.directnotify import DirectNotifyGlobal
 from direct.fsm import StateData
 from direct.fsm import ClassicFSM, State
 from direct.fsm import State
-import CogHQLobby
+from . import CogHQLobby
 from toontown.hood import QuietZoneState
 from toontown.hood import ZoneUtil
 from toontown.town import TownBattle
@@ -28,8 +28,8 @@ class CogHQLoader(StateData.StateData):
 
     def load(self, zoneId):
         self.parentFSMState.addChild(self.fsm)
-        self.music = base.loadMusic(self.musicFile)
-        self.battleMusic = base.loadMusic('phase_9/audio/bgm/encntr_suit_winning.mid')
+        self.music = base.loader.loadMusic(self.musicFile)
+        self.battleMusic = base.loader.loadMusic('phase_9/audio/bgm/encntr_suit_winning.ogg')
         self.townBattle = TownBattle.TownBattle(self.townBattleDoneEvent)
         self.townBattle.load()
         Suit.loadSuits(3)

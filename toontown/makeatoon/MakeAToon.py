@@ -14,15 +14,15 @@ from direct.actor.Actor import Actor
 from direct.task import Task
 from direct.gui.DirectGui import *
 from toontown.toonbase import TTLocalizer
-from MakeAToonGlobals import *
+from .MakeAToonGlobals import *
 from direct.interval.IntervalGlobal import *
 from direct.directnotify import DirectNotifyGlobal
 from toontown.toontowngui import TTDialog
-import GenderShop
-import BodyShop
-import ColorShop
-import MakeClothesGUI
-import NameShop
+from . import GenderShop
+from . import BodyShop
+from . import ColorShop
+from . import MakeClothesGUI
+from . import NameShop
 import random
 
 class MakeAToon(StateData.StateData):
@@ -228,7 +228,7 @@ class MakeAToon(StateData.StateData):
         self.spotlight.setHpr(0, 0, 0)
         smokeSeqNode = SequenceNode('smoke')
         smokeModel = loader.loadModel('phase_3/models/makeatoon/tt_m_ara_mat_smoke')
-        smokeFrameList = smokeModel.findAllMatches('**/smoke_*').asList()
+        smokeFrameList = list(smokeModel.findAllMatches('**/smoke_*'))
         smokeFrameList.reverse()
         for smokeFrame in smokeFrameList:
             smokeSeqNode.addChild(smokeFrame.node())
@@ -251,16 +251,16 @@ class MakeAToon(StateData.StateData):
         self.cos.load()
         self.cls.load()
         self.ns.load()
-        self.music = base.loadMusic('phase_3/audio/bgm/create_a_toon.mid')
+        self.music = base.loader.loadMusic('phase_3/audio/bgm/create_a_toon.ogg')
         self.musicVolume = base.config.GetFloat('makeatoon-music-volume', 1)
         self.sfxVolume = base.config.GetFloat('makeatoon-sfx-volume', 1)
-        self.soundBack = base.loadSfx('phase_3/audio/sfx/GUI_create_toon_back.mp3')
+        self.soundBack = base.loader.loadSfx('phase_3/audio/sfx/GUI_create_toon_back.ogg')
         self.crashSounds = []
-        self.crashSounds.append(base.loadSfx('phase_3/audio/sfx/tt_s_ara_mat_crash_boing.mp3'))
-        self.crashSounds.append(base.loadSfx('phase_3/audio/sfx/tt_s_ara_mat_crash_glassBoing.mp3'))
-        self.crashSounds.append(base.loadSfx('phase_3/audio/sfx/tt_s_ara_mat_crash_wood.mp3'))
-        self.crashSounds.append(base.loadSfx('phase_3/audio/sfx/tt_s_ara_mat_crash_woodBoing.mp3'))
-        self.crashSounds.append(base.loadSfx('phase_3/audio/sfx/tt_s_ara_mat_crash_woodGlass.mp3'))
+        self.crashSounds.append(base.loader.loadSfx('phase_3/audio/sfx/tt_s_ara_mat_crash_boing.ogg'))
+        self.crashSounds.append(base.loader.loadSfx('phase_3/audio/sfx/tt_s_ara_mat_crash_glassBoing.ogg'))
+        self.crashSounds.append(base.loader.loadSfx('phase_3/audio/sfx/tt_s_ara_mat_crash_wood.ogg'))
+        self.crashSounds.append(base.loader.loadSfx('phase_3/audio/sfx/tt_s_ara_mat_crash_woodBoing.ogg'))
+        self.crashSounds.append(base.loader.loadSfx('phase_3/audio/sfx/tt_s_ara_mat_crash_woodGlass.ogg'))
         return
 
     def unload(self):

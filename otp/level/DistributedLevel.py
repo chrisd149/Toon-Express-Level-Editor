@@ -6,13 +6,13 @@ from toontown.distributed.ToontownMsgTypes import *
 from toontown.toonbase import ToontownGlobals
 from otp.otpbase import OTPGlobals
 from direct.distributed import DistributedObject
-import Level
-import LevelConstants
+from . import Level
+from . import LevelConstants
 from direct.directnotify import DirectNotifyGlobal
-import EntityCreator
+from . import EntityCreator
 from direct.gui import OnscreenText
 from direct.task import Task
-import LevelUtil
+from . import LevelUtil
 import random
 
 class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
@@ -32,6 +32,7 @@ class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
         self.titleColor = (1, 1, 1, 1)
         self.titleText = OnscreenText.OnscreenText('', fg=self.titleColor, shadow=(0, 0, 0, 1), font=ToontownGlobals.getSuitFont(), pos=(0, -0.5), scale=0.16, drawOrder=0, mayChange=1)
         self.smallTitleText = OnscreenText.OnscreenText('', fg=self.titleColor, font=ToontownGlobals.getSuitFont(), pos=(0.65, 0.9), scale=0.08, drawOrder=0, mayChange=1, bg=(0.5, 0.5, 0.5, 0.5), align=TextNode.ARight)
+        self.titleTextSeq = None
         self.zonesEnteredList = []
         self.fColorZones = 0
         self.scenarioIndex = 0
@@ -96,7 +97,7 @@ class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
 
             def setSpecBlob(specBlob, blobSender = blobSender, self = self):
                 blobSender.sendAck()
-                from LevelSpec import LevelSpec
+                from .LevelSpec import LevelSpec
                 spec = eval(specBlob)
                 if spec is None:
                     spec = self.candidateSpec
@@ -114,7 +115,7 @@ class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
     def privGotSpec(self, levelSpec):
         Level.Level.initializeLevel(self, self.doId, levelSpec, self.scenarioIndex)
         modelZoneNums = self.zoneNums
-        specZoneNums = self.zoneNum2zoneId.keys()
+        specZoneNums = list(self.zoneNum2zoneId.keys())
         if not sameElements(modelZoneNums, specZoneNums):
             self.reportModelSpecSyncError('model zone nums (%s) do not match spec zone nums (%s)' % (modelZoneNums, specZoneNums))
         self.initVisibility()
@@ -165,14 +166,14 @@ class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
         levelMgr = self.getEntity(LevelConstants.LevelMgrEntId)
         self.geom = levelMgr.geom
         self.zoneNum2node = LevelUtil.getZoneNum2Node(self.geom)
-        self.zoneNums = self.zoneNum2node.keys()
+        self.zoneNums = list(self.zoneNum2node.keys())
         self.zoneNums.sort()
         self.zoneNumDict = list2dict(self.zoneNums)
         DistributedLevel.notify.debug('zones from model: %s' % self.zoneNums)
         self.fixupLevelModel()
 
     def fixupLevelModel(self):
-        for zoneNum, zoneNode in self.zoneNum2node.items():
+        for zoneNum, zoneNode in list(self.zoneNum2node.items()):
             if zoneNum == LevelConstants.UberZoneEntId:
                 continue
             allColls = zoneNode.findAllMatches('**/+CollisionNode')
@@ -221,7 +222,9 @@ class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
         self.shutdownVisibility()
         self.destroyLevel()
         self.ignoreAll()
-        taskMgr.remove(self.uniqueName('titleText'))
+        if self.titleTextSeq:
+            self.titleTextSeq.finish()
+            self.titleTextSeq = None
         if self.smallTitleText:
             self.smallTitleText.cleanup()
             self.smallTitleText = None
@@ -247,7 +250,7 @@ class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
         else:
             DistributedLevel.notify.debug('entity %s requesting reparent to %s, not yet created' % (entity, parentId))
             entity.reparentTo(hidden)
-            if not self.parent2pendingChildren.has_key(parentId):
+            if parentId not in self.parent2pendingChildren:
                 self.parent2pendingChildren[parentId] = []
 
                 def doReparent(parentId = parentId, self = self, wrt = wrt):
@@ -403,7 +406,7 @@ class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
         removedZoneNums = []
         allVZ = dict(visibleZoneNums)
         allVZ.update(self.curVisibleZoneNums)
-        for vz, dummy in allVZ.items():
+        for vz, dummy in list(allVZ.items()):
             new = vz in visibleZoneNums
             old = vz in self.curVisibleZoneNums
             if new and old:
@@ -426,7 +429,7 @@ class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
                 self.hideZone(rz)
 
         if vizZonesChanged or self.fForceSetZoneThisFrame:
-            self.setVisibility(visibleZoneNums.keys())
+            self.setVisibility(list(visibleZoneNums.keys()))
             self.fForceSetZoneThisFrame = 0
         self.curZoneNum = zoneNum
         self.curVisibleZoneNums = visibleZoneNums
@@ -448,7 +451,7 @@ class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
     def resetVisibility(self):
         self.curVisibleZoneNums = list2dict(self.zoneNums)
         del self.curVisibleZoneNums[LevelConstants.UberZoneEntId]
-        for vz, dummy in self.curVisibleZoneNums.items():
+        for vz, dummy in list(self.curVisibleZoneNums.items()):
             self.showZone(vz)
 
         self.updateVisibility()
@@ -482,7 +485,9 @@ class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
 
         description = getDescription(self.lastCamZone)
         if description and description != '':
-            taskMgr.remove(self.uniqueName('titleText'))
+            if self.titleTextSeq:
+                self.titleTextSeq.finish()
+                self.titleTextSeq = None
             self.smallTitleText.setText(description)
             self.titleText.setText(description)
             self.titleText.setColor(Vec4(*self.titleColor))
@@ -490,49 +495,47 @@ class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
             titleSeq = None
             if self.lastCamZone not in self.zonesEnteredList:
                 self.zonesEnteredList.append(self.lastCamZone)
-                titleSeq = Task.sequence(Task.Task(self.hideSmallTitleTextTask), Task.Task(self.showTitleTextTask), Task.pause(0.1), Task.pause(6.0), self.titleText.lerpColor(Vec4(self.titleColor[0], self.titleColor[1], self.titleColor[2], self.titleColor[3]), Vec4(self.titleColor[0], self.titleColor[1], self.titleColor[2], 0.0), 0.5))
-            smallTitleSeq = Task.sequence(Task.Task(self.hideTitleTextTask), Task.Task(self.showSmallTitleTask))
+                titleSeq = Sequence(Func(self.hideSmallTitleText), Func(self.showTitleText), Wait(0.1), Wait(6.0), self.titleText.colorInterval(0.5, Vec4(self.titleColor[0], self.titleColor[1], self.titleColor[2], self.titleColor[3]), startColor=Vec4(self.titleColor[0], self.titleColor[1], self.titleColor[2], 0.0)))
+            smallTitleSeq = Sequence(Func(self.hideTitleText), Func(self.showSmallTitle))
             if titleSeq:
-                seq = Task.sequence(titleSeq, smallTitleSeq)
+                self.titleTextSeq = Sequence(titleSeq, smallTitleSeq, name=self.uniqueName('titleText'))
             else:
-                seq = smallTitleSeq
-            taskMgr.add(seq, self.uniqueName('titleText'))
+                self.titleTextSeq = Sequence(smallTitleSeq, name=self.uniqueName('titleText'))
+            self.titleTextSeq.start()
         return
 
     def showInfoText(self, text = 'hello world'):
         description = text
         if description and description != '':
-            taskMgr.remove(self.uniqueName('titleText'))
+            if self.titleTextSeq:
+                self.titleTextSeq.finish()
+                self.titleTextSeq = None
             self.smallTitleText.setText(description)
             self.titleText.setText(description)
             self.titleText.setColor(Vec4(*self.titleColor))
             self.titleText.setFg(self.titleColor)
             titleSeq = None
-            titleSeq = Task.sequence(Task.Task(self.hideSmallTitleTextTask), Task.Task(self.showTitleTextTask), Task.pause(0.1), Task.pause(3.0), self.titleText.lerpColor(Vec4(self.titleColor[0], self.titleColor[1], self.titleColor[2], self.titleColor[3]), Vec4(self.titleColor[0], self.titleColor[1], self.titleColor[2], 0.0), 0.5))
+            titleSeq = Sequence(Func(self.hideSmallTitleText), Func(self.showTitleText), Wait(0.1), Wait(3.0), self.titleText.colorInterval(0.5, Vec4(self.titleColor[0], self.titleColor[1], self.titleColor[2], self.titleColor[3]), startColor=Vec4(self.titleColor[0], self.titleColor[1], self.titleColor[2], 0.0)))
             if titleSeq:
-                seq = Task.sequence(titleSeq)
-            taskMgr.add(seq, self.uniqueName('titleText'))
+                self.titleTextSeq = Sequence(titleSeq, name=self.uniqueName('titleText'))
+            self.titleTextSeq.start()
         return
 
-    def showTitleTextTask(self, task):
+    def showTitleText(self):
         self.titleText.show()
-        return Task.done
 
-    def hideTitleTextTask(self, task):
+    def hideTitleText(self):
         if self.titleText:
             self.titleText.hide()
-        return Task.done
 
-    def showSmallTitleTask(self, task):
+    def showSmallTitle(self):
         if self.titleText:
             self.titleText.hide()
         self.smallTitleText.show()
-        return Task.done
 
-    def hideSmallTitleTextTask(self, task):
+    def hideSmallTitleText(self):
         if self.smallTitleText:
             self.smallTitleText.hide()
-        return Task.done
 
     def startOuch(self, ouchLevel, period = 2):
         self.notify.debug('startOuch %s' % ouchLevel)

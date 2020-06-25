@@ -1,5 +1,5 @@
 from pandac.PandaModules import *
-import ShtikerPage
+from . import ShtikerPage
 from direct.task.Task import Task
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
@@ -9,6 +9,7 @@ from toontown.hood import ZoneUtil
 from toontown.toonbase import ToontownGlobals
 from toontown.distributed import ToontownDistrictStats
 from toontown.toontowngui import TTDialog
+import functools
 POP_COLORS_NTT = (Vec4(0.0, 1.0, 0.0, 1.0), Vec4(1.0, 1.0, 0.0, 1.0), Vec4(1.0, 0.0, 0.0, 1.0))
 POP_COLORS = (Vec4(0.4, 0.4, 1.0, 1.0), Vec4(0.4, 1.0, 0.4, 1.0), Vec4(1.0, 0.4, 0.4, 1.0))
 
@@ -181,7 +182,7 @@ class ShardPage(ShtikerPage.ShtikerPage):
             else:
                 return 0
 
-        curShardTuples.sort(compareShardTuples)
+        curShardTuples.sort(key=functools.cmp_to_key(compareShardTuples))
         if base.cr.welcomeValleyManager:
             curShardTuples.append((ToontownGlobals.WelcomeValleyToken,
              TTLocalizer.WelcomeValley[-1],
@@ -223,7 +224,7 @@ class ShardPage(ShtikerPage.ShtikerPage):
                 buttonTuple[1]['state'] = DGG.NORMAL
                 buttonTuple[2]['state'] = DGG.NORMAL
 
-        for shardId, buttonTuple in self.shardButtonMap.items():
+        for shardId, buttonTuple in list(self.shardButtonMap.items()):
             if shardId not in currentMap:
                 buttonTuple[0].destroy()
                 del self.shardButtonMap[shardId]

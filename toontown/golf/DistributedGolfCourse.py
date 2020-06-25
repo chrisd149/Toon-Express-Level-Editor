@@ -84,7 +84,7 @@ class DistributedGolfCourse(DistributedObject.DistributedObject, FSM, DelayDelet
         return
 
     def delete(self):
-        print 'GOLF COURSE DELETE'
+        print('GOLF COURSE DELETE')
         self.ignore('clientCleanup')
         if self.scoreBoard:
             self.scoreBoard.delete()
@@ -108,7 +108,7 @@ class DistributedGolfCourse(DistributedObject.DistributedObject, FSM, DelayDelet
         return
 
     def load(self):
-        self.music = base.loadMusic('phase_6/audio/bgm/GZ_PlayGolf.mid')
+        self.music = base.loader.loadMusic('phase_6/audio/bgm/GZ_PlayGolf.ogg')
 
     def setCourseReady(self, numHoles, holeIds, coursePar):
         self.notify.debug('GOLF COURSE: received setCourseReady')
@@ -257,7 +257,7 @@ class DistributedGolfCourse(DistributedObject.DistributedObject, FSM, DelayDelet
         pass
 
     def enterCleanup(self):
-        print 'GOLF COURSE CLEANUP'
+        print('GOLF COURSE CLEANUP')
         base.localAvatar.stopSleepWatch()
         for action in self.cleanupActions:
             action()

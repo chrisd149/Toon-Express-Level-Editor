@@ -1,21 +1,21 @@
 from direct.interval.IntervalGlobal import *
-from BattleProps import *
-from BattleSounds import *
-from BattleBase import *
+from .BattleProps import *
+from .BattleSounds import *
+from .BattleBase import *
 from direct.directnotify import DirectNotifyGlobal
-import MovieCamera
+from . import MovieCamera
 import random
-import MovieUtil
-import BattleParticles
-import HealJokes
+from . import MovieUtil
+from . import BattleParticles
+from . import HealJokes
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase.ToontownBattleGlobals import AvPropDamage
 from toontown.toon import NPCToons
-import MovieNPCSOS
+from . import MovieNPCSOS
 from toontown.effects import Splash
 from direct.task import Task
 notify = DirectNotifyGlobal.directNotify.newCategory('MovieHeal')
-soundFiles = ('AA_heal_tickle.mp3', 'AA_heal_telljoke.mp3', 'AA_heal_smooch.mp3', 'AA_heal_happydance.mp3', 'AA_heal_pixiedust.mp3', 'AA_heal_juggle.mp3', 'AA_heal_High_Dive.mp3')
+soundFiles = ('AA_heal_tickle.ogg', 'AA_heal_telljoke.ogg', 'AA_heal_smooch.ogg', 'AA_heal_happydance.ogg', 'AA_heal_pixiedust.ogg', 'AA_heal_juggle.ogg', 'AA_heal_High_Dive.ogg')
 healPos = Point3(0, 0, 0)
 healHpr = Vec3(180.0, 0, 0)
 runHealTime = 1.0
@@ -166,7 +166,7 @@ def __healTickle(heal, hasInteractivePropHealBonus):
 
 def __healJoke(heal, hasInteractivePropHealBonus):
     npcId = 0
-    if heal.has_key('npcId'):
+    if 'npcId' in heal:
         npcId = heal['npcId']
         toon = NPCToons.createLocalNPC(npcId)
         if toon == None:
@@ -257,7 +257,7 @@ def __healSmooch(heal, hasInteractivePropHealBonus):
 
 def __healDance(heal, hasInteractivePropHealBonus):
     npcId = 0
-    if heal.has_key('npcId'):
+    if 'npcId' in heal:
         npcId = heal['npcId']
         toon = NPCToons.createLocalNPC(npcId)
         if toon == None:
@@ -340,7 +340,7 @@ def __healSprinkle(heal, hasInteractivePropHealBonus):
 
 def __healJuggle(heal, hasInteractivePropHealBonus):
     npcId = 0
-    if heal.has_key('npcId'):
+    if 'npcId' in heal:
         npcId = heal['npcId']
         toon = NPCToons.createLocalNPC(npcId)
         if toon == None:
@@ -388,7 +388,7 @@ def __healDive(heal, hasInteractivePropHealBonus):
     splash = Splash.Splash(render)
     splash.reparentTo(render)
     npcId = 0
-    if heal.has_key('npcId'):
+    if 'npcId' in heal:
         npcId = heal['npcId']
         toon = NPCToons.createLocalNPC(npcId)
         if toon == None:

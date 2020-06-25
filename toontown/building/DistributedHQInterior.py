@@ -1,12 +1,13 @@
 from toontown.toonbase.ToonBaseGlobal import *
 from pandac.PandaModules import *
+from libtoontown import *
 from toontown.toonbase.ToontownGlobals import *
 import random
 from direct.task.Task import Task
 from direct.distributed import DistributedObject
 from direct.directnotify import DirectNotifyGlobal
-import ToonInteriorColors
-import cPickle
+from . import ToonInteriorColors
+import pickle
 from toontown.toonbase import TTLocalizer
 
 class DistributedHQInterior(DistributedObject.DistributedObject):
@@ -121,7 +122,7 @@ class DistributedHQInterior(DistributedObject.DistributedObject):
          trophyStar)
 
     def setLeaderBoard(self, leaderData):
-        avIds, names, scores = cPickle.loads(leaderData)
+        avIds, names, scores = pickle.loads(leaderData)
         self.notify.debug('setLeaderBoard: avIds: %s, names: %s, scores: %s' % (avIds, names, scores))
         self.leaderAvIds = avIds
         self.leaderNames = names

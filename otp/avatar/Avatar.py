@@ -9,7 +9,7 @@ from direct.distributed import ClockDelta
 from otp.avatar.ShadowCaster import ShadowCaster
 import random
 from otp.otpbase import OTPRender
-from direct.showbase.PythonUtil import recordCreationStack
+from otp.otpbase.PythonUtil import recordCreationStack
 teleportNotify = DirectNotifyGlobal.directNotify.newCategory('Teleport')
 teleportNotify.showTime = True
 if config.GetBool('want-teleport-debug', 1):
@@ -26,7 +26,7 @@ class Avatar(Actor, ShadowCaster):
     ManagesNametagAmbientLightChanged = False
 
     def __init__(self, other = None):
-        self.name = ''
+        self._name = ''
         try:
             self.Avatar_initialized
             return
@@ -222,7 +222,7 @@ class Avatar(Actor, ShadowCaster):
         return OTPGlobals.AvatarDefaultRadius
 
     def getName(self):
-        return self.name
+        return self._name
 
     def getType(self):
         return self.avatarType
@@ -231,7 +231,7 @@ class Avatar(Actor, ShadowCaster):
         if hasattr(self, 'isDisguised'):
             if self.isDisguised:
                 return
-        self.name = name
+        self._name = name
         if hasattr(self, 'nametag'):
             self.nametag.setName(name)
 

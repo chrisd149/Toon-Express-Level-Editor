@@ -1,6 +1,6 @@
 from direct.directnotify import DirectNotifyGlobal
 from direct.fsm import StateData
-import CogHQLoader
+from . import CogHQLoader
 from toontown.toonbase import ToontownGlobals
 from direct.gui import DirectGui
 from toontown.toonbase import TTLocalizer
@@ -24,7 +24,7 @@ class BossbotCogHQLoader(CogHQLoader.CogHQLoader):
             state = self.fsm.getStateNamed(stateName)
             state.addTransition('countryClubInterior')
 
-        self.musicFile = random.choice(['phase_12/audio/bgm/Bossbot_Entry_v1.mid', 'phase_12/audio/bgm/Bossbot_Entry_v2.mid', 'phase_12/audio/bgm/Bossbot_Entry_v3.mid'])
+        self.musicFile = random.choice(['phase_12/audio/bgm/Bossbot_Entry_v1.ogg', 'phase_12/audio/bgm/Bossbot_Entry_v2.ogg', 'phase_12/audio/bgm/Bossbot_Entry_v3.ogg'])
         self.cogHQExteriorModelPath = 'phase_12/models/bossbotHQ/CogGolfHub'
         self.factoryExteriorModelPath = 'phase_11/models/lawbotHQ/LB_DA_Lobby'
         self.cogHQLobbyModelPath = 'phase_12/models/bossbotHQ/CogGolfCourtyard'

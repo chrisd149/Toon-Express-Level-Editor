@@ -2,6 +2,7 @@ from pandac.PandaModules import *
 from toontown.toonbase.ToontownBattleGlobals import *
 from direct.task.Timer import *
 import math
+import functools
 from direct.directnotify import DirectNotifyGlobal
 from toontown.toon import NPCToons
 from toontown.toonbase import TTLocalizer
@@ -133,7 +134,7 @@ def getDefaultSuitAttack():
 def findToonAttack(toons, attacks, track):
     foundAttacks = []
     for t in toons:
-        if attacks.has_key(t):
+        if t in attacks:
             attack = attacks[t]
             local_track = attack[TOON_TRACK_COL]
             if track != NPCSOS and attack[TOON_TRACK_COL] == NPCSOS:
@@ -157,7 +158,7 @@ def findToonAttack(toons, attacks, track):
             return -1
         return 0
 
-    foundAttacks.sort(compFunc)
+    foundAttacks.sort(key=functools.cmp_to_key(compFunc))
     return foundAttacks
 
 

@@ -1,4 +1,5 @@
 from pandac.PandaModules import *
+from libotp import *
 from direct.interval.IntervalGlobal import *
 from otp.avatar import Avatar
 from libotp import CFQuicktalker
@@ -11,9 +12,8 @@ from direct.controls.ControlManager import CollisionHandlerRayStart
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase.TTLocalizer import Donald, DonaldDock, WesternPluto, Pluto
 from toontown.effects import DustCloud
-import CCharChatter
-import CCharPaths
-import string
+from . import CCharChatter
+from . import CCharPaths
 import copy
 
 class DistributedCCharBase(DistributedChar.DistributedChar):
@@ -166,7 +166,7 @@ class DistributedCCharBase(DistributedChar.DistributedChar):
         return turnTracks
 
     def setChat(self, category, msg, avId):
-        if self.cr.doId2do.has_key(avId):
+        if avId in self.cr.doId2do:
             avatar = self.cr.doId2do[avId]
             chatter = CCharChatter.getChatter(self.getName(), self.getCCChatter())
             if category >= len(chatter):
@@ -179,7 +179,7 @@ class DistributedCCharBase(DistributedChar.DistributedChar):
             if '%' in str:
                 str = copy.deepcopy(str)
                 avName = avatar.getName()
-                str = string.replace(str, '%', avName)
+                str = str.replace('%', avName)
             track = Sequence()
             if category != CCharChatter.GOODBYE:
                 curHpr = self.getHpr()

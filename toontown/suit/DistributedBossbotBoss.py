@@ -1,6 +1,7 @@
 import math
 import random
-from pandac.PandaModules import NametagGroup, CFSpeech, VBase3, CollisionPlane, CollisionNode, CollisionSphere, CollisionTube, NodePath, Plane, Vec3, Vec2, Point3, BitMask32, CollisionHandlerEvent, TextureStage, VBase4, BoundingSphere
+from pandac.PandaModules import VBase3, CollisionPlane, CollisionNode, CollisionSphere, CollisionTube, NodePath, Plane, Vec3, Vec2, Point3, BitMask32, CollisionHandlerEvent, TextureStage, VBase4, BoundingSphere
+from libotp import NametagGroup, CFSpeech
 from direct.interval.IntervalGlobal import Sequence, Wait, Func, LerpHprInterval, Parallel, LerpPosInterval, Track, ActorInterval, ParallelEndTogether, LerpFunctionInterval, LerpScaleInterval, LerpPosHprInterval, SoundInterval
 from direct.task import Task
 from direct.fsm import FSM
@@ -112,9 +113,9 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.rightHandJoint = self.find('**/joint17')
         self.setPosHpr(*ToontownGlobals.BossbotBossBattleOnePosHpr)
         self.reparentTo(render)
-        self.toonUpSfx = loader.loadSfx('phase_11/audio/sfx/LB_toonup.mp3')
-        self.warningSfx = loader.loadSfx('phase_5/audio/sfx/Skel_COG_VO_grunt.mp3')
-        self.swingClubSfx = loader.loadSfx('phase_5/audio/sfx/SA_hardball.mp3')
+        self.toonUpSfx = loader.loadSfx('phase_11/audio/sfx/LB_toonup.ogg')
+        self.warningSfx = loader.loadSfx('phase_5/audio/sfx/Skel_COG_VO_grunt.ogg')
+        self.swingClubSfx = loader.loadSfx('phase_5/audio/sfx/SA_hardball.ogg')
         self.moveBossTaskName = 'CEOMoveTask'
         return
 
@@ -164,12 +165,12 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         planeNode.setCollideMask(ToontownGlobals.PieBitmask)
         self.geom.attachNewNode(planeNode)
         self.geom.reparentTo(render)
-        self.promotionMusic = base.loadMusic('phase_7/audio/bgm/encntr_suit_winning_indoor.mid')
-        self.betweenPhaseMusic = base.loadMusic('phase_9/audio/bgm/encntr_toon_winning.mid')
-        self.phaseTwoMusic = base.loadMusic('phase_12/audio/bgm/BossBot_CEO_v1.mid')
-        self.phaseFourMusic = base.loadMusic('phase_12/audio/bgm/BossBot_CEO_v2.mid')
-        self.pickupFoodSfx = loader.loadSfx('phase_6/audio/sfx/SZ_MM_gliss.mp3')
-        self.explodeSfx = loader.loadSfx('phase_4/audio/sfx/firework_distance_02.mp3')
+        self.promotionMusic = base.loader.loadMusic('phase_7/audio/bgm/encntr_suit_winning_indoor.ogg')
+        self.betweenPhaseMusic = base.loader.loadMusic('phase_9/audio/bgm/encntr_toon_winning.ogg')
+        self.phaseTwoMusic = base.loader.loadMusic('phase_12/audio/bgm/BossBot_CEO_v1.ogg')
+        self.phaseFourMusic = base.loader.loadMusic('phase_12/audio/bgm/BossBot_CEO_v2.ogg')
+        self.pickupFoodSfx = loader.loadSfx('phase_6/audio/sfx/SZ_MM_gliss.ogg')
+        self.explodeSfx = loader.loadSfx('phase_4/audio/sfx/firework_distance_02.ogg')
 
     def unloadEnvironment(self):
         self.notify.debug('----- unloadEnvironment')
@@ -177,7 +178,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
             if belt:
                 belt.cleanup()
 
-        for spot in self.golfSpots.values():
+        for spot in list(self.golfSpots.values()):
             if spot:
                 spot.cleanup()
 
@@ -194,7 +195,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         npc.setPickable(0)
         npc.setPlayerType(NametagGroup.CCNonPlayer)
         dna = ToonDNA.ToonDNA()
-        dna.newToonRandom(11237, 'm', 1)
+        dna.newToonRandom(335933, 'm', 1)
         dna.head = 'sls'
         npc.setDNAString(dna.makeNetString())
         npc.animFSM.request('neutral')
@@ -542,7 +543,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
     def calcNotDeadList(self):
         if not self.notDeadList:
             self.notDeadList = []
-            for tableIndex in xrange(len(self.tables)):
+            for tableIndex in range(len(self.tables)):
                 table = self.tables[tableIndex]
                 tableInfo = table.getNotDeadInfo()
                 self.notDeadList += tableInfo
@@ -580,7 +581,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
     def enterBattleThree(self):
         self.cleanupIntervals()
         self.calcNotDeadList()
-        for table in self.tables.values():
+        for table in list(self.tables.values()):
             table.setAllDinersToSitNeutral()
 
         self.battleANode.setPosHpr(*ToontownGlobals.DinerBattleAPosHpr)
@@ -1229,7 +1230,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
 
     def getToonTableIndex(self, toonId):
         tableIndex = -1
-        for table in self.tables.values():
+        for table in list(self.tables.values()):
             if table.avId == toonId:
                 tableIndex = table.index
                 break
@@ -1238,7 +1239,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
 
     def getToonGolfSpotIndex(self, toonId):
         golfSpotIndex = -1
-        for golfSpot in self.golfSpots.values():
+        for golfSpot in list(self.golfSpots.values()):
             if golfSpot.avId == toonId:
                 golfSpotIndex = golfSpot.index
                 break

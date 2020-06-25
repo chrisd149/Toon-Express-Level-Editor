@@ -36,7 +36,7 @@ class ToonBlitzAssetMgr(DirectObject):
         self.treasureModelList.append(corpIcon)
         self.particleGlow = loader.loadModel('phase_4/models/minigames/particleGlow')
         self.blockTypes = []
-        for i in xrange(4):
+        for i in range(4):
             blockType = loader.loadModel('phase_4/models/minigames/toonblitz_game_block0' + str(i))
             self.blockTypes.append(blockType)
 
@@ -46,16 +46,16 @@ class ToonBlitzAssetMgr(DirectObject):
         dropPlane.addSolid(plane)
         dropPlane.setCollideMask(ToontownGlobals.FloorBitmask)
         self.world.attachNewNode(dropPlane)
-        self.gameMusic = base.loadMusic('phase_4/audio/bgm/MG_TwoDGame.mid')
-        self.treasureGrabSound = loader.loadSfx('phase_4/audio/sfx/SZ_DD_treasure.mp3')
-        self.sndOof = base.loadSfx('phase_4/audio/sfx/MG_cannon_hit_dirt.mp3')
-        self.soundJump = base.loadSfx('phase_4/audio/sfx/MG_sfx_vine_game_jump.mp3')
-        self.fallSound = base.loadSfx('phase_4/audio/sfx/MG_sfx_vine_game_fall.mp3')
-        self.watergunSound = base.loadSfx('phase_4/audio/sfx/AA_squirt_seltzer_miss.mp3')
-        self.splashSound = base.loadSfx('phase_4/audio/sfx/Seltzer_squirt_2dgame_hit.mp3')
-        self.threeSparkles = loader.loadSfx('phase_4/audio/sfx/threeSparkles.mp3')
-        self.sparkleSound = loader.loadSfx('phase_4/audio/sfx/sparkly.mp3')
-        self.headCollideSound = loader.loadSfx('phase_3.5/audio/sfx/AV_collision.mp3')
+        self.gameMusic = base.loader.loadMusic('phase_4/audio/bgm/MG_TwoDGame.ogg')
+        self.treasureGrabSound = loader.loadSfx('phase_4/audio/sfx/SZ_DD_treasure.ogg')
+        self.sndOof = base.loader.loadSfx('phase_4/audio/sfx/MG_cannon_hit_dirt.ogg')
+        self.soundJump = base.loader.loadSfx('phase_4/audio/sfx/MG_sfx_vine_game_jump.ogg')
+        self.fallSound = base.loader.loadSfx('phase_4/audio/sfx/MG_sfx_vine_game_fall.ogg')
+        self.watergunSound = base.loader.loadSfx('phase_4/audio/sfx/AA_squirt_seltzer_miss.ogg')
+        self.splashSound = base.loader.loadSfx('phase_4/audio/sfx/Seltzer_squirt_2dgame_hit.ogg')
+        self.threeSparkles = loader.loadSfx('phase_4/audio/sfx/threeSparkles.ogg')
+        self.sparkleSound = loader.loadSfx('phase_4/audio/sfx/sparkly.ogg')
+        self.headCollideSound = loader.loadSfx('phase_3.5/audio/sfx/AV_collision.ogg')
         self.faceStartPos = Vec3(-0.8, 0, -0.87)
         self.faceEndPos = Vec3(0.8, 0, -0.87)
         self.aspect2dRoot = aspect2d.attachNewNode('TwoDGuiAspect2dRoot')
@@ -68,7 +68,7 @@ class ToonBlitzAssetMgr(DirectObject):
         self.progressLine.setScale(self.faceEndPos[0] - self.faceStartPos[0], 1, 0.01)
         self.progressLine.setPos(0, 0, self.faceStartPos[2])
         self.cardMaker.setName('RaceProgressLineHash')
-        for n in xrange(ToonBlitzGlobals.NumSections[self.game.getSafezoneId()] + 1):
+        for n in range(ToonBlitzGlobals.NumSections[self.game.getSafezoneId()] + 1):
             hash = self.aspect2dRoot.attachNewNode(self.cardMaker.generate())
             hash.setScale(self.progressLine.getScale()[2], 1, self.progressLine.getScale()[2] * 5)
             t = float(n) / ToonBlitzGlobals.NumSections[self.game.getSafezoneId()]

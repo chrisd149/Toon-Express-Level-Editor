@@ -2,12 +2,13 @@ from otp.otpbase import OTPBase
 from otp.otpbase import OTPLauncherGlobals
 from otp.otpbase import OTPGlobals
 from direct.showbase.PythonUtil import *
-import ToontownGlobals
+from . import ToontownGlobals
 from direct.directnotify import DirectNotifyGlobal
-import ToontownLoader
+from . import ToontownLoader
 from direct.gui import DirectGuiGlobals
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
+from libotp import *
 import sys
 import os
 import math
@@ -26,8 +27,6 @@ class ToonBase(OTPBase.OTPBase):
             music = Settings.getMusic()
             sfx = Settings.getSfx()
             toonChatSounds = Settings.getToonChatSounds()
-            musicVol = Settings.getMusicVolume()
-            sfxVol = Settings.getSfxVolume()
             resList = [(640, 480),
              (800, 600),
              (1024, 768),
@@ -42,8 +41,6 @@ class ToonBase(OTPBase.OTPBase):
             loadPrcFileData('toonBase Settings Window FullScreen', 'fullscreen %s' % mode)
             loadPrcFileData('toonBase Settings Music Active', 'audio-music-active %s' % music)
             loadPrcFileData('toonBase Settings Sound Active', 'audio-sfx-active %s' % sfx)
-            loadPrcFileData('toonBase Settings Music Volume', 'audio-master-music-volume %s' % musicVol)
-            loadPrcFileData('toonBase Settings Sfx Volume', 'audio-master-sfx-volume %s' % sfxVol)
             loadPrcFileData('toonBase Settings Toon Chat Sounds', 'toon-chat-sounds %s' % toonChatSounds)
         OTPBase.OTPBase.__init__(self)
         if not self.isMainWindowOpen():
@@ -75,7 +72,7 @@ class ToonBase(OTPBase.OTPBase):
         self.transitions.IrisModelName = 'phase_3/models/misc/iris'
         self.transitions.FadeModelName = 'phase_3/models/misc/fade'
         self.exitFunc = self.userExit
-        if __builtins__.has_key('launcher') and launcher:
+        if 'launcher' in __builtins__ and launcher:
             launcher.setPandaErrorCode(11)
         globalClock.setMaxDt(0.2)
         if self.config.GetBool('want-particles', 1) == 1:
@@ -142,12 +139,14 @@ class ToonBase(OTPBase.OTPBase):
         tpMgr.setProperties('WLDisplay', WLDisplay)
         tpMgr.setProperties('WLEnter', WLEnter)
         del tpMgr
+        CullBinManager.getGlobalPtr().addBin('gui-popup', CullBinManager.BTUnsorted, 60)
+        CullBinManager.getGlobalPtr().addBin('shadow', CullBinManager.BTFixed, 15)
+        CullBinManager.getGlobalPtr().addBin('ground', CullBinManager.BTFixed, 14)
         self.lastScreenShotTime = globalClock.getRealTime()
         self.accept('InputState-forward', self.__walking)
         self.canScreenShot = 1
         self.glitchCount = 0
         self.walking = 0
-        self.resetMusic = self.loadMusic('phase_3/audio/bgm/MIDI_Events_16channels.mid')
         self.oldX = max(1, base.win.getXSize())
         self.oldY = max(1, base.win.getYSize())
         self.aspectRatio = float(self.oldX) / self.oldY
@@ -196,9 +195,9 @@ class ToonBase(OTPBase.OTPBase):
         self.useDrive()
         self.disableMouse()
         if self.mouseInterface:
-            self.mouseInterface.reparentTo(self.dataUnused)
+            self.mouseInterface.detachNode()
         if base.mouse2cam:
-            self.mouse2cam.reparentTo(self.dataUnused)
+            self.mouse2cam.detachNode()
 
     def __walking(self, pressed):
         self.walking = pressed
@@ -245,9 +244,9 @@ class ToonBase(OTPBase.OTPBase):
     def initNametagGlobals(self):
         arrow = loader.loadModel('phase_3/models/props/arrow')
         card = loader.loadModel('phase_3/models/props/panel')
-        speech3d = ChatBalloon(loader.loadModelNode('phase_3/models/props/chatbox'))
-        thought3d = ChatBalloon(loader.loadModelNode('phase_3/models/props/chatbox_thought_cutout'))
-        speech2d = ChatBalloon(loader.loadModelNode('phase_3/models/props/chatbox_noarrow'))
+        speech3d = ChatBalloon(loader.loadModel('phase_3/models/props/chatbox').node())
+        thought3d = ChatBalloon(loader.loadModel('phase_3/models/props/chatbox_thought_cutout').node())
+        speech2d = ChatBalloon(loader.loadModel('phase_3/models/props/chatbox_noarrow').node())
         chatButtonGui = loader.loadModel('phase_3/models/gui/chat_button_gui')
         NametagGlobals.setCamera(self.cam)
         NametagGlobals.setArrowModel(arrow)
@@ -306,12 +305,13 @@ class ToonBase(OTPBase.OTPBase):
             gameServer = launcherServer
             self.notify.info('Using gameServer from launcher: %s ' % gameServer)
         else:
-            gameServer = 'localhost'
-        serverPort = base.config.GetInt('server-port', 6667)
+            gameServer = '127.0.0.1'
+        serverPort = base.config.GetInt('server-port', 7198)
         serverList = []
         for name in gameServer.split(';'):
             url = URLSpec(name, 1)
-            url.setScheme('s')
+            if config.GetBool('server-want-ssl', False):
+                url.setScheme('s')
             if not url.hasPort():
                 url.setPort(serverPort)
             serverList.append(url)
@@ -336,7 +336,7 @@ class ToonBase(OTPBase.OTPBase):
 
     def removeGlitchMessage(self):
         self.ignore('InputState-forward')
-        print 'ignoring InputState-forward'
+        print('ignoring InputState-forward')
 
     def exitShow(self, errorCode = None):
         self.notify.info('Exiting Toontown: errorCode = %s' % errorCode)
@@ -397,5 +397,9 @@ class ToonBase(OTPBase.OTPBase):
             return (config.GetInt('shard-low-pop', ToontownGlobals.LOW_POP), config.GetInt('shard-mid-pop', ToontownGlobals.MID_POP), config.GetInt('shard-high-pop', ToontownGlobals.HIGH_POP))
 
     def playMusic(self, music, looping = 0, interrupt = 1, volume = None, time = 0.0):
-        OTPBase.OTPBase.playMusic(self, self.resetMusic)
         OTPBase.OTPBase.playMusic(self, music, looping, interrupt, volume, time)
+
+    def isMainWindowOpen(self):
+        if self.win != None:
+            return self.win.isValid()
+        return 0

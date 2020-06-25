@@ -4,6 +4,7 @@ from direct.fsm import ClassicFSM, State
 from direct.fsm import State
 from direct.showbase import BulletinBoardWatcher
 from pandac.PandaModules import *
+from libotp import *
 from otp.distributed.TelemetryLimiter import RotationLimitToH, TLGatherAllAvs
 from toontown.toon import Toon
 from toontown.toonbase import ToontownGlobals
@@ -66,7 +67,7 @@ class MintInterior(BattlePlace.BattlePlace):
     def load(self):
         self.parentFSM.getStateNamed('mintInterior').addChild(self.fsm)
         BattlePlace.BattlePlace.load(self)
-        self.music = base.loadMusic('phase_9/audio/bgm/CHQ_FACT_bg.mid')
+        self.music = base.loader.loadMusic('phase_9/audio/bgm/CHQ_FACT_bg.ogg')
 
     def unload(self):
         self.parentFSM.getStateNamed('mintInterior').removeChild(self.fsm)

@@ -1,21 +1,21 @@
 from pandac.PandaModules import *
 from toontown.toonbase.ToonBaseGlobal import *
 from direct.interval.IntervalGlobal import *
-from DistributedMinigame import *
+from .DistributedMinigame import *
 from direct.distributed.ClockDelta import *
 from direct.fsm import ClassicFSM, State
 from direct.fsm import State
 from direct.task import Task
-import ArrowKeys
-import TargetGameGlobals
+from . import ArrowKeys
+from . import TargetGameGlobals
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import TTLocalizer
 import math
 from math import *
 import random
 import random
-import RubberBand
-import FogOverlay
+from . import RubberBand
+from . import FogOverlay
 
 def circleX(angle, radius, centerX, centerY):
     x = radius * cos(angle) + centerX
@@ -56,7 +56,7 @@ def getRingPoints(segCount, centerX, centerY, radius, thickness = 2.0, wideX = 1
 def addRing(attachNode, color, vertexCount, radius, layer = 0, thickness = 1.0):
     targetGN = GeomNode('target Circle')
     zFloat = 0.025
-    targetCircleShape = getRingPoints(5 + vertexCount, 0.0, 0.0, radius, thickness)
+    targetCircleShape = getRingPoints(5 + int(vertexCount), 0.0, 0.0, radius, thickness)
     gFormat = GeomVertexFormat.getV3cp()
     targetCircleVertexData = GeomVertexData('holds my vertices', gFormat, Geom.UHDynamic)
     targetCircleVertexWriter = GeomVertexWriter(targetCircleVertexData, 'vertex')
@@ -82,7 +82,7 @@ def addRing(attachNode, color, vertexCount, radius, layer = 0, thickness = 1.0):
 def addCircle(attachNode, color, vertexCount, radius, layer = 0):
     targetGN = GeomNode('target Circle')
     zFloat = 0.025
-    targetCircleShape = getCirclePoints(5 + vertexCount, 0.0, 0.0, radius)
+    targetCircleShape = getCirclePoints(5 + int(vertexCount), 0.0, 0.0, radius)
     gFormat = GeomVertexFormat.getV3cp()
     targetCircleVertexData = GeomVertexData('holds my vertices', gFormat, Geom.UHDynamic)
     targetCircleVertexWriter = GeomVertexWriter(targetCircleVertexData, 'vertex')
@@ -266,7 +266,7 @@ class DistributedTargetGame(DistributedMinigame):
          score3Label,
          score4Label]
         self.scoreboard.hide()
-        self.music = base.loadMusic('phase_4/audio/bgm/MG_Diving.mid')
+        self.music = base.loader.loadMusic('phase_4/audio/bgm/MG_Diving.ogg')
         self.sndAmbience = None
         self.skyListLow = []
         self.skyListMid = []
@@ -360,25 +360,25 @@ class DistributedTargetGame(DistributedMinigame):
             self.umbrella.instanceTo(hand)
 
         self.remoteUmbrellas = {}
-        self.addSound('wind1', 'target_cloud.mp3', 'phase_4/audio/sfx/')
-        self.addSound('trampoline', 'target_trampoline_2.mp3', 'phase_4/audio/sfx/')
-        self.addSound('launch', 'target_launch.mp3', 'phase_4/audio/sfx/')
-        self.addSound('miss', 'target_Lose.mp3', 'phase_4/audio/sfx/')
-        self.addSound('score', 'target_happydance.mp3', 'phase_4/audio/sfx/')
-        self.addSound('impact', 'target_impact_grunt1.mp3', 'phase_4/audio/sfx/')
-        self.addSound('umbrella', 'target_chute.mp3', 'phase_4/audio/sfx/')
-        self.addSound('bounce', 'target_impact_only.mp3', 'phase_4/audio/sfx/')
-        self.flySound = loader.loadSfx('phase_4/audio/sfx/target_wind_fly_loop.wav')
+        self.addSound('wind1', 'target_cloud.ogg', 'phase_4/audio/sfx/')
+        self.addSound('trampoline', 'target_trampoline_2.ogg', 'phase_4/audio/sfx/')
+        self.addSound('launch', 'target_launch.ogg', 'phase_4/audio/sfx/')
+        self.addSound('miss', 'target_Lose.ogg', 'phase_4/audio/sfx/')
+        self.addSound('score', 'target_happydance.ogg', 'phase_4/audio/sfx/')
+        self.addSound('impact', 'target_impact_grunt1.ogg', 'phase_4/audio/sfx/')
+        self.addSound('umbrella', 'target_chute.ogg', 'phase_4/audio/sfx/')
+        self.addSound('bounce', 'target_impact_only.ogg', 'phase_4/audio/sfx/')
+        self.flySound = loader.loadSfx('phase_4/audio/sfx/target_wind_fly_loop.ogg')
         self.flySound.setVolume(0.0)
         self.flySound.setPlayRate(1.0)
         self.flySound.setLoop(True)
         self.flySound.play()
-        self.rubberSound = loader.loadSfx('phase_4/audio/sfx/target_stretching_aim_loop.mp3')
+        self.rubberSound = loader.loadSfx('phase_4/audio/sfx/target_stretching_aim_loop.ogg')
         self.rubberSound.setVolume(0.0)
         self.rubberSound.setPlayRate(1.0)
         self.rubberSound.setLoop(True)
         self.rubberSound.play()
-        self.flutterSound = loader.loadSfx('phase_4/audio/sfx/target_wind_float_clothloop.wav')
+        self.flutterSound = loader.loadSfx('phase_4/audio/sfx/target_wind_float_clothloop.ogg')
         self.flutterSound.setVolume(1.0)
         self.flutterSound.setPlayRate(1.0)
         self.flutterSound.setLoop(True)
@@ -408,7 +408,7 @@ class DistributedTargetGame(DistributedMinigame):
             return
         random.seed(targetSeed)
         self.pattern = TargetGameGlobals.difficultyPatterns[self.getSafezoneId()]
-        print 'seed %s' % targetSeed
+        print('seed %s' % targetSeed)
         self.setupTargets()
 
     def setupTargets(self):
@@ -544,7 +544,7 @@ class DistributedTargetGame(DistributedMinigame):
         self.removeChildGameFSM(self.gameFSM)
         del self.gameFSM
         if self.targets:
-            self.targets.remove()
+            self.targets.removeNode()
         del self.targets
         self.scoreboard.destroy()
         del self.scoreboard
@@ -821,7 +821,7 @@ class DistributedTargetGame(DistributedMinigame):
                 open.setScale(1.5)
                 closed = umbrella.find('**/closed_umbrella')
                 closed.show()
-                hand = toon.find('**/joint_Rhold')
+                hand = toon.getRightHands()[0]
                 ce = CompassEffect.make(NodePath(), CompassEffect.PRot)
                 closed.node().setEffect(ce)
                 closed.setHpr(0.0, 90.0, 35.0)
@@ -927,7 +927,7 @@ class DistributedTargetGame(DistributedMinigame):
         self.gravity = 4
         newHpr = Point3(0, -68, 0)
         newPos = Point3(0, self.CAMERA_Y + self.TOON_Y + 15, 15)
-        camera.lerpPosHpr(newPos, newHpr, 2.5, blendType='easeInOut', task=self.FLY2FALL_CAM_TASK)
+        camera.posHprInterval(2.5, newPos, newHpr, blendType='easeInOut', name=self.FLY2FALL_CAM_TASK).start()
         open = self.umbrella.find('**/open_umbrella')
         open.show()
         closed = self.umbrella.find('**/closed_umbrella')
@@ -1017,7 +1017,7 @@ class DistributedTargetGame(DistributedMinigame):
             self.localTrack.append(Parallel(Func(base.localAvatar.b_setAnimState, 'victory', 1.0), Func(self.playSound, 'score')))
         newHpr = Point3(180, 10, 0)
         newPos = Point3(0, -(self.CAMERA_Y + self.TOON_Y + 12), 1)
-        camera.lerpPosHpr(newPos, newHpr, 5.0, blendType='easeInOut', task=self.SCORE_CAM_TASK)
+        camera.posHprInterval(5.0, newPos, newHpr, blendType='easeInOut', name=self.SCORE_CAM_TASK).start()
         self.help.hide()
         self.localTrack.start()
         return
@@ -1028,7 +1028,7 @@ class DistributedTargetGame(DistributedMinigame):
     def enterCleanup(self):
         self.notify.debug('enterCleanup')
         if not self.isSinglePlayer():
-            for np in self.remoteToonCollNPs.values():
+            for np in list(self.remoteToonCollNPs.values()):
                 np.removeNode()
 
             del self.remoteToonCollNPs
@@ -1154,7 +1154,7 @@ class DistributedTargetGame(DistributedMinigame):
                 self.ticker = 0.0
                 powerDiv = 0.05
                 self.power -= 1.0 + 0.2 * (self.power * powerDiv * (self.power * powerDiv))
-            if timeDiff > 0.5:
+            if timeDiff is not None and timeDiff > 0.5:
                 self.power = self.powerBar['value']
                 self.signalLaunch = 0
                 if self.power > 120:

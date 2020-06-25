@@ -4,6 +4,7 @@ from direct.distributed.ClockDelta import *
 from toontown.building.ElevatorConstants import *
 from toontown.toon import NPCToons
 from pandac.PandaModules import NodePath
+from libotp import *
 from toontown.building import ElevatorUtils
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import ToontownBattleGlobals
@@ -19,8 +20,8 @@ from toontown.cogdominium import CogdoGameConsts
 from toontown.cogdominium import CogdoBarrelRoom, CogdoBarrelRoomConsts
 from toontown.distributed import DelayDelete
 from toontown.toonbase import TTLocalizer
-from CogdoExecutiveSuiteMovies import CogdoExecutiveSuiteIntro
-from CogdoElevatorMovie import CogdoElevatorMovie
+from .CogdoExecutiveSuiteMovies import CogdoExecutiveSuiteIntro
+from .CogdoElevatorMovie import CogdoElevatorMovie
 PAINTING_DICT = {'s': 'tt_m_ara_crg_paintingMoverShaker',
  'l': 'tt_m_ara_crg_paintingLegalEagle',
  'm': 'tt_m_ara_crg_paintingMoverShaker',
@@ -34,8 +35,8 @@ class DistributedCogdoInterior(DistributedObject.DistributedObject):
         DistributedObject.DistributedObject.__init__(self, cr)
         self.toons = []
         self.activeIntervals = {}
-        self.openSfx = base.loadSfx('phase_5/audio/sfx/elevator_door_open.mp3')
-        self.closeSfx = base.loadSfx('phase_5/audio/sfx/elevator_door_close.mp3')
+        self.openSfx = base.loader.loadSfx('phase_5/audio/sfx/elevator_door_open.ogg')
+        self.closeSfx = base.loader.loadSfx('phase_5/audio/sfx/elevator_door_close.ogg')
         self.suits = []
         self.reserveSuits = []
         self.joiningReserves = []
@@ -76,8 +77,8 @@ class DistributedCogdoInterior(DistributedObject.DistributedObject):
         self.penthouseOutroTrack = None
         self.penthouseOutroChatDoneTrack = None
         self.penthouseIntroTrack = None
-        self.waitMusic = base.loadMusic('phase_7/audio/bgm/encntr_toon_winning_indoor.mid')
-        self.elevatorMusic = base.loadMusic('phase_7/audio/bgm/tt_elevator.mid')
+        self.waitMusic = base.loader.loadMusic('phase_7/audio/bgm/encntr_toon_winning_indoor.ogg')
+        self.elevatorMusic = base.loader.loadMusic('phase_7/audio/bgm/tt_elevator.ogg')
         self.fsm = ClassicFSM.ClassicFSM('DistributedCogdoInterior', [State.State('WaitForAllToonsInside', self.enterWaitForAllToonsInside, self.exitWaitForAllToonsInside, ['Elevator']),
          State.State('Elevator', self.enterElevator, self.exitElevator, ['Game']),
          State.State('Game', self.enterGame, self.exitGame, ['Resting', 'Failed', 'BattleIntro']),
@@ -173,8 +174,8 @@ class DistributedCogdoInterior(DistributedObject.DistributedObject):
 
     def handleAnnounceGenerate(self, obj):
         self.ignore(self.announceGenerateName)
-        self.cageDoorSfx = loader.loadSfx('phase_5/audio/sfx/CHQ_SOS_cage_door.mp3')
-        self.cageLowerSfx = loader.loadSfx('phase_5/audio/sfx/CHQ_SOS_cage_lower.mp3')
+        self.cageDoorSfx = loader.loadSfx('phase_5/audio/sfx/CHQ_SOS_cage_door.ogg')
+        self.cageLowerSfx = loader.loadSfx('phase_5/audio/sfx/CHQ_SOS_cage_lower.ogg')
         self.sendUpdate('setAvatarJoined', [])
 
     def disable(self):
@@ -255,13 +256,13 @@ class DistributedCogdoInterior(DistributedObject.DistributedObject):
         self.ignore(toon.uniqueName('disable'))
 
     def __finishInterval(self, name):
-        if self.activeIntervals.has_key(name):
+        if name in self.activeIntervals:
             interval = self.activeIntervals[name]
             if interval.isPlaying():
                 interval.finish()
 
     def __cleanupIntervals(self):
-        for interval in self.activeIntervals.values():
+        for interval in list(self.activeIntervals.values()):
             interval.finish()
 
         self.activeIntervals = {}
@@ -304,7 +305,7 @@ class DistributedCogdoInterior(DistributedObject.DistributedObject):
         self.toons = []
         for toonId in toonIds:
             if toonId != 0:
-                if self.cr.doId2do.has_key(toonId):
+                if toonId in self.cr.doId2do:
                     toon = self.cr.doId2do[toonId]
                     toon.stopSmooth()
                     self.toons.append(toon)
@@ -322,7 +323,7 @@ class DistributedCogdoInterior(DistributedObject.DistributedObject):
         self.suits = []
         self.joiningReserves = []
         for suitId in suitIds:
-            if self.cr.doId2do.has_key(suitId):
+            if suitId in self.cr.doId2do:
                 suit = self.cr.doId2do[suitId]
                 self.suits.append(suit)
                 suit.fsm.request('Battle')
@@ -336,7 +337,7 @@ class DistributedCogdoInterior(DistributedObject.DistributedObject):
         self.reserveSuits = []
         for index in range(len(reserveIds)):
             suitId = reserveIds[index]
-            if self.cr.doId2do.has_key(suitId):
+            if suitId in self.cr.doId2do:
                 suit = self.cr.doId2do[suitId]
                 self.reserveSuits.append((suit, values[index]))
             else:

@@ -1,19 +1,20 @@
 from direct.interval.IntervalGlobal import *
-from BattleBase import *
-from BattleProps import *
-from BattleSounds import *
+from .BattleBase import *
+from .BattleProps import *
+from .BattleSounds import *
 from toontown.toon.ToonDNA import *
 from toontown.suit.SuitDNA import *
-import MovieUtil
-import MovieCamera
+from . import MovieUtil
+from . import MovieCamera
 from direct.directnotify import DirectNotifyGlobal
-import BattleParticles
+from . import BattleParticles
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import ToontownBattleGlobals
 import random
+import functools
 notify = DirectNotifyGlobal.directNotify.newCategory('MovieSquirt')
-hitSoundFiles = ('AA_squirt_flowersquirt.mp3', 'AA_squirt_glasswater.mp3', 'AA_squirt_neonwatergun.mp3', 'AA_squirt_seltzer.mp3', 'firehose_spray.mp3', 'AA_throw_stormcloud.mp3', 'AA_squirt_Geyser.mp3')
-missSoundFiles = ('AA_squirt_flowersquirt_miss.mp3', 'AA_squirt_glasswater_miss.mp3', 'AA_squirt_neonwatergun_miss.mp3', 'AA_squirt_seltzer_miss.mp3', 'firehose_spray.mp3', 'AA_throw_stormcloud_miss.mp3', 'AA_squirt_Geyser.mp3')
+hitSoundFiles = ('AA_squirt_flowersquirt.ogg', 'AA_squirt_glasswater.ogg', 'AA_squirt_neonwatergun.ogg', 'AA_squirt_seltzer.ogg', 'firehose_spray.ogg', 'AA_throw_stormcloud.ogg', 'AA_squirt_Geyser.ogg')
+missSoundFiles = ('AA_squirt_flowersquirt_miss.ogg', 'AA_squirt_glasswater_miss.ogg', 'AA_squirt_neonwatergun_miss.ogg', 'AA_squirt_seltzer_miss.ogg', 'firehose_spray.ogg', 'AA_throw_stormcloud_miss.ogg', 'AA_squirt_Geyser.ogg')
 sprayScales = [0.2,
  0.3,
  0.1,
@@ -26,7 +27,7 @@ WaterSprayColor = Point4(0.75, 0.75, 1.0, 0.8)
 def doSquirts(squirts):
     if len(squirts) == 0:
         return (None, None)
-
+    
     suitSquirtsDict = {}
     doneUber = 0
     skip = 0
@@ -38,26 +39,26 @@ def doSquirts(squirts):
             if 1:
                 target = squirt['target'][0]
                 suitId = target['suit'].doId
-                if suitSquirtsDict.has_key(suitId):
+                if suitId in suitSquirtsDict:
                     suitSquirtsDict[suitId].append(squirt)
                 else:
                     suitSquirtsDict[suitId] = [squirt]
         else:
             suitId = squirt['target']['suit'].doId
-            if suitSquirtsDict.has_key(suitId):
+            if suitId in suitSquirtsDict:
                 suitSquirtsDict[suitId].append(squirt)
             else:
                 suitSquirtsDict[suitId] = [squirt]
 
-    suitSquirts = suitSquirtsDict.values()
-
+    suitSquirts = list(suitSquirtsDict.values())
+    
     def compFunc(a, b):
         if len(a) > len(b):
             return 1
         elif len(a) < len(b):
             return -1
         return 0
-    suitSquirts.sort(compFunc)
+    suitSquirts.sort(key=functools.cmp_to_key(compFunc))
 
     delay = 0.0
 
@@ -221,7 +222,7 @@ def __getSuitTrack(suit, tContact, tDodge, hp, hpbonus, kbbonus, anim, died, lef
 
 
 def say(statement):
-    print statement
+    print(statement)
 
 
 def __getSoundTrack(level, hitSuit, delay, node = None):

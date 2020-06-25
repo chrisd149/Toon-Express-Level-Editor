@@ -35,7 +35,7 @@ class IssueFrame(DirectFrame):
         DirectFrame.__init__(self, frameColor=(1, 1, 1, 0), frameSize=self.FrameDimensions, relief=DGG.FLAT, parent=parent)
         self.hide()
         self.accept('newsSnapshot', self.doSnapshot)
-        self.parent = parent
+        self._parent = parent
         self.newsDir = newsDir
         self.dateStr = dateStr
         self.myIssueIndex = myIssueIndex
@@ -186,7 +186,7 @@ class IssueFrame(DirectFrame):
         image_scale = float(desiredXSize) / xSize
         image_scale *= float(69) / 70
         self.sectionBtns = []
-        for section in xrange(1, len(self.SectionIdents)):
+        for section in range(1, len(self.SectionIdents)):
             image = self.gui.find('**/%s' % buttonNames[section])
             rolloverImage = self.gui.find('**/%s' % rolloverButtonNames[section])
             if image.isEmpty():
@@ -310,7 +310,7 @@ class IssueFrame(DirectFrame):
          frameSize2,
          frameSize2)
         self.sectionBtns = []
-        for section in xrange(0, len(self.SectionIdents)):
+        for section in range(0, len(self.SectionIdents)):
             image = self.guiNav.find('**/%s' % buttonNames[section])
             rolloverImage = self.guiNav.find('**/%s' % rolloverButtonNames[section])
             if image.isEmpty():

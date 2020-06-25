@@ -1,11 +1,12 @@
 from pandac.PandaModules import *
+from libtoontown import *
 from toontown.toonbase.ToonBaseGlobal import *
 from direct.directnotify import DirectNotifyGlobal
 from direct.fsm import StateData
 from direct.fsm import ClassicFSM, State
 from direct.fsm import State
 from direct.task.Task import Task
-from ToontownMsgTypes import *
+from .ToontownMsgTypes import *
 from toontown.toonbase import ToontownGlobals
 from toontown.hood import TTHood
 from toontown.hood import DDHood

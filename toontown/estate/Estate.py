@@ -16,7 +16,7 @@ from toontown.hood import SkyUtil
 from toontown.pets import PetTutorial
 from direct.controls.GravityWalker import GravityWalker
 from otp.distributed.TelemetryLimiter import RotationLimitToH, TLGatherAllAvs, TLNull
-import HouseGlobals
+from . import HouseGlobals
 
 class Estate(Place.Place):
     notify = DirectNotifyGlobal.directNotify.newCategory('Estate')
@@ -260,7 +260,7 @@ class Estate(Place.Place):
     def teleportInDone(self):
         self.notify.debug('teleportInDone')
         self.toonSubmerged = -1
-        if self.nextState is not 'petTutorial':
+        if self.nextState != 'petTutorial':
             self.notify.info('add estate-check-toon-underwater to TaskMgr in teleportInDone()')
             if hasattr(self, 'fsm'):
                 taskMgr.add(self.__checkToonUnderwater, 'estate-check-toon-underwater')

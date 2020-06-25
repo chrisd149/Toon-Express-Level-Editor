@@ -1,15 +1,15 @@
 from direct.actor import Actor
 from otp.avatar import Avatar
-import SuitDNA
+from . import SuitDNA
 from toontown.toonbase import ToontownGlobals
 from pandac.PandaModules import *
+from libotp import *
 from toontown.battle import SuitBattleGlobals
 from direct.task.Task import Task
 from toontown.battle import BattleProps
 from toontown.toonbase import TTLocalizer
 from pandac.PandaModules import VirtualFileMountHTTP, VirtualFileSystem, Filename, DSearchPath
 from direct.showbase import AppRunnerGlobal
-import string
 import os
 aSize = 6.06
 bSize = 5.29
@@ -169,7 +169,7 @@ HeadModelDict = {'a': ('/models/char/suitA-', 4),
  'c': ('/models/char/suitC-', 3.5)}
 
 def loadTutorialSuit():
-    loader.loadModelNode('phase_3.5/models/char/suitC-mod')
+    loader.loadModel('phase_3.5/models/char/suitC-mod').node()
     loadDialog(1)
 
 
@@ -184,7 +184,7 @@ def unloadSuits(level):
 
 
 def loadSuitModelsAndAnims(level, flag = 0):
-    for key in ModelDict.keys():
+    for key in list(ModelDict.keys()):
         model, phase = ModelDict[key]
         if base.config.GetBool('want-new-cogs', 0):
             headModel, headPhase = HeadModelDict[key]
@@ -194,10 +194,10 @@ def loadSuitModelsAndAnims(level, flag = 0):
             if base.config.GetBool('want-new-cogs', 0):
                 filepath = 'phase_3.5' + model + 'zero'
                 if cogExists(model + 'zero.bam'):
-                    loader.loadModelNode(filepath)
+                    loader.loadModel(filepath).node()
             else:
-                loader.loadModelNode('phase_3.5' + model + 'mod')
-            loader.loadModelNode('phase_' + str(headPhase) + headModel + 'heads')
+                loader.loadModel('phase_3.5' + model + 'mod').node()
+            loader.loadModel('phase_' + str(headPhase) + headModel + 'heads').node()
         else:
             if base.config.GetBool('want-new-cogs', 0):
                 filepath = 'phase_3.5' + model + 'zero'
@@ -231,14 +231,14 @@ def loadSuitAnims(suit, flag = 1):
             animList = ()
 
     else:
-        print 'Invalid suit name: ', suit
+        print('Invalid suit name: ', suit)
         return -1
     for anim in animList:
         phase = 'phase_' + str(anim[2])
         filePrefix = ModelDict[bodyType][0]
         animName = filePrefix + anim[1]
         if flag:
-            loader.loadModelNode(animName)
+            loader.loadModel(animName).node()
         else:
             loader.unloadModel(animName)
 
@@ -254,7 +254,7 @@ def loadDialog(level):
          'COG_VO_statement',
          'COG_VO_question']
         for file in SuitDialogFiles:
-            SuitDialogArray.append(base.loadSfx(loadPath + file + '.mp3'))
+            SuitDialogArray.append(base.loader.loadSfx(loadPath + file + '.ogg'))
 
         SuitDialogArray.append(SuitDialogArray[2])
         SuitDialogArray.append(SuitDialogArray[2])
@@ -265,10 +265,10 @@ def loadSkelDialog():
     if len(SkelSuitDialogArray) > 0:
         return
     else:
-        grunt = loader.loadSfx('phase_5/audio/sfx/Skel_COG_VO_grunt.mp3')
-        murmur = loader.loadSfx('phase_5/audio/sfx/Skel_COG_VO_murmur.mp3')
-        statement = loader.loadSfx('phase_5/audio/sfx/Skel_COG_VO_statement.mp3')
-        question = loader.loadSfx('phase_5/audio/sfx/Skel_COG_VO_question.mp3')
+        grunt = loader.loadSfx('phase_5/audio/sfx/Skel_COG_VO_grunt.ogg')
+        murmur = loader.loadSfx('phase_5/audio/sfx/Skel_COG_VO_murmur.ogg')
+        statement = loader.loadSfx('phase_5/audio/sfx/Skel_COG_VO_statement.ogg')
+        question = loader.loadSfx('phase_5/audio/sfx/Skel_COG_VO_question.ogg')
         SkelSuitDialogArray = [grunt,
          murmur,
          statement,
@@ -927,7 +927,7 @@ class Suit(Avatar.Avatar):
                 else:
                     self.setSuitClothes(self.loseActor)
             else:
-                loseModel = 'phase_5/models/char/cog' + string.upper(self.style.body) + '_robot-lose-mod'
+                loseModel = 'phase_5/models/char/cog' + self.style.body.upper() + '_robot-lose-mod'
                 filePrefix, phase = TutorialModelDict[self.style.body]
                 loseAnim = 'phase_' + str(phase) + filePrefix + 'lose'
                 self.loseActor = Actor.Actor(loseModel, {'lose': loseAnim})
@@ -951,7 +951,7 @@ class Suit(Avatar.Avatar):
         return
 
     def makeSkeleton(self):
-        model = 'phase_5/models/char/cog' + string.upper(self.style.body) + '_robot-zero'
+        model = 'phase_5/models/char/cog' + self.style.body.upper() + '_robot-zero'
         anims = self.generateAnimDict()
         anim = self.getCurrentAnim()
         dropShadow = self.dropShadow
@@ -971,7 +971,7 @@ class Suit(Avatar.Avatar):
             bb.setTwoSided(1)
 
         self.setName(TTLocalizer.Skeleton)
-        nameInfo = TTLocalizer.SuitBaseNameWithLevel % {'name': self.name,
+        nameInfo = TTLocalizer.SuitBaseNameWithLevel % {'name': self._name,
          'dept': self.getStyleDept(),
          'level': self.getActualLevel()}
         self.setDisplayName(nameInfo)

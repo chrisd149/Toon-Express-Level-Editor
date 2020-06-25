@@ -1,4 +1,5 @@
 from pandac.PandaModules import *
+from libotp import *
 from direct.interval.IntervalGlobal import *
 from toontown.battle.BattleProps import *
 from direct.distributed.ClockDelta import *
@@ -11,9 +12,9 @@ from direct.fsm import State
 from direct.directnotify import DirectNotifyGlobal
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import ToontownBattleGlobals
-import DistributedBossCog
+from . import DistributedBossCog
 from toontown.toonbase import TTLocalizer
-import SuitDNA
+from . import SuitDNA
 from toontown.toon import Toon
 from toontown.battle import BattleBase
 from direct.directutil import Mopath
@@ -73,17 +74,17 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         global OneBossCog
         DistributedBossCog.DistributedBossCog.announceGenerate(self)
         self.setName(TTLocalizer.SellbotBossName)
-        nameInfo = TTLocalizer.BossCogNameWithDept % {'name': self.name,
+        nameInfo = TTLocalizer.BossCogNameWithDept % {'name': self._name,
          'dept': SuitDNA.getDeptFullname(self.style.dept)}
         self.setDisplayName(nameInfo)
-        self.cageDoorSfx = loader.loadSfx('phase_5/audio/sfx/CHQ_SOS_cage_door.mp3')
-        self.cageLandSfx = loader.loadSfx('phase_9/audio/sfx/CHQ_SOS_cage_land.mp3')
-        self.cageLowerSfx = loader.loadSfx('phase_5/audio/sfx/CHQ_SOS_cage_lower.mp3')
-        self.piesRestockSfx = loader.loadSfx('phase_9/audio/sfx/CHQ_SOS_pies_restock.mp3')
-        self.rampSlideSfx = loader.loadSfx('phase_9/audio/sfx/CHQ_VP_ramp_slide.mp3')
+        self.cageDoorSfx = loader.loadSfx('phase_5/audio/sfx/CHQ_SOS_cage_door.ogg')
+        self.cageLandSfx = loader.loadSfx('phase_9/audio/sfx/CHQ_SOS_cage_land.ogg')
+        self.cageLowerSfx = loader.loadSfx('phase_5/audio/sfx/CHQ_SOS_cage_lower.ogg')
+        self.piesRestockSfx = loader.loadSfx('phase_9/audio/sfx/CHQ_SOS_pies_restock.ogg')
+        self.rampSlideSfx = loader.loadSfx('phase_9/audio/sfx/CHQ_VP_ramp_slide.ogg')
         self.strafeSfx = []
         for i in range(10):
-            self.strafeSfx.append(loader.loadSfx('phase_3.5/audio/sfx/SA_shred.mp3'))
+            self.strafeSfx.append(loader.loadSfx('phase_3.5/audio/sfx/SA_shred.ogg'))
 
         render.setTag('pieCode', str(ToontownGlobals.PieCodeNotBossCog))
         insidesA = CollisionPolygon(Point3(4.0, -2.0, 5.0), Point3(-4.0, -2.0, 5.0), Point3(-4.0, -2.0, 0.5), Point3(4.0, -2.0, 0.5))
@@ -219,6 +220,7 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.cagedToon.setPosHpr(0, -2, 0, 180, 0, 0)
         self.cagedToon.loop('neutral')
         touch = CollisionPolygon(Point3(-3.0382, 3.0382, -1), Point3(3.0382, 3.0382, -1), Point3(3.0382, -3.0382, -1), Point3(-3.0382, -3.0382, -1))
+        touch.setTangible(0)
         touchNode = CollisionNode('Cage')
         touchNode.setCollideMask(ToontownGlobals.WallBitmask)
         touchNode.addSolid(touch)
@@ -549,9 +551,9 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.rope.ropeNode.setUvScale(0.8)
         self.rope.setTexture(self.cage.findTexture('hq_chain'))
         self.rope.setTransparency(1)
-        self.promotionMusic = base.loadMusic('phase_7/audio/bgm/encntr_suit_winning_indoor.mid')
-        self.betweenBattleMusic = base.loadMusic('phase_9/audio/bgm/encntr_toon_winning.mid')
-        self.battleTwoMusic = base.loadMusic('phase_7/audio/bgm/encntr_suit_winning_indoor.mid')
+        self.promotionMusic = base.loader.loadMusic('phase_7/audio/bgm/encntr_suit_winning_indoor.ogg')
+        self.betweenBattleMusic = base.loader.loadMusic('phase_9/audio/bgm/encntr_toon_winning.ogg')
+        self.battleTwoMusic = base.loader.loadMusic('phase_7/audio/bgm/encntr_suit_winning_indoor.ogg')
         self.geom.reparentTo(render)
 
     def unloadEnvironment(self):

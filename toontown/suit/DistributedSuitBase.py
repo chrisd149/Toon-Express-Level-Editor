@@ -1,4 +1,5 @@
 from pandac.PandaModules import *
+from libotp import *
 from direct.interval.IntervalGlobal import *
 from direct.distributed.ClockDelta import *
 from direct.directtools.DirectGeometry import CLAMP
@@ -6,19 +7,19 @@ from direct.controls.ControlManager import CollisionHandlerRayStart
 from direct.task import Task
 from otp.otpbase import OTPGlobals
 from otp.avatar import DistributedAvatar
-import Suit
+from . import Suit
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import ToontownBattleGlobals
 from toontown.toonbase import TTLocalizer
 from toontown.battle import DistributedBattle
 from direct.fsm import ClassicFSM
 from direct.fsm import State
-import SuitTimings
-import SuitBase
-import DistributedSuitPlanner
-import SuitDNA
+from . import SuitTimings
+from . import SuitBase
+from . import DistributedSuitPlanner
+from . import SuitDNA
 from direct.directnotify import DirectNotifyGlobal
-import SuitDialog
+from . import SuitDialog
 from toontown.battle import BattleProps
 import math
 import copy
@@ -71,12 +72,12 @@ class DistributedSuitBase(DistributedAvatar.DistributedAvatar, Suit.Suit, SuitBa
         if num > self.maxSkeleRevives:
             self.maxSkeleRevives = num
         if self.getSkeleRevives() > 0:
-            nameInfo = TTLocalizer.SuitBaseNameWithLevel % {'name': self.name,
+            nameInfo = TTLocalizer.SuitBaseNameWithLevel % {'name': self._name,
              'dept': self.getStyleDept(),
              'level': '%s%s' % (self.getActualLevel(), TTLocalizer.SkeleRevivePostFix)}
             self.setDisplayName(nameInfo)
         else:
-            nameInfo = TTLocalizer.SuitBaseNameWithLevel % {'name': self.name,
+            nameInfo = TTLocalizer.SuitBaseNameWithLevel % {'name': self._name,
              'dept': self.getStyleDept(),
              'level': self.getActualLevel()}
             self.setDisplayName(nameInfo)
@@ -155,9 +156,9 @@ class DistributedSuitBase(DistributedAvatar.DistributedAvatar, Suit.Suit, SuitBa
         if self.prop == None:
             self.prop = BattleProps.globalPropPool.getProp('propeller')
         if self.propInSound == None:
-            self.propInSound = base.loadSfx('phase_5/audio/sfx/ENC_propeller_in.mp3')
+            self.propInSound = base.loader.loadSfx('phase_5/audio/sfx/ENC_propeller_in.ogg')
         if self.propOutSound == None:
-            self.propOutSound = base.loadSfx('phase_5/audio/sfx/ENC_propeller_out.mp3')
+            self.propOutSound = base.loader.loadSfx('phase_5/audio/sfx/ENC_propeller_out.ogg')
         if base.config.GetBool('want-new-cogs', 0):
             head = self.find('**/to_head')
             if head.isEmpty():
@@ -169,6 +170,7 @@ class DistributedSuitBase(DistributedAvatar.DistributedAvatar, Suit.Suit, SuitBa
 
     def detachPropeller(self):
         if self.prop:
+            self.prop.cleanup()
             self.prop.removeNode()
             self.prop = None
         if self.propInSound:
@@ -431,16 +433,15 @@ class DistributedSuitBase(DistributedAvatar.DistributedAvatar, Suit.Suit, SuitBa
                     self.nametag3d.setDepthTest(0)
                     self.nametag3d.setBin('fixed', 99)
                 self.hpText.setPos(0, 0, self.height / 2)
-                seq = Task.sequence(self.hpText.lerpPos(Point3(0, 0, self.height + 1.5), 1.0, blendType='easeOut'), Task.pause(0.85), self.hpText.lerpColor(Vec4(r, g, b, a), Vec4(r, g, b, 0), 0.1), Task.Task(self.hideHpTextTask))
-                taskMgr.add(seq, self.uniqueName('hpText'))
+                self.hpTextSeq = Sequence(self.hpText.posInterval(1.0, Point3(0, 0, self.height + 1.5), blendType='easeOut'), Wait(0.85), self.hpText.colorInterval(0.1, Vec4(r, g, b, 0)), Func(self.hideHpText))
+                self.hpTextSeq.start()
 
-    def hideHpTextTask(self, task):
-        self.hideHpText()
+    def hideHpText(self):
+        DistributedAvatar.DistributedAvatar.hideHpText(self)
         if self.sillySurgeText:
             self.nametag3d.clearDepthTest()
             self.nametag3d.clearBin()
             self.sillySurgeText = False
-        return Task.done
 
     def getAvIdName(self):
         try:

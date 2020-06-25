@@ -1,12 +1,12 @@
 from toontown.toonbase import ToontownGlobals
-import PhoneGlobals
+from . import PhoneGlobals
 from toontown.catalog import CatalogScreen
 from toontown.catalog import CatalogItem
 from toontown.toontowngui import TTDialog
 from toontown.toonbase import TTLocalizer
-import DistributedHouseInterior
+from . import DistributedHouseInterior
 from direct.actor import Actor
-import DistributedFurnitureItem
+from . import DistributedFurnitureItem
 from direct.distributed import ClockDelta
 from direct.showbase import PythonUtil
 from direct.showutil import Rope
@@ -96,10 +96,10 @@ class DistributedPhone(DistributedFurnitureItem.DistributedFurnitureItem):
         mount = loader.loadModel('phase_5.5/models/estate/phoneMount-mod')
         mount.setTransparency(0, 1)
         self.model.reparentTo(mount)
-        self.ringSfx = loader.loadSfx('phase_3.5/audio/sfx/telephone_ring.mp3')
-        self.handleSfx = loader.loadSfx('phase_5.5/audio/sfx/telephone_handle2.mp3')
-        self.hangUpSfx = loader.loadSfx('phase_5.5/audio/sfx/telephone_hang_up.mp3')
-        self.pickUpSfx = loader.loadSfx('phase_5.5/audio/sfx/telephone_pickup1.mp3')
+        self.ringSfx = loader.loadSfx('phase_3.5/audio/sfx/telephone_ring.ogg')
+        self.handleSfx = loader.loadSfx('phase_5.5/audio/sfx/telephone_handle2.ogg')
+        self.hangUpSfx = loader.loadSfx('phase_5.5/audio/sfx/telephone_hang_up.ogg')
+        self.pickUpSfx = loader.loadSfx('phase_5.5/audio/sfx/telephone_pickup1.ogg')
         if self.initialScale:
             mount.setScale(*self.initialScale)
             self.usedInitialScale = 1
@@ -266,7 +266,7 @@ class DistributedPhone(DistributedFurnitureItem.DistributedFurnitureItem):
         self.sendUpdate('requestPurchaseMessage', [context, blob, optional])
 
     def requestGiftPurchase(self, item, targetDoID, callback, optional = -1):
-        print 'in the client phone'
+        print('in the client phone')
         blob = item.getBlob(store=CatalogItem.Customization)
         context = self.getCallbackContext(callback, [item])
         self.sendUpdate('requestGiftPurchaseMessage', [context,

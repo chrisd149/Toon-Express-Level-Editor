@@ -36,8 +36,8 @@ class SafeZoneLoader(StateData.StateData):
         return
 
     def load(self):
-        self.music = base.loadMusic(self.musicFile)
-        self.activityMusic = base.loadMusic(self.activityMusicFile)
+        self.music = base.loader.loadMusic(self.musicFile)
+        self.activityMusic = base.loader.loadMusic(self.activityMusicFile)
         self.createSafeZone(self.dnaFile)
         self.parentFSMState.addChild(self.fsm)
 
@@ -84,7 +84,7 @@ class SafeZoneLoader(StateData.StateData):
         npl = self.geom.findAllMatches('**/=DNARoot=holiday_prop')
         for i in range(npl.getNumPaths()):
             np = npl.getPath(i)
-            np.setTag('transformIndex', `i`)
+            np.setTag('transformIndex', repr(i))
             self.holidayPropTransforms[i] = np.getNetTransform()
 
         self.geom.flattenMedium()
@@ -234,7 +234,7 @@ class SafeZoneLoader(StateData.StateData):
         return
 
     def deleteAnimatedProps(self):
-        for zoneNode, animPropList in self.animPropDict.items():
+        for zoneNode, animPropList in list(self.animPropDict.items()):
             for animProp in animPropList:
                 animProp.delete()
 

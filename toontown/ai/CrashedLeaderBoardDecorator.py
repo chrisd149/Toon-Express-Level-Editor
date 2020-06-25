@@ -1,9 +1,10 @@
 from direct.directnotify import DirectNotifyGlobal
 from direct.distributed.ClockDelta import *
 from direct.interval.IntervalGlobal import *
-import HolidayDecorator
+from . import HolidayDecorator
 from toontown.toonbase import ToontownGlobals
-from pandac.PandaModules import Vec4, loadDNAFile, CSDefault, TransformState, NodePath, TransparencyAttrib
+from pandac.PandaModules import Vec4, CSDefault, TransformState, NodePath, TransparencyAttrib
+from libtoontown import loadDNAFile
 from toontown.hood import GSHood
 
 class CrashedLeaderBoardDecorator(HolidayDecorator.HolidayDecorator):

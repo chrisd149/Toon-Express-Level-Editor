@@ -20,8 +20,8 @@ class PartyLoader(SafeZoneLoader.SafeZoneLoader):
          State.State('party', self.enterParty, self.exitParty, ['quietZone']),
          State.State('quietZone', self.enterQuietZone, self.exitQuietZone, ['planning', 'party']),
          State.State('final', self.enterFinal, self.exitFinal, ['start'])], 'start', 'final')
-        self.musicFile = 'phase_13/audio/bgm/party_original_theme.mid'
-        self.activityMusicFile = 'phase_13/audio/bgm/party_waltz_dance.mid'
+        self.musicFile = 'phase_13/audio/bgm/party_original_theme.ogg'
+        self.activityMusicFile = 'phase_13/audio/bgm/party_waltz_dance.ogg'
         self.dnaFile = 'phase_13/dna/party_sz.dna'
         self.safeZoneStorageDNAFile = None
         self.cloudSwitch = 0
@@ -40,11 +40,11 @@ class PartyLoader(SafeZoneLoader.SafeZoneLoader):
         self.oldClear = base.win.getClearColor()
         base.win.setClearColor(Vec4(0.47, 0.69, 0.3, 1.0))
         SafeZoneLoader.SafeZoneLoader.load(self)
-        self.underwaterSound = base.loadSfx('phase_4/audio/sfx/AV_ambient_water.mp3')
-        self.swimSound = base.loadSfx('phase_4/audio/sfx/AV_swim_single_stroke.mp3')
-        self.submergeSound = base.loadSfx('phase_5.5/audio/sfx/AV_jump_in_water.mp3')
-        self.birdSound = map(base.loadSfx, ['phase_4/audio/sfx/SZ_TC_bird1.mp3', 'phase_4/audio/sfx/SZ_TC_bird2.mp3', 'phase_4/audio/sfx/SZ_TC_bird3.mp3'])
-        self.cricketSound = map(base.loadSfx, ['phase_4/audio/sfx/SZ_TC_bird1.mp3', 'phase_4/audio/sfx/SZ_TC_bird2.mp3', 'phase_4/audio/sfx/SZ_TC_bird3.mp3'])
+        self.underwaterSound = base.loader.loadSfx('phase_4/audio/sfx/AV_ambient_water.ogg')
+        self.swimSound = base.loader.loadSfx('phase_4/audio/sfx/AV_swim_single_stroke.ogg')
+        self.submergeSound = base.loader.loadSfx('phase_5.5/audio/sfx/AV_jump_in_water.ogg')
+        self.birdSound = list(map(base.loader.loadSfx, ['phase_4/audio/sfx/SZ_TC_bird1.ogg', 'phase_4/audio/sfx/SZ_TC_bird2.ogg', 'phase_4/audio/sfx/SZ_TC_bird3.ogg']))
+        self.cricketSound = list(map(base.loader.loadSfx, ['phase_4/audio/sfx/SZ_TC_bird1.ogg', 'phase_4/audio/sfx/SZ_TC_bird2.ogg', 'phase_4/audio/sfx/SZ_TC_bird3.ogg']))
 
     def unload(self):
         self.ignoreAll()
@@ -206,15 +206,15 @@ class PartyLoader(SafeZoneLoader.SafeZoneLoader):
         return track
 
     def debugGeom(self, decomposed):
-        print 'numPrimitives = %d' % decomposed.getNumPrimitives()
+        print('numPrimitives = %d' % decomposed.getNumPrimitives())
         for primIndex in range(decomposed.getNumPrimitives()):
             prim = decomposed.getPrimitive(primIndex)
-            print 'prim = %s' % prim
-            print 'isIndexed = %d' % prim.isIndexed()
-            print 'prim.getNumPrimitives = %d' % prim.getNumPrimitives()
+            print('prim = %s' % prim)
+            print('isIndexed = %d' % prim.isIndexed())
+            print('prim.getNumPrimitives = %d' % prim.getNumPrimitives())
             for basicPrim in range(prim.getNumPrimitives()):
-                print '%d start=%d' % (basicPrim, prim.getPrimitiveStart(basicPrim))
-                print '%d end=%d' % (basicPrim, prim.getPrimitiveEnd(basicPrim))
+                print('%d start=%d' % (basicPrim, prim.getPrimitiveStart(basicPrim)))
+                print('%d end=%d' % (basicPrim, prim.getPrimitiveEnd(basicPrim)))
 
     def loadCloud(self, version, radius, zOffset):
         self.notify.debug('loadOnePlatform version=%d' % version)

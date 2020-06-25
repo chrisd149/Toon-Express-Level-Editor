@@ -35,7 +35,7 @@ class DistributedGolfSpot(DistributedObject.DistributedObject, FSM.FSM):
         self.golfSpotSmoother.setSmoothMode(SmoothMover.SMOn)
         self.smoothStarted = 0
         self.__broadcastPeriod = 0.2
-        if self.index > len(self.positions):
+        if self.index and self.index > len(self.positions):
             self.notify.error('Invalid index %d' % index)
         self.fadeTrack = None
         self.setupPowerBar()
@@ -107,7 +107,7 @@ class DistributedGolfSpot(DistributedObject.DistributedObject, FSM.FSM):
         cn.setIntoCollideMask(ToontownGlobals.WallBitmask)
         self.trigger = self.root.attachNewNode(cn)
         self.trigger.stash()
-        self.hitBallSfx = loader.loadSfx('phase_6/audio/sfx/Golf_Hit_Ball.mp3')
+        self.hitBallSfx = loader.loadSfx('phase_6/audio/sfx/Golf_Hit_Ball.ogg')
 
     def cleanup(self):
         if self.swingInterval:
@@ -116,7 +116,7 @@ class DistributedGolfSpot(DistributedObject.DistributedObject, FSM.FSM):
         if self.releaseTrack:
             self.releaseTrack.finish()
             self.releaseTrack = None
-        flyTracks = self.flyBallTracks.values()
+        flyTracks = list(self.flyBallTracks.values())
         for track in flyTracks:
             track.finish()
 
@@ -458,7 +458,7 @@ class DistributedGolfSpot(DistributedObject.DistributedObject, FSM.FSM):
 
     def __updateBallPower(self, task):
         if not self.powerBar:
-            print '### no power bar!!!'
+            print('### no power bar!!!')
             return task.done
         newPower = self.__getBallPower(globalClock.getFrameTime())
         self.power = newPower
@@ -671,20 +671,20 @@ class DistributedGolfSpot(DistributedObject.DistributedObject, FSM.FSM):
         return self.__flyBallBubble
 
     def __flyBallHit(self, entry):
-        print entry
+        print(entry)
 
     def flyBallFinishedFlying(self, sequence):
-        if self.flyBallTracks.has_key(sequence):
+        if sequence in self.flyBallTracks:
             del self.flyBallTracks[sequence]
 
     def __finishFlyBallTrack(self, sequence):
-        if self.flyBallTracks.has_key(sequence):
+        if sequence in self.flyBallTracks:
             flyBallTrack = self.flyBallTracks[sequence]
             del self.flyBallTracks[sequence]
             flyBallTrack.finish()
 
     def flyBallFinishedSplatting(self, sequence):
-        if self.splatTracks.has_key(sequence):
+        if sequence in self.splatTracks:
             del self.splatTracks[sequence]
 
     def __flyBallHit(self, entry):
@@ -694,7 +694,7 @@ class DistributedGolfSpot(DistributedObject.DistributedObject, FSM.FSM):
             return
         sequence = int(entry.getFromNodePath().getNetTag('pieSequence'))
         self.__finishFlyBallTrack(sequence)
-        if self.splatTracks.has_key(sequence):
+        if sequence in self.splatTracks:
             splatTrack = self.splatTracks[sequence]
             del self.splatTracks[sequence]
             splatTrack.finish()
@@ -738,10 +738,10 @@ class DistributedGolfSpot(DistributedObject.DistributedObject, FSM.FSM):
         if flyBallCode == ToontownGlobals.PieCodeBossCog:
             self.notify.debug('changing color to %s' % self.ballColor)
             splat.setColor(self.ballColor)
-        sound = loader.loadSfx('phase_11/audio/sfx/LB_evidence_miss.mp3')
+        sound = loader.loadSfx('phase_11/audio/sfx/LB_evidence_miss.ogg')
         vol = 1.0
         if flyBallCode == ToontownGlobals.PieCodeBossCog:
-            sound = loader.loadSfx('phase_4/audio/sfx/Golf_Hit_Barrier_1.mp3')
+            sound = loader.loadSfx('phase_4/audio/sfx/Golf_Hit_Barrier_1.ogg')
         soundIval = SoundInterval(sound, node=splat, volume=vol)
         if flyBallCode == ToontownGlobals.PieCodeBossCog and localAvatar.doId == throwerId:
             vol = 1.0

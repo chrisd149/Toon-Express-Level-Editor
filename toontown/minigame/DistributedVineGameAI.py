@@ -1,7 +1,7 @@
-from DistributedMinigameAI import *
+from .DistributedMinigameAI import *
 from direct.fsm import ClassicFSM, State
 from direct.fsm import State
-import VineGameGlobals
+from . import VineGameGlobals
 
 class DistributedVineGameAI(DistributedMinigameAI):
 
@@ -48,7 +48,7 @@ class DistributedVineGameAI(DistributedMinigameAI):
         self.numTreasures = VineGameGlobals.NumVines - 1
         self.numTreasuresTaken = 0
         self.takenTable = [0] * self.numTreasures
-        for avId in self.scoreDict.keys():
+        for avId in list(self.scoreDict.keys()):
             self.scoreDict[avId] = 0
             self.finishedBonus[avId] = 0
             self.finishedTimeLeft[avId] = -1
@@ -118,7 +118,7 @@ class DistributedVineGameAI(DistributedMinigameAI):
         if not self._playing():
             return
         avId = self.air.getAvatarIdFromSender()
-        if not self.scoreDict.has_key(avId):
+        if avId not in self.scoreDict:
             self.notify.warning('PROBLEM: avatar %s called claimTreasure(%s) but he is not in the scoreDict: %s. avIdList is: %s' % (avId,
              treasureNum,
              self.scoreDict,
@@ -199,7 +199,7 @@ class DistributedVineGameAI(DistributedMinigameAI):
             curTime = self.getCurrentGameTime()
             timeLeft = VineGameGlobals.GameDuration - curTime
             self.notify.debug('curTime =%s timeLeft = %s' % (curTime, timeLeft))
-            if not self.scoreDict.has_key(avId):
+            if avId not in self.scoreDict:
                 self.notify.warning('PROBLEM: avatar %s called claimTreasure(%s) but he is not in the scoreDict: %s. avIdList is: %s' % (avId,
                  treasureNum,
                  self.scoreDict,
@@ -225,7 +225,7 @@ class DistributedVineGameAI(DistributedMinigameAI):
         newVelX = velX
         newVelZ = velZ
         oldInfo = None
-        if self.toonInfo.has_key(avId):
+        if avId in self.toonInfo:
             oldInfo = self.toonInfo[avId]
             if vineIndex == None:
                 newVineIndex = oldInfo[0]
@@ -249,13 +249,13 @@ class DistributedVineGameAI(DistributedMinigameAI):
             pass
         if not newFacingRight == 0 and not newFacingRight == 1:
             newFacingRight = 1
-        if newPosX < -1000 or newPosX > 2000:
+        if newPosX is not None and (newPosX < -1000 or newPosX > 2000):
             newPosX = 0
-        if newPosZ < -100 or newPosZ > 1000:
+        if newPosZ is not None and (newPosZ < -100 or newPosZ > 1000):
             newPosZ = 0
-        if newVelX < -1000 or newVelX > 1000:
+        if newVelX is not None and (newVelX < -1000 or newVelX > 1000):
             newVelX = 0
-        if newVelZ < -1000 or newVelZ > 1000:
+        if newVelZ is not None and (newVelZ < -1000 or newVelZ > 1000):
             newVelZ = 0
         newInfo = [newVineIndex,
          newVineT,
@@ -315,6 +315,6 @@ class DistributedVineGameAI(DistributedMinigameAI):
             vineIndex = self.toonInfo[avId][0]
             if not vineIndex == VineGameGlobals.NumVines - 1:
                 partialBeans = int(vineIndex / 5.0)
-                if self.scoreDict.has_key(avId):
+                if avId in self.scoreDict:
                     self.scoreDict[avId] += partialBeans
                     self.sendUpdate('setScore', [avId, self.scoreDict[avId]])

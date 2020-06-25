@@ -1,6 +1,6 @@
 from toontown.toonbase.ToontownGlobals import *
 from direct.directnotify import DirectNotifyGlobal
-import BasicEntities
+from . import BasicEntities
 
 class ModelEntity(BasicEntities.NodePathEntity):
     LoadFuncs = {'loadModelCopy': loader.loadModelCopy,
@@ -49,7 +49,7 @@ class ModelEntity(BasicEntities.NodePathEntity):
                 floor = colNode.find('**/floor')
                 floor2 = floor.copyTo(colNode)
                 floor2.setZ(floor2, -.75)
-            if self.goonHatType is not 'none':
+            if self.goonHatType != 'none':
                 self.goonType = {'hardhat': 'pg',
                  'security': 'sg'}[self.goonHatType]
                 self.hat = self.model

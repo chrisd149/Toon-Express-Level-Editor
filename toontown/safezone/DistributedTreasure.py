@@ -16,7 +16,7 @@ class DistributedTreasure(DistributedObject.DistributedObject):
         self.dropShadow = None
         self.modelFindString = None
         self.grabSoundPath = None
-        self.rejectSoundPath = 'phase_4/audio/sfx/ring_miss.mp3'
+        self.rejectSoundPath = 'phase_4/audio/sfx/ring_miss.ogg'
         self.playSoundForRemoteToons = 1
         self.scale = 1.0
         self.shadow = 1
@@ -58,8 +58,8 @@ class DistributedTreasure(DistributedObject.DistributedObject):
         return 2.0
 
     def loadModel(self, modelPath, modelFindString = None):
-        self.grabSound = base.loadSfx(self.grabSoundPath)
-        self.rejectSound = base.loadSfx(self.rejectSoundPath)
+        self.grabSound = base.loader.loadSfx(self.grabSoundPath)
+        self.rejectSound = base.loader.loadSfx(self.rejectSoundPath)
         if self.nodePath == None:
             self.makeNodePath()
         else:
@@ -120,7 +120,7 @@ class DistributedTreasure(DistributedObject.DistributedObject):
     def handleGrab(self, avId):
         self.collNodePath.stash()
         self.avId = avId
-        if self.cr.doId2do.has_key(avId):
+        if avId in self.cr.doId2do:
             av = self.cr.doId2do[avId]
             self.av = av
         else:

@@ -1,11 +1,12 @@
 from toontown.toonbase.ToonBaseGlobal import *
 from pandac.PandaModules import *
+from libtoontown import *
 from toontown.toonbase.ToontownGlobals import *
 import random
 from direct.distributed import DistributedObject
 from direct.directnotify import DirectNotifyGlobal
 from direct.actor import Actor
-import ToonInteriorColors
+from . import ToonInteriorColors
 from toontown.hood import ZoneUtil
 
 class DistributedPetshopInterior(DistributedObject.DistributedObject):

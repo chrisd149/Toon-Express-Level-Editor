@@ -33,7 +33,7 @@ class GolfRewardDialog:
         if av and avId in self.avIdList:
             playerIndex = self.avIdList.index(avId)
             name = av.getName()
-            for trophyIndex in xrange(len(self.trophyList[playerIndex])):
+            for trophyIndex in range(len(self.trophyList[playerIndex])):
                 wonTrophy = self.trophyList[playerIndex][trophyIndex]
                 if wonTrophy:
                     trophyName = TTLocalizer.GolfTrophyDescriptions[trophyIndex]
@@ -186,7 +186,7 @@ class GolfRewardDialog:
                 self.trophy.hide()
             self.rankLabel['text'] = text
             if len(self.avIdList) > 1:
-                self.victory = base.loadSfx('phase_6/audio/sfx/KART_Applause_%d.mp3' % self.myPlace)
+                self.victory = base.loader.loadSfx('phase_6/audio/sfx/KART_Applause_%d.ogg' % self.myPlace)
                 self.victory.play()
 
         for avId in self.avIdList:

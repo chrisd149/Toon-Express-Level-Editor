@@ -1,29 +1,28 @@
 from pandac.PandaModules import *
 from toontown.toonbase.ToonBaseGlobal import *
 from direct.interval.IntervalGlobal import *
-from DistributedMinigame import *
+from .DistributedMinigame import *
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
 from direct.fsm import ClassicFSM, State
 from direct.fsm import State
 from toontown.toonbase import ToontownTimer
-import PatternGameGlobals
+from . import PatternGameGlobals
 from toontown.toon import ToonHead
 from toontown.char import CharDNA
 from toontown.char import Char
-import ArrowKeys
+from . import ArrowKeys
 import random
 from toontown.toonbase import ToontownGlobals
-import string
 from toontown.toonbase import TTLocalizer
 
 class DistributedPatternGame(DistributedMinigame):
     phase4snd = 'phase_4/audio/sfx/'
-    ButtonSoundNames = (phase4snd + 'm_match_trumpet.mp3',
-     phase4snd + 'm_match_guitar.mp3',
-     phase4snd + 'm_match_drums.mp3',
-     phase4snd + 'm_match_piano.mp3')
-    bgm = 'phase_4/audio/bgm/m_match_bg1.mid'
+    ButtonSoundNames = (phase4snd + 'm_match_trumpet.ogg',
+     phase4snd + 'm_match_guitar.ogg',
+     phase4snd + 'm_match_drums.ogg',
+     phase4snd + 'm_match_piano.ogg')
+    bgm = 'phase_4/audio/bgm/m_match_bg1.ogg'
     strWatch = TTLocalizer.PatternGameWatch
     strGo = TTLocalizer.PatternGameGo
     strRight = TTLocalizer.PatternGameRight
@@ -85,13 +84,13 @@ class DistributedPatternGame(DistributedMinigame):
         self.room = loader.loadModel('phase_4/models/minigames/matching_room')
         self.buttonSounds = []
         for soundName in self.ButtonSoundNames:
-            self.buttonSounds.append(base.loadSfx(soundName))
+            self.buttonSounds.append(base.loader.loadSfx(soundName))
 
-        self.correctSound = base.loadSfx('phase_4/audio/sfx/MG_pos_buzzer.wav')
-        self.incorrectSound = base.loadSfx('phase_4/audio/sfx/MG_neg_buzzer.wav')
-        self.perfectSound = base.loadSfx('phase_4/audio/sfx/MG_win.mp3')
-        self.fallSound = base.loadSfx('phase_4/audio/sfx/MG_Tag_A.mp3')
-        self.music = base.loadMusic(self.bgm)
+        self.correctSound = base.loader.loadSfx('phase_4/audio/sfx/MG_pos_buzzer.ogg')
+        self.incorrectSound = base.loader.loadSfx('phase_4/audio/sfx/MG_neg_buzzer.ogg')
+        self.perfectSound = base.loader.loadSfx('phase_4/audio/sfx/MG_win.ogg')
+        self.fallSound = base.loader.loadSfx('phase_4/audio/sfx/MG_Tag_A.ogg')
+        self.music = base.loader.loadMusic(self.bgm)
         self.waitingText = DirectLabel(text=self.strPleaseWait, text_fg=(0.9, 0.9, 0.9, 1.0), frameColor=(1, 1, 1, 0), text_font=ToontownGlobals.getSignFont(), pos=(0, 0, -.78), scale=0.12)
         self.roundText = DirectLabel(text=self.strRound % 1, text_fg=self.normalTextColor, frameColor=(1, 1, 1, 0), text_font=ToontownGlobals.getSignFont(), pos=(0.014, 0, -.84), scale=0.12)
         self.roundText.hide()
@@ -164,7 +163,7 @@ class DistributedPatternGame(DistributedMinigame):
         del self.waitingText
         self.roundText.destroy()
         del self.roundText
-        for x in self.arrowDict.values():
+        for x in list(self.arrowDict.values()):
             x[0].removeNode()
             x[1].removeNode()
             if len(x) == 3:
@@ -538,7 +537,7 @@ class DistributedPatternGame(DistributedMinigame):
         return self.__getRowPos(self.frontRowHome, self.frontRowXSpacing, index, len(self.avIdList))
 
     def __setMinnieChat(self, str, giggle):
-        str = string.replace(str, '%s', self.getAvatar(self.localAvId).getName())
+        str = str.replace('%s', self.getAvatar(self.localAvId).getName())
         self.minnie.setChatAbsolute(str, CFSpeech)
         if giggle:
             self.minnie.playDialogue('statementA', 1)
@@ -810,7 +809,7 @@ class DistributedPatternGame(DistributedMinigame):
 
     def enterCleanup(self):
         self.notify.debug('enterCleanup')
-        for track in self.animTracks.values():
+        for track in list(self.animTracks.values()):
             if track and track.isPlaying():
                 track.pause()
 

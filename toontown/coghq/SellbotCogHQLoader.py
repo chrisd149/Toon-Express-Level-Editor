@@ -1,15 +1,15 @@
 from direct.directnotify import DirectNotifyGlobal
 from direct.fsm import StateData
-import CogHQLoader
+from . import CogHQLoader
 from toontown.toonbase import ToontownGlobals
 from direct.gui import DirectGui
 from toontown.toonbase import TTLocalizer
 from toontown.toon import Toon
 from direct.fsm import State
-import FactoryExterior
-import FactoryInterior
-import SellbotHQExterior
-import SellbotHQBossBattle
+from . import FactoryExterior
+from . import FactoryInterior
+from . import SellbotHQExterior
+from . import SellbotHQBossBattle
 from pandac.PandaModules import DecalEffect
 aspectSF = 0.7227
 
@@ -28,7 +28,7 @@ class SellbotCogHQLoader(CogHQLoader.CogHQLoader):
             state = self.fsm.getStateNamed(stateName)
             state.addTransition('factoryInterior')
 
-        self.musicFile = 'phase_9/audio/bgm/encntr_suit_HQ_nbrhood.mid'
+        self.musicFile = 'phase_9/audio/bgm/encntr_suit_HQ_nbrhood.ogg'
         self.cogHQExteriorModelPath = 'phase_9/models/cogHQ/SellbotHQExterior'
         self.cogHQLobbyModelPath = 'phase_9/models/cogHQ/SellbotHQLobby'
         self.factoryExteriorModelPath = 'phase_9/models/cogHQ/SellbotFactoryExterior'

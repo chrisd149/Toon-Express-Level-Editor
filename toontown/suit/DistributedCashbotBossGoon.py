@@ -3,13 +3,13 @@ from direct.interval.IntervalGlobal import *
 from direct.task.TaskManagerGlobal import *
 from direct.distributed.ClockDelta import *
 from direct.directnotify import DirectNotifyGlobal
-import GoonGlobals
+from . import GoonGlobals
 from direct.task.Task import Task
 from toontown.toonbase import ToontownGlobals
 from otp.otpbase import OTPGlobals
 from toontown.coghq import DistributedCashbotBossObject
 from direct.showbase import PythonUtil
-import DistributedGoon
+from . import DistributedGoon
 
 class DistributedCashbotBossGoon(DistributedGoon.DistributedGoon, DistributedCashbotBossObject.DistributedCashbotBossObject):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedCashbotBossGoon')
@@ -25,12 +25,12 @@ class DistributedCashbotBossGoon(DistributedGoon.DistributedGoon, DistributedCas
         DistributedGoon.DistributedGoon.__init__(self, cr)
         self.target = None
         self.arrivalTime = None
-        self.flyToMagnetSfx = loader.loadSfx('phase_5/audio/sfx/TL_rake_throw_only.mp3')
-        self.hitMagnetSfx = loader.loadSfx('phase_4/audio/sfx/AA_drop_anvil_miss.mp3')
+        self.flyToMagnetSfx = loader.loadSfx('phase_5/audio/sfx/TL_rake_throw_only.ogg')
+        self.hitMagnetSfx = loader.loadSfx('phase_4/audio/sfx/AA_drop_anvil_miss.ogg')
         self.toMagnetSoundInterval = Sequence(SoundInterval(self.flyToMagnetSfx, duration=ToontownGlobals.CashbotBossToMagnetTime, node=self), SoundInterval(self.hitMagnetSfx, node=self))
-        self.hitFloorSfx = loader.loadSfx('phase_5/audio/sfx/AA_drop_flowerpot.mp3')
+        self.hitFloorSfx = loader.loadSfx('phase_5/audio/sfx/AA_drop_flowerpot.ogg')
         self.hitFloorSoundInterval = SoundInterval(self.hitFloorSfx, duration=1.0, node=self)
-        self.wiggleSfx = loader.loadSfx('phase_5/audio/sfx/SA_finger_wag.mp3')
+        self.wiggleSfx = loader.loadSfx('phase_5/audio/sfx/SA_finger_wag.ogg')
         return
 
     def generate(self):

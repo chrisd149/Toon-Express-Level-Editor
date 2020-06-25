@@ -4,7 +4,7 @@ from direct.directnotify import DirectNotifyGlobal
 from direct.interval.IntervalGlobal import *
 from direct.actor import Actor
 import random
-import DivingGameGlobals
+from . import DivingGameGlobals
 
 class DivingFishSpawn(DirectObject):
     RADIUS = 0.7
@@ -26,22 +26,22 @@ class DivingFishSpawn(DirectObject):
 
     def createFish(self, fishcode):
         loadBase = 'phase_4/models/char/'
-        if fishcode is 0:
+        if fishcode == 0:
             fish = Actor.Actor('phase_4/models/char/clownFish-zero.bam', {'anim': loadBase + 'clownFish-swim.bam'})
             fish.name = 'clown'
-        elif fishcode is 1:
+        elif fishcode == 1:
             fish = Actor.Actor('phase_4/models/char/PBJfish-zero.bam', {'anim': 'phase_4/models/char/PBJfish-swim.bam'})
             fish.name = 'pbj'
-        elif fishcode is 2:
+        elif fishcode == 2:
             fish = Actor.Actor('phase_4/models/char/BearAcuda-zero.bam', {'anim': 'phase_4/models/char/BearAcuda-swim.bam'})
             fish.name = 'bear'
-        elif fishcode is 3:
+        elif fishcode == 3:
             fish = Actor.Actor(loadBase + 'balloonFish-zero.bam', {'anim': loadBase + 'balloonFish-swim.bam'})
             fish.name = 'balloon'
-        elif fishcode is 4:
+        elif fishcode == 4:
             fish = Actor.Actor(loadBase + 'nurseShark-zero.bam', {'anim': loadBase + 'nurseShark-swim.bam'})
             fish.name = 'nurse'
-        elif fishcode is 5:
+        elif fishcode == 5:
             fish = Actor.Actor(loadBase + 'pianoTuna-zero.bam', {'anim': loadBase + 'pianoTuna-swim.bam'})
             fish.name = 'piano'
         else:
@@ -85,8 +85,8 @@ class DivingFishSpawn(DirectObject):
             fish.loop('anim')
             fish.setScale(1.4)
             cSphere = CollisionSphere(0, 0, 0, 1)
-            fishSoundName = 'Piano_Tuna.mp3'
-            if self.direction is -1:
+            fishSoundName = 'Piano_Tuna.ogg'
+            if self.direction == -1:
                 fish.setH(0)
             else:
                 fish.setH(180)
@@ -103,7 +103,7 @@ class DivingFishSpawn(DirectObject):
 
     def destroy(self):
         self.ignoreAll()
-        for fish in self.fishArray.values():
+        for fish in list(self.fishArray.values()):
             fish.moveLerp.pause()
             fish.specialLerp.finish()
             if hasattr(fish, 'sound'):

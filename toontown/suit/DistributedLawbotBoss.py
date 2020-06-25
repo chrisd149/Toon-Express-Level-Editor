@@ -6,15 +6,16 @@ from direct.showbase.PythonUtil import Functor
 from direct.showbase.PythonUtil import StackTrace
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
+from libotp import *
 from direct.fsm import FSM
 from direct.fsm import ClassicFSM
 from direct.fsm import State
 from direct.directnotify import DirectNotifyGlobal
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import ToontownBattleGlobals
-import DistributedBossCog
+from . import DistributedBossCog
 from toontown.toonbase import TTLocalizer
-import SuitDNA
+from . import SuitDNA
 from toontown.toon import Toon
 from toontown.battle import BattleBase
 from direct.directutil import Mopath
@@ -27,6 +28,7 @@ from toontown.toon import NPCToons
 from direct.task import Task
 import random
 import math
+import functools
 from toontown.coghq import CogDisguiseGlobals
 from toontown.building import ElevatorConstants
 from toontown.toonbase import ToontownTimer
@@ -88,18 +90,18 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.notify.debug('----- announceGenerate')
         DistributedBossCog.DistributedBossCog.announceGenerate(self)
         self.setName(TTLocalizer.LawbotBossName)
-        nameInfo = TTLocalizer.BossCogNameWithDept % {'name': self.name,
+        nameInfo = TTLocalizer.BossCogNameWithDept % {'name': self._name,
          'dept': SuitDNA.getDeptFullname(self.style.dept)}
         self.setDisplayName(nameInfo)
-        self.piesRestockSfx = loader.loadSfx('phase_5/audio/sfx/LB_receive_evidence.mp3')
-        self.rampSlideSfx = loader.loadSfx('phase_9/audio/sfx/CHQ_VP_ramp_slide.mp3')
-        self.evidenceHitSfx = loader.loadSfx('phase_11/audio/sfx/LB_evidence_hit.mp3')
-        self.warningSfx = loader.loadSfx('phase_9/audio/sfx/CHQ_GOON_tractor_beam_alarmed.mp3')
-        self.juryMovesSfx = loader.loadSfx('phase_11/audio/sfx/LB_jury_moves.wav')
-        self.toonUpSfx = loader.loadSfx('phase_11/audio/sfx/LB_toonup.mp3')
+        self.piesRestockSfx = loader.loadSfx('phase_5/audio/sfx/LB_receive_evidence.ogg')
+        self.rampSlideSfx = loader.loadSfx('phase_9/audio/sfx/CHQ_VP_ramp_slide.ogg')
+        self.evidenceHitSfx = loader.loadSfx('phase_11/audio/sfx/LB_evidence_hit.ogg')
+        self.warningSfx = loader.loadSfx('phase_9/audio/sfx/CHQ_GOON_tractor_beam_alarmed.ogg')
+        self.juryMovesSfx = loader.loadSfx('phase_11/audio/sfx/LB_jury_moves.ogg')
+        self.toonUpSfx = loader.loadSfx('phase_11/audio/sfx/LB_toonup.ogg')
         self.strafeSfx = []
         for i in range(10):
-            self.strafeSfx.append(loader.loadSfx('phase_3.5/audio/sfx/SA_shred.mp3'))
+            self.strafeSfx.append(loader.loadSfx('phase_3.5/audio/sfx/SA_shred.ogg'))
 
         render.setTag('pieCode', str(ToontownGlobals.PieCodeNotBossCog))
         insidesA = CollisionPolygon(Point3(4.0, -2.0, 5.0), Point3(-4.0, -2.0, 5.0), Point3(-4.0, -2.0, 0.5), Point3(4.0, -2.0, 0.5))
@@ -390,9 +392,9 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         elevatorModel = loader.loadModel('phase_11/models/lawbotHQ/LB_Elevator')
         elevatorModel.reparentTo(self.elevatorEntrance)
         self.setupElevator(elevatorModel)
-        self.promotionMusic = base.loadMusic('phase_7/audio/bgm/encntr_suit_winning_indoor.mid')
-        self.betweenBattleMusic = base.loadMusic('phase_9/audio/bgm/encntr_toon_winning.mid')
-        self.battleTwoMusic = base.loadMusic('phase_11/audio/bgm/LB_juryBG.mid')
+        self.promotionMusic = base.loader.loadMusic('phase_7/audio/bgm/encntr_suit_winning_indoor.ogg')
+        self.betweenBattleMusic = base.loader.loadMusic('phase_9/audio/bgm/encntr_toon_winning.ogg')
+        self.battleTwoMusic = base.loader.loadMusic('phase_11/audio/bgm/LB_juryBG.ogg')
         floor = self.geom.find('**/MidVaultFloor1')
         if floor.isEmpty():
             floor = self.geom.find('**/CR3_Floor')
@@ -798,7 +800,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         for toonId in self.involvedToons:
             toon = self.cr.doId2do.get(toonId)
             if toon:
-                if self.cannons.has_key(index):
+                if index in self.cannons:
                     cannon = self.cannons[index]
                     cannonSeq = cannon.generateCannonAppearTrack(toon)
                     multiCannons.append(cannonSeq)
@@ -870,7 +872,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
             self.juryTimer.destroy()
             del self.juryTimer
             self.juryTimer = None
-        for chair in self.chairs.values():
+        for chair in list(self.chairs.values()):
             chair.stopCogsFlying()
 
         return
@@ -1348,7 +1350,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
 
         newCollisionNode.setIntoCollideMask(newCollideMask)
         threshold = 0.1
-        planes.sort(lambda p1, p2: p1.compareTo(p2, threshold))
+        planes.sort(key=functools.cmp_to_key(lambda p1, p2: p1.compareTo(p2, threshold)))
         lastPlane = None
         for plane in planes:
             if lastPlane == None or plane.compareTo(lastPlane, threshold) != 0:
@@ -1586,7 +1588,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         return bossTrack
 
     def __makeWitnessToon(self):
-        dnaNetString = 't\x1b\x00\x01\x01\x00\x03\x00\x03\x01\x10\x13\x00\x13\x13'
+        dnaNetString = b't\x1b\x00\x01\x01\x00\x03\x00\x03\x01\x10\x13\x00\x13\x13'
         npc = Toon.Toon()
         npc.setDNAString(dnaNetString)
         npc.setName(TTLocalizer.WitnessToonName)
@@ -1667,7 +1669,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         index = 0
         self.involvedToons.sort()
         for toonId in self.involvedToons:
-            if self.cannons.has_key(index):
+            if index in self.cannons:
                 cannon = self.cannons[index]
                 toon = self.cr.doId2do.get(toonId)
                 self.notify.debug('cannonId = %d' % cannon.doId)
@@ -1724,7 +1726,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
 
     def countToonJurors(self):
         self.numToonJurorsSeated = 0
-        for key in self.chairs.keys():
+        for key in list(self.chairs.keys()):
             chair = self.chairs[key]
             if chair.state == 'ToonJuror' or chair.state == None and chair.newState == 'ToonJuror':
                 self.numToonJurorsSeated += 1
@@ -1772,7 +1774,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
             gotError = True
         if gotError:
             st = StackTrace()
-            print st
+            print(st)
             return
         chatString = TTLocalizer.LawbotBossTaunts[1]
         if tauntIndex == 0:
@@ -1821,7 +1823,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
 
     def numJurorsSeatedByCannon(self, cannonIndex):
         retVal = 0
-        for chair in self.chairs.values():
+        for chair in list(self.chairs.values()):
             if chair.state == 'ToonJuror':
                 if chair.toonJurorIndex == cannonIndex:
                     retVal += 1

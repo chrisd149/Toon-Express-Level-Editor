@@ -4,8 +4,8 @@ from direct.gui.DirectGui import *
 from pandac.PandaModules import *
 from toontown.toonbase import TTLocalizer
 from direct.interval.IntervalGlobal import *
-import FishGlobals
-import FishPhoto
+from . import FishGlobals
+from . import FishPhoto
 
 class FishPanel(DirectFrame):
     notify = DirectNotifyGlobal.directNotify.newCategory('FishPanel')
@@ -27,7 +27,7 @@ class FishPanel(DirectFrame):
         self.initialiseoptions(FishPanel)
         self.doneEvent = doneEvent
         self.fish = fish
-        self.parent = parent
+        self._parent = parent
         self.photo = None
         return
 
@@ -37,7 +37,7 @@ class FishPanel(DirectFrame):
             self.photo = None
         self.fish = None
         DirectFrame.destroy(self)
-        self.parent = None
+        self._parent = None
         return
 
     def load(self):
@@ -91,8 +91,8 @@ class FishPanel(DirectFrame):
 
     def show(self, code = FishGlobals.FishItem):
         messenger.send('wakeup')
-        apply(self.photo.setSwimBounds, self.swimBounds)
-        apply(self.photo.setSwimColor, self.swimColor)
+        self.photo.setSwimBounds(*self.swimBounds)
+        self.photo.setSwimColor(*self.swimColor)
         if code == FishGlobals.FishItem:
             self.extraLabel.hide()
         elif code == FishGlobals.FishItemNewEntry:

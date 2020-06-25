@@ -1,13 +1,13 @@
 from direct.directnotify import DirectNotifyGlobal
 from direct.fsm import StateData
-import CogHQLoader, MintInterior
+from . import CogHQLoader, MintInterior
 from toontown.toonbase import ToontownGlobals
 from direct.gui import DirectGui
 from toontown.toonbase import TTLocalizer
 from toontown.toon import Toon
 from direct.fsm import State
-import CashbotHQExterior
-import CashbotHQBossBattle
+from . import CashbotHQExterior
+from . import CashbotHQBossBattle
 from pandac.PandaModules import DecalEffect
 
 class CashbotCogHQLoader(CogHQLoader.CogHQLoader):
@@ -20,7 +20,7 @@ class CashbotCogHQLoader(CogHQLoader.CogHQLoader):
             state = self.fsm.getStateNamed(stateName)
             state.addTransition('mintInterior')
 
-        self.musicFile = 'phase_9/audio/bgm/encntr_suit_HQ_nbrhood.mid'
+        self.musicFile = 'phase_9/audio/bgm/encntr_suit_HQ_nbrhood.ogg'
         self.cogHQExteriorModelPath = 'phase_10/models/cogHQ/CashBotShippingStation'
         self.cogHQLobbyModelPath = 'phase_10/models/cogHQ/VaultLobby'
         self.geom = None

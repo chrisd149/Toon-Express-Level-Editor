@@ -8,10 +8,11 @@ from direct.task.Task import Task
 from toontown.minigame import Purchase
 from direct.gui import OnscreenText
 from toontown.building import SuitInterior
-import QuietZoneState
-import ZoneUtil
+from . import QuietZoneState
+from . import ZoneUtil
 from toontown.toonbase import TTLocalizer
 from toontown.toon.Toon import teleportDebug
+from direct.interval.IntervalGlobal import *
 
 class Hood(StateData.StateData):
     notify = DirectNotifyGlobal.directNotify.newCategory('Hood')
@@ -25,6 +26,7 @@ class Hood(StateData.StateData):
         self.id = None
         self.hoodId = hoodId
         self.titleText = None
+        self.titleTextSeq = None
         self.titleColor = (1, 1, 1, 1)
         self.holidayStorageDNADict = {}
         self.spookySkyFile = None
@@ -56,19 +58,17 @@ class Hood(StateData.StateData):
         self.titleText.setColor(Vec4(*self.titleColor))
         self.titleText.clearColorScale()
         self.titleText.setFg(self.titleColor)
-        seq = Task.sequence(Task.pause(0.1), Task.pause(6.0), self.titleText.lerpColorScale(Vec4(1.0, 1.0, 1.0, 1.0), Vec4(1.0, 1.0, 1.0, 0.0), 0.5), Task(self.hideTitleTextTask))
-        taskMgr.add(seq, 'titleText')
-
-    def hideTitleTextTask(self, task):
-        self.titleText.hide()
-        return Task.done
+        self.titleTextSeq = Sequence(Wait(0.1), Wait(6.0), self.titleText.colorScaleInterval(0.5, Vec4(1.0, 1.0, 1.0, 0.0)), Func(self.hideTitleText))
+        self.titleTextSeq.start()
 
     def hideTitleText(self):
         if self.titleText:
             self.titleText.hide()
 
     def exit(self):
-        taskMgr.remove('titleText')
+        if self.titleTextSeq:
+            self.titleTextSeq.finish()
+            self.titleTextSeq = None
         if self.titleText:
             self.titleText.cleanup()
             self.titleText = None
@@ -175,7 +175,7 @@ class Hood(StateData.StateData):
         elif loaderName == 'minigame':
             pass
         elif loaderName == 'cogHQLoader':
-            print 'should be loading HQ'
+            print('should be loading HQ')
 
     def handleLeftQuietZone(self):
         status = self.quietZoneStateData.getRequestStatus()
@@ -194,7 +194,9 @@ class Hood(StateData.StateData):
         self.spawnTitleText(requestStatus['zoneId'])
 
     def exitSafeZoneLoader(self):
-        taskMgr.remove('titleText')
+        if self.titleTextSeq:
+            self.titleTextSeq.finish()
+            self.titleTextSeq = None
         self.hideTitleText()
         self.ignore(self.loaderDoneEvent)
         self.loader.exit()

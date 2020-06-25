@@ -5,7 +5,6 @@ import copy
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import TTLocalizer
 import os
-from direct.showbase import AppRunnerGlobal
 from direct.directnotify import DirectNotifyGlobal
 
 class NameGenerator:
@@ -37,13 +36,8 @@ class NameGenerator:
         self.lastSuffixes = []
         self.nameDictionary = {}
         searchPath = DSearchPath()
-        if AppRunnerGlobal.appRunner:
-            searchPath.appendDirectory(Filename.expandFrom('$TT_3_ROOT/phase_3/etc'))
-        else:
-            searchPath.appendDirectory(Filename('phase_3/etc'))
-            base = os.path.expandvars('$TOONTOWN') or './toontown'
-            searchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars(base + '/src/configfiles')))
-            searchPath.appendDirectory(Filename('.'))
+        if __debug__:
+            searchPath.appendDirectory(Filename('resources/phase_3/etc'))
         filename = Filename(TTLocalizer.NameShopNameMaster)
         found = vfs.resolveFilename(filename, searchPath)
         if not found:
@@ -51,10 +45,10 @@ class NameGenerator:
         input = StreamReader(vfs.openReadFile(filename, 1), 1)
         currentLine = input.readline()
         while currentLine:
-            if currentLine.lstrip()[0:1] != '#':
-                a1 = currentLine.find('*')
-                a2 = currentLine.find('*', a1 + 1)
-                self.nameDictionary[int(currentLine[0:a1])] = (int(currentLine[a1 + 1:a2]), currentLine[a2 + 1:len(currentLine) - 1])
+            if currentLine.lstrip()[0:1] != b'#':
+                a1 = currentLine.find(b'*')
+                a2 = currentLine.find(b'*', a1 + 1)
+                self.nameDictionary[int(currentLine[0:a1])] = (int(currentLine[a1 + 1:a2]), currentLine[a2 + 1:].rstrip().decode('utf-8'))
             currentLine = input.readline()
 
         masterList = [self.boyTitles,
@@ -66,7 +60,7 @@ class NameGenerator:
          self.capPrefixes,
          self.lastPrefixes,
          self.lastSuffixes]
-        for tu in self.nameDictionary.values():
+        for tu in list(self.nameDictionary.values()):
             masterList[tu[0]].append(tu[1])
 
         return 1
@@ -76,7 +70,7 @@ class NameGenerator:
          {},
          {},
          {}]
-        for id, tpl in self.nameDictionary.iteritems():
+        for id, tpl in self.nameDictionary.items():
             cat, str = tpl
             if cat in cat2part:
                 nameParts[cat2part[cat]][str] = id
@@ -119,7 +113,7 @@ class NameGenerator:
             newtu[1] = (7, name)
         else:
             newtu[0] = (8, name)
-        for tu in self.nameDictionary.items():
+        for tu in list(self.nameDictionary.items()):
             for g in newtu:
                 if tu[1] == g:
                     return tu[0]
@@ -135,7 +129,7 @@ class NameGenerator:
                 maxWidth = text.calcWidth(name)
                 maxName = name
 
-        print maxName + ' ' + str(maxWidth)
+        print(maxName + ' ' + str(maxWidth))
         return maxName
 
     def findWidestName(self):
@@ -187,13 +181,13 @@ class NameGenerator:
         name = self.findWidestName()
         width = self.text.calcWidth(name)
         widthStr = str(width)
-        print 'The widest name is: ' + name + ' (' + widthStr + ' units)'
+        print('The widest name is: ' + name + ' (' + widthStr + ' units)')
 
     def printWidestLastName(self):
         name = self.findWidestLastName()
         width = self.text.calcWidth(name)
         widthStr = str(width)
-        print 'The widest last name is: ' + name + ' (' + widthStr + ' units)'
+        print('The widest last name is: ' + name + ' (' + widthStr + ' units)')
 
     def randomName(self, boy = 0, girl = 0):
         if boy and girl:
@@ -322,9 +316,9 @@ class NameGenerator:
             width = self.text.calcWidth(name)
             widthStr = str(width)
             if boy:
-                print 'Boy: ' + name + ' (' + widthStr + ' units)'
+                print('Boy: ' + name + ' (' + widthStr + ' units)')
             if girl:
-                print 'Girl: ' + name + ' (' + widthStr + ' units)'
+                print('Girl: ' + name + ' (' + widthStr + ' units)')
             i += 1
 
     def percentOver(self, limit = 9.0, samples = 1000):
@@ -338,32 +332,32 @@ class NameGenerator:
             i += 1
 
         percent = float(over) / float(samples) * 100
-        print 'Samples: ' + str(samples) + ' Over: ' + str(over) + ' Percent: ' + str(percent)
+        print('Samples: ' + str(samples) + ' Over: ' + str(over) + ' Percent: ' + str(percent))
 
     def totalNames(self):
         firsts = len(self.boyFirsts) + len(self.girlFirsts) + len(self.neutralFirsts)
-        print 'Total firsts: ' + str(firsts)
+        print('Total firsts: ' + str(firsts))
         lasts = len(self.lastPrefixes) * len(self.lastSuffixes)
-        print 'Total lasts: ' + str(lasts)
+        print('Total lasts: ' + str(lasts))
         neutralTitleFirsts = len(self.neutralTitles) * len(self.neutralFirsts)
         boyTitleFirsts = len(self.boyTitles) * (len(self.neutralFirsts) + len(self.boyFirsts)) + len(self.neutralTitles) * len(self.boyFirsts)
         girlTitleFirsts = len(self.girlTitles) * (len(self.neutralFirsts) + len(self.girlFirsts)) + len(self.neutralTitles) * len(self.girlFirsts)
         totalTitleFirsts = neutralTitleFirsts + boyTitleFirsts + girlTitleFirsts
-        print 'Total title firsts: ' + str(totalTitleFirsts)
+        print('Total title firsts: ' + str(totalTitleFirsts))
         neutralTitleLasts = len(self.neutralTitles) * lasts
         boyTitleLasts = len(self.boyTitles) * lasts
         girlTitleLasts = len(self.girlTitles) * lasts
         totalTitleLasts = neutralTitleLasts + boyTitleFirsts + girlTitleLasts
-        print 'Total title lasts: ' + str(totalTitleLasts)
+        print('Total title lasts: ' + str(totalTitleLasts))
         neutralFirstLasts = len(self.neutralFirsts) * lasts
         boyFirstLasts = len(self.boyFirsts) * lasts
         girlFirstLasts = len(self.girlFirsts) * lasts
         totalFirstLasts = neutralFirstLasts + boyFirstLasts + girlFirstLasts
-        print 'Total first lasts: ' + str(totalFirstLasts)
+        print('Total first lasts: ' + str(totalFirstLasts))
         neutralTitleFirstLasts = neutralTitleFirsts * lasts
         boyTitleFirstLasts = boyTitleFirsts * lasts
         girlTitleFirstLasts = girlTitleFirsts * lasts
         totalTitleFirstLasts = neutralTitleFirstLasts + boyTitleFirstLasts + girlTitleFirstLasts
-        print 'Total title first lasts: ' + str(totalTitleFirstLasts)
+        print('Total title first lasts: ' + str(totalTitleFirstLasts))
         totalNames = firsts + lasts + totalTitleFirsts + totalTitleLasts + totalFirstLasts + totalTitleFirstLasts
-        print 'Total Names: ' + str(totalNames)
+        print('Total Names: ' + str(totalNames))

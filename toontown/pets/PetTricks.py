@@ -1,6 +1,5 @@
 from direct.showbase.PythonUtil import Enum, invertDictLossless
 from direct.interval.IntervalGlobal import *
-import types
 import random
 Tricks = Enum('JUMP, BEG, PLAYDEAD, ROLLOVER, BACKFLIP, DANCE, SPEAK, BALK,')
 NonHappyMinActualTrickAptitude = 0.1
@@ -51,18 +50,18 @@ TrickHeals = {Tricks.JUMP: (5, 10),
  Tricks.DANCE: (10, 20),
  Tricks.SPEAK: (11, 22),
  Tricks.BALK: (0, 0)}
-TrickSounds = {Tricks.BACKFLIP: 'phase_5/audio/sfx/backflip.mp3',
- Tricks.ROLLOVER: 'phase_5/audio/sfx/rollover.mp3',
- Tricks.PLAYDEAD: 'phase_5/audio/sfx/play_dead.mp3',
- Tricks.BEG: 'phase_5/audio/sfx/beg.mp3',
- Tricks.DANCE: 'phase_5/audio/sfx/heal_dance.mp3',
- Tricks.JUMP: 'phase_5/audio/sfx/jump.mp3',
- Tricks.SPEAK: 'phase_5/audio/sfx/speak_v1.mp3'}
+TrickSounds = {Tricks.BACKFLIP: 'phase_5/audio/sfx/backflip.ogg',
+ Tricks.ROLLOVER: 'phase_5/audio/sfx/rollover.ogg',
+ Tricks.PLAYDEAD: 'phase_5/audio/sfx/play_dead.ogg',
+ Tricks.BEG: 'phase_5/audio/sfx/beg.ogg',
+ Tricks.DANCE: 'phase_5/audio/sfx/heal_dance.ogg',
+ Tricks.JUMP: 'phase_5/audio/sfx/jump.ogg',
+ Tricks.SPEAK: 'phase_5/audio/sfx/speak_v1.ogg'}
 
 def getSoundIval(trickId):
     sounds = TrickSounds.get(trickId, None)
     if sounds:
-        if type(sounds) == types.StringType:
+        if type(sounds) == str:
             sound = loader.loadSfx(sounds)
             return SoundInterval(sound)
         else:
@@ -79,7 +78,7 @@ def getTrickIval(pet, trickId):
     anims = TrickAnims[trickId]
     animRate = random.uniform(0.9, 1.1)
     waitTime = random.uniform(0.0, 1.0)
-    if type(anims) == types.StringType:
+    if type(anims) == str:
         if trickId == Tricks.JUMP:
             animIval = Parallel()
             animIval.append(ActorInterval(pet, anims, playRate=animRate))

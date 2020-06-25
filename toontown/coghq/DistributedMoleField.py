@@ -44,7 +44,7 @@ class DistributedMoleField(DistributedNodePathEntity, MoleFieldBase.MoleFieldBas
 
     def disable(self):
         self.cleanupTimer()
-        for ival in self.toonHitTracks.values():
+        for ival in list(self.toonHitTracks.values()):
             ival.finish()
 
         self.toonHitTracks = {}
@@ -99,8 +99,8 @@ class DistributedMoleField(DistributedNodePathEntity, MoleFieldBase.MoleFieldBas
     def loadModel(self):
         moleIndex = 0
         self.moleHills = []
-        for indexY in xrange(self.numSquaresY):
-            for indexX in xrange(self.numSquaresX):
+        for indexY in range(self.numSquaresY):
+            for indexX in range(self.numSquaresX):
                 xPos = indexX * self.spacingX
                 yPos = indexY * self.spacingY
                 newMoleHill = MoleHill.MoleHill(xPos, yPos, 0, self, moleIndex)
@@ -111,11 +111,11 @@ class DistributedMoleField(DistributedNodePathEntity, MoleFieldBase.MoleFieldBas
         self.numMoles = len(self.moleHills)
         self.centerNode = self.attachNewNode('center')
         self.centerCenterNode()
-        self.soundBomb = base.loadSfx('phase_12/audio/sfx/Mole_Surprise.mp3')
-        self.soundBomb2 = base.loadSfx('phase_3.5/audio/dial/AV_pig_howl.mp3')
-        self.soundCog = base.loadSfx('phase_12/audio/sfx/Mole_Stomp.mp3')
-        self.soundUp = base.loadSfx('phase_4/audio/sfx/MG_Tag_C.mp3')
-        self.soundDown = base.loadSfx('phase_4/audio/sfx/MG_cannon_whizz.mp3')
+        self.soundBomb = base.loader.loadSfx('phase_12/audio/sfx/Mole_Surprise.ogg')
+        self.soundBomb2 = base.loader.loadSfx('phase_3.5/audio/dial/AV_pig_howl.ogg')
+        self.soundCog = base.loader.loadSfx('phase_12/audio/sfx/Mole_Stomp.ogg')
+        self.soundUp = base.loader.loadSfx('phase_4/audio/sfx/MG_Tag_C.ogg')
+        self.soundDown = base.loader.loadSfx('phase_4/audio/sfx/MG_cannon_whizz.ogg')
         upInterval = SoundInterval(self.soundUp, loop=0)
         downInterval = SoundInterval(self.soundDown, loop=0)
         self.soundIUpDown = Sequence(upInterval, downInterval)
@@ -339,7 +339,7 @@ class DistributedMoleField(DistributedNodePathEntity, MoleFieldBase.MoleFieldBas
                 oldTrack.finish()
         toon.setPos(curPos)
         toon.setZ(self.getZ())
-        parentNode = render.attachNewNode('mazeFlyToonParent-' + `avId`)
+        parentNode = render.attachNewNode('mazeFlyToonParent-' + repr(avId))
         parentNode.setPos(toon.getPos(render))
         toon.reparentTo(parentNode)
         toon.setPos(0, 0, 0)
@@ -385,7 +385,7 @@ class DistributedMoleField(DistributedNodePathEntity, MoleFieldBase.MoleFieldBas
                 camera.lookAt(toon)
                 return Task.cont
 
-            camTaskName = 'mazeToonFlyCam-' + `avId`
+            camTaskName = 'mazeToonFlyCam-' + repr(avId)
             taskMgr.add(camTask, camTaskName, priority=20)
 
             def cleanupCamTask(self = self, toon = toon, camTaskName = camTaskName, startCamPos = startCamPos):

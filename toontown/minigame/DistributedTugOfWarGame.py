@@ -1,7 +1,7 @@
 from pandac.PandaModules import *
 from toontown.toonbase.ToonBaseGlobal import *
 from direct.interval.IntervalGlobal import *
-from DistributedMinigame import *
+from .DistributedMinigame import *
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
 from direct.fsm import ClassicFSM, State
@@ -11,21 +11,21 @@ from toontown.toon import ToonHead
 from toontown.suit import SuitDNA
 from toontown.suit import Suit
 from toontown.char import Char
-import ArrowKeys
+from . import ArrowKeys
 import random
 from toontown.toonbase import ToontownGlobals
 import string
 from toontown.toonbase import TTLocalizer
-import TugOfWarGameGlobals
+from . import TugOfWarGameGlobals
 from direct.showutil import Rope
 from toontown.effects import Splash
 from toontown.effects import Ripples
 from toontown.toonbase import TTLocalizer
-import MinigamePowerMeter
+from . import MinigamePowerMeter
 from direct.task.Task import Task
 
 class DistributedTugOfWarGame(DistributedMinigame):
-    bgm = 'phase_4/audio/bgm/MG_tug_o_war.mid'
+    bgm = 'phase_4/audio/bgm/MG_tug_o_war.ogg'
     toonAnimNames = ['neutral',
      'tug-o-war',
      'slip-forward',
@@ -122,10 +122,10 @@ class DistributedTugOfWarGame(DistributedMinigame):
         ropeModel.removeNode()
         self.sky = loader.loadModel('phase_3.5/models/props/TT_sky')
         self.dropShadow = loader.loadModel('phase_3/models/props/drop_shadow')
-        self.correctSound = base.loadSfx('phase_4/audio/sfx/MG_pos_buzzer.wav')
-        self.sndHitWater = base.loadSfx('phase_4/audio/sfx/MG_cannon_splash.mp3')
-        self.whistleSound = base.loadSfx('phase_4/audio/sfx/AA_sound_whistle.mp3')
-        self.music = base.loadMusic(self.bgm)
+        self.correctSound = base.loader.loadSfx('phase_4/audio/sfx/MG_pos_buzzer.ogg')
+        self.sndHitWater = base.loader.loadSfx('phase_4/audio/sfx/MG_cannon_splash.ogg')
+        self.whistleSound = base.loader.loadSfx('phase_4/audio/sfx/AA_sound_whistle.ogg')
+        self.music = base.loader.loadMusic(self.bgm)
         self.roundText = DirectLabel(text='     ', text_fg=(0, 1, 0, 1), frameColor=(1, 1, 1, 0), text_font=ToontownGlobals.getSignFont(), pos=(0.014, 0, -.84), scale=0.2)
         self.powerMeter = MinigamePowerMeter.MinigamePowerMeter(17)
         self.powerMeter.reparentTo(aspect2d)
@@ -280,7 +280,7 @@ class DistributedTugOfWarGame(DistributedMinigame):
             self.introTrack.finish()
             del self.introTrack
             self.introTrack = None
-        for track in self.animTracks.values():
+        for track in list(self.animTracks.values()):
             if track:
                 track.finish()
                 del track
@@ -327,10 +327,10 @@ class DistributedTugOfWarGame(DistributedMinigame):
         if self.suit:
             self.suit.reparentTo(hidden)
         for avId in self.avIdList:
-            if self.dropShadowDict.has_key(avId):
+            if avId in self.dropShadowDict:
                 self.dropShadowDict[avId].reparentTo(hidden)
 
-        if self.dropShadowDict.has_key(self.suitId):
+        if self.suitId in self.dropShadowDict:
             self.dropShadowDict[self.suitId].reparentTo(hidden)
         return
 
@@ -980,7 +980,7 @@ class DistributedTugOfWarGame(DistributedMinigame):
             exitSeq.append(Wait(2.5))
         exitSeq.append(Func(self.gameOver))
         self.showTrack = Parallel(reactSeq, exitSeq)
-        for x in self.animTracks.values():
+        for x in list(self.animTracks.values()):
             if x != None:
                 x.finish()
 

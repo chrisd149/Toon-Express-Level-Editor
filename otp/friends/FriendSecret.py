@@ -1,8 +1,8 @@
 from pandac.PandaModules import *
+from libotp import *
 from direct.gui.DirectGui import *
 from direct.directnotify import DirectNotifyGlobal
 from direct.fsm import StateData
-import string
 from otp.otpbase import OTPLocalizer
 from otp.otpbase import OTPGlobals
 from otp.uberdog import RejectCode
@@ -436,7 +436,7 @@ class FriendSecret(DirectFrame, StateData.StateData):
         self.ok2.show()
 
     def __rejectAccountSecret(self, reason):
-        print '## rejectAccountSecret: reason = ', reason
+        print('## rejectAccountSecret: reason = ', reason)
         self.ignore(OTPGlobals.PlayerFriendNewSecretEvent)
         self.ignore(OTPGlobals.PlayerFriendRejectNewSecretEvent)
         self.nextText['text'] = OTPLocalizer.FriendSecretTooMany
@@ -448,7 +448,7 @@ class FriendSecret(DirectFrame, StateData.StateData):
 
     def __enterSecret(self, secret):
         self.enterSecret.set('')
-        secret = string.strip(secret)
+        secret = secret.strip()
         if not secret:
             self.exit()
             return
@@ -514,7 +514,7 @@ class FriendSecret(DirectFrame, StateData.StateData):
         self.__enteredSecret(1, 0)
 
     def __rejectUseAccountSecret(self, reason):
-        print '## rejectUseAccountSecret: reason = ', reason
+        print('## rejectUseAccountSecret: reason = ', reason)
         self.ignore(OTPGlobals.PlayerFriendUpdateEvent)
         self.ignore(OTPGlobals.PlayerFriendRejectUseSecretEvent)
         if reason == RejectCode.RejectCode.FRIENDS_LIST_FULL:

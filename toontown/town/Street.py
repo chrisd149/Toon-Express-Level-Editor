@@ -1,4 +1,5 @@
 from pandac.PandaModules import *
+from libotp import *
 from toontown.battle.BattleProps import *
 from toontown.battle.BattleSounds import *
 from toontown.distributed.ToontownMsgTypes import *
@@ -239,7 +240,7 @@ class Street(BattlePlace.BattlePlace):
         hoodId = requestStatus['hoodId']
         zoneId = requestStatus['zoneId']
         if avId != -1:
-            if not base.cr.doId2do.has_key(avId):
+            if avId not in base.cr.doId2do:
                 teleportDebug(requestStatus, "couldn't find friend %s" % avId)
                 handle = base.cr.identifyFriend(avId)
                 requestStatus = {'how': 'teleportIn',
@@ -260,7 +261,7 @@ class Street(BattlePlace.BattlePlace):
         return
 
     def enterTeleportOut(self, requestStatus):
-        if requestStatus.has_key('battle'):
+        if 'battle' in requestStatus:
             self.__teleportOutDone(requestStatus)
         else:
             BattlePlace.BattlePlace.enterTeleportOut(self, requestStatus, self.__teleportOutDone)
@@ -354,7 +355,12 @@ class Street(BattlePlace.BattlePlace):
                 if newZoneId != None:
                     self.loader.zoneDict[newZoneId].setColor(0, 0, 1, 1, 100)
             if newZoneId != None:
-                base.cr.sendSetZoneMsg(newZoneId)
+                if not base.cr.astronSupport:
+                    base.cr.sendSetZoneMsg(newZoneId)
+                else:
+                    visZones = [self.loader.node2zone[x] for x in self.loader.nodeDict[newZoneId]]
+                    visZones.append(ZoneUtil.getBranchZone(newZoneId))
+                    base.cr.sendSetZoneMsg(newZoneId, visZones)
                 self.notify.debug('Entering Zone %d' % newZoneId)
             self.zoneId = newZoneId
         geom = base.cr.playGame.getPlace().loader.geom

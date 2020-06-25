@@ -1,5 +1,5 @@
 from pandac.PandaModules import *
-import ShtikerPage
+from . import ShtikerPage
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
 from toontown.quest import Quests
@@ -110,7 +110,7 @@ class TrackPage(ShtikerPage.ShtikerPage):
         for index in range(1, MAX_FRAMES + 1):
             frame = self.trackFrames[index - 1]
             col = (index - 1) % 6
-            row = (index - 1) / 6
+            row = (index - 1) // 6
             frame.setPos(colPos[col], 0, rowPos[row])
             frame.setScale(0.39)
 

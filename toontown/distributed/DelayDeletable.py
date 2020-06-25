@@ -25,7 +25,7 @@ class DelayDeletable:
                 self.disableAnnounceAndDelete()
 
     def getDelayDeleteNames(self):
-        return self._token2delayDeleteName.values()
+        return list(self._token2delayDeleteName.values())
 
     def forceAllowDelayDelete(self):
         self._delayDeleteForceAllow = True

@@ -15,8 +15,8 @@ from direct.actor import Actor
 class Train(DirectObject):
     notify = directNotify.newCategory('Train')
     nameId = 0
-    Sfx_TrainPass = 'phase_10/audio/sfx/CBHQ_TRAIN_pass.mp3'
-    Sfx_TrainStopStart = 'phase_10/audio/sfx/CBHQ_TRAIN_stopstart.mp3'
+    Sfx_TrainPass = 'phase_10/audio/sfx/CBHQ_TRAIN_pass.ogg'
+    Sfx_TrainStopStart = 'phase_10/audio/sfx/CBHQ_TRAIN_stopstart.ogg'
     LocomotiveFile = 'phase_10/models/cogHQ/CashBotLocomotive'
     CarFiles = ['phase_10/models/cogHQ/CashBotBoxCar', 'phase_10/models/cogHQ/CashBotTankCar', 'phase_10/models/cogHQ/CashBotFlatCar']
     CarLength = 88
@@ -28,8 +28,8 @@ class Train(DirectObject):
         self.numCars = len(self.CarFiles)
         self.locomotive = loader.loadModel(self.LocomotiveFile)
         self.cars = []
-        self.trainPassingSfx = base.loadSfx(self.Sfx_TrainPass)
-        self.trainStopStartSfx = base.loadSfx(self.Sfx_TrainStopStart)
+        self.trainPassingSfx = base.loader.loadSfx(self.Sfx_TrainPass)
+        self.trainStopStartSfx = base.loader.loadSfx(self.Sfx_TrainStopStart)
         self.trainId = trackNum
         self.bFlipped = False
         if trackStartPos[0] < trackEndPos[0]:
@@ -110,7 +110,7 @@ class Train(DirectObject):
         self.__getCars()
         trainShouldStop = random.randrange(0, 4)
         nextRun = Sequence(Func(self.__showStart))
-        if trainShouldStop is 0:
+        if trainShouldStop == 0:
             waitTime = 3
             totalTime = random.randrange(4, (self.MarkDelta - waitTime) / 2)
             sfxStopTime = 4.3
