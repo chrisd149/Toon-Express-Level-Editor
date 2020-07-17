@@ -1,24 +1,28 @@
-Toon Express is a modifed, easy to use level editor for making levels in Toontown.  It uses source code from Disney's inhouse Toontown Online level editor that was used to quickly make and edit most streets and playgrounds.  The program uses libpandadna as a dna parser for dna files, and a working Panda3D level editor.  The program was and still is very buggy and somewhat hard to use, so I decided to revamp the editor with QoL features and bug fixes. It currently features:
+<img src="https://avatars0.githubusercontent.com/u/66463299?s=200&v=4" align="right" width=125>
+Toon-Express-Level-Editor is a modifed, easy to use level editor for making levels in Toontown.  It uses source code from Disney's in-house Toontown Online level editor that was used to quickly make and edit most streets and playgrounds.  The program uses libpandadna as a dna parser for dna files, and a working Panda3D level editor.  The program was and still is very buggy and somewhat hard to use, so I decided to revamp the editor with QoL features and bug fixes. Since this program is very buggy, some DNA files are unable to be edited.  Currently TTCC and TTO DNA files have been tested and work as of now.  
 
 
-Notice: Toon Express nor any contributors to Toon Express are assoiated with The Walt Disney Company, or Toontown Online.  By downloading and using Toon Express, you agree to release any employees of Disney and/or Toontown Online from any liablity caused to you from the use of Toon Express.  
+<br />***Note***: *This project uses code and assets made and owned by The Walt Disney Company, such as some files in otp and toontown, which were released in the [RobotToonManager reposistory](https://github.com/ToontownFan2003/RobotToonManager)*
 
-* Most assets from Toontown Online in 2013
-* The ability to add and modify visgroups
-* Panda3D level editor for modifying and creating DNA files
+It currently features: <br />
+
+
+> * Most assets from Toontown Online in 2013
+> * The ability to add and modify visgroups
+> * Panda3D level editor for modifying and creating DNA files, such as streets
 
 New features include:
 
-* Auto saving feature
-* Updated controls and documentation
-* Improved suit point and battle cell placement
+> * Auto saving feature
+> * Updated controls and documentation
+> * Improved suit point and battle cell placement
 
 Features to come: 
 
-* Full documentation/wiki
-* Screenshots of DNA file from different angles + information
-* Transition to Python 2.7
-* General QoL updates
+> * Full documentation/wiki
+> * Transition to Python 3.x
+> * Full transition to Linux (sorry Windows)
+> * General QoL updates
 
 <h2>Installiation</h2>
 
@@ -31,32 +35,17 @@ Note: Windows is the only OS supported as of now, Linux support will come at a l
 
 A command prompt window will open, and code will start running.  Several windows will open, and will become enabled after the program is fully loaded.  
 
-<h2>Issues</h2>
-
-Since this program is very buggy, some DNA files are unable to be edited.  Currently TTCC and TTO DNA files have been tested and work as of now.  
-
-The auto-saver cannot be cancelled as of now, but it will still auto-save even if you change working DNA file or manually save the file.  
-
 <h2>Built With</h2>
 
 *	***Toontown Online Level Editor*** - Source code for level editor.
 
-*	[***PyCharm***](https://www.jetbrains.com/pycharm/) - IDE used to build program.
+*	[***Open Toontown***](https://github.com/open-toontown/open-toontown) - Reverse engineered code, as well as primary motovation for this project.
 
+<h2>Collaborators</h2>
 
+We welcome any collaborators, just send a message to me (Christian Diaz) via any contact method listed below.
 
-<h2>Authors</h2>
-
-Main Author: Christian M Diaz
-
-<h3>Contact Info</h3>
-
-*	GitHub UserName: **@chrisd149**
-
-*	Discord Username: **Bobby149#7640**
-
-*	Twitter: **@miguel_TTR**
-
-* Email: **christianmigueldiaz@gmail.com**
-	* Active Hours Weekdays: 12pm - 12am EST
-	* Active Hours Weekend: 2pm - 3am EST (Some of the time im availiable to 6am on the weekends)
+*	**Christian Diaz**: Main developer and founder of Toon Express
+	*	GitHub Username: **@chrisd149**
+	*	Discord Username: **Bobby149#7640**
+	*	Email: **christianmigueldiaz@gmail.com**
