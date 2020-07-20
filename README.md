@@ -1,5 +1,6 @@
 <img src="https://avatars0.githubusercontent.com/u/66463299?s=200&v=4" align="right" width=125>
-Toon-Express-Level-Editor is a modifed, easy to use level editor for making levels in Toontown.  It uses source code from Disney's in-house Toontown Online level editor that was used to quickly make and edit most streets and playgrounds.  The program uses libpandadna as a dna parser for dna files, and a working Panda3D level editor.  The program was and still is very buggy and somewhat hard to use, so I decided to revamp the editor with QoL features and bug fixes. Since this program is very buggy, some DNA files are unable to be edited.  Currently TTCC and TTO DNA files have been tested and work as of now.  
+
+Toon-Express-Level-Editor is a modifed, easier to use level editor for making levels in Toontown.  It uses source code from Disney's in-house Toontown Online level editor that was used to quickly make and edit most streets and playgrounds.  The program uses libpandadna as a dna parser for dna files, and a working Panda3D level editor.  The program was and still is very buggy and somewhat hard to use, so I decided to revamp the editor with QoL features and bug fixes. Since this program is very buggy, some DNA files are unable to be edited.  Currently TTCC and TTO DNA files have been tested and work as of now.  
 
 
 <br />***Note***: *This project uses code and assets made and owned by The Walt Disney Company, such as some files in otp and toontown, which were released in the [RobotToonManager reposistory](https://github.com/ToontownFan2003/RobotToonManager)*
@@ -10,6 +11,7 @@ It currently features: <br />
 > * Most assets from Toontown Online in 2013
 > * The ability to add and modify visgroups
 > * Panda3D level editor for modifying and creating DNA files, such as streets
+
 
 New features include:
 
@@ -23,6 +25,7 @@ Features to come:
 > * Transition to Python 3.x
 > * Full transition to Linux (sorry Windows)
 > * General QoL updates
+
 
 <h2>Installiation</h2>
 
@@ -41,11 +44,17 @@ A command prompt window will open, and code will start running.  Several windows
 
 *	[***Open Toontown***](https://github.com/open-toontown/open-toontown) - Reverse engineered code, as well as primary motovation for this project.
 
+*	[***PyCharm***](https://www.jetbrains.com/pycharm/) - IDE used to build program.
+
+
+
 <h2>Collaborators</h2>
-
-We welcome any collaborators, just send a message to me (Christian Diaz) via any contact method listed below.
-
 *	**Christian Diaz**: Main developer and founder of Toon Express
 	*	GitHub Username: **@chrisd149**
 	*	Discord Username: **Bobby149#7640**
 	*	Email: **christianmigueldiaz@gmail.com**
+  
+We welcome any collaborators, just send a message to me (Christian Diaz) via any contact method listed below.
+
+
+
