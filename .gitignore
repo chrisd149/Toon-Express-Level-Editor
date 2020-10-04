@@ -7,3 +7,8 @@ phase_*
 
 # fileSynce database
 *.ffs_db
+
+.history
+.idea
+__pycache__/
+
