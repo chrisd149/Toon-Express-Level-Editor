@@ -54,7 +54,7 @@ A command prompt window will open, and code will start running.  Several windows
 
 	-	*GitHub Username*:  ``@chrisd149``
 
-	-	*Discord Username*:  ``Bobby149#7640``
+	-	*Discord Username*:  ``chrisd149#7640``
 
 	-	*Email*: ``christianmigueldiaz@gmail.com``
 
