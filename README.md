@@ -1,3 +1,5 @@
+***Notice**: This repository will not be maintained for the foreseeable future due to numerous reasons.  I will be forwarding those who are interested in a working level editor to the [Open Toontown Level Editor](https://github.com/OpenToontownTools/OpenLevelEditor), a much more modern and mature level editor.  This repository will stay up for the public for the foreseeable future, with all project code kept online.  Thanks for those that stuck around!*
+
 <img src="https://avatars0.githubusercontent.com/u/66463299?s=200&v=4" align="right" width=125>
 
 Toon-Express-Level-Editor is a modified, easier to use level editor for making levels in Toontown.  It uses source code from Disney's in-house Toontown Online level editor that was used to quickly make and edit most streets and playgrounds.  The program uses a dna parser for DNA files, and a working Panda3D level editor.  The program was and still is very buggy and somewhat hard to use, so I decided to revamp the editor with QoL features and bug fixes. Since this program is very buggy, some DNA files are unable to be edited.  Currently TTCC and TTO DNA files have been tested and work as of now.
@@ -50,7 +52,7 @@ A command prompt window will open, and code will start running.  Several windows
 
 <h2>Collaborators</h2>
 
-*	**Christian Diaz**: Main developer and founder of Toon Express
+*	**Christian Diaz**: Main developer
 
 	-	*GitHub Username*:  ``@chrisd149``
 
